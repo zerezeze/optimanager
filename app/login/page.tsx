@@ -31,6 +31,28 @@ export default async function LoginPage({ searchParams }: PageProps) {
           }}
           style={{ display: "flex", flexDirection: "column", gap: "16px" }}
         >
+          <style dangerouslySetInnerHTML={{__html: `
+            .login-input {
+              padding: 10px 12px;
+              border: 1px solid #ccc;
+              border-radius: 4px;
+              font-size: 14px;
+              color: #333333 !important;
+              background-color: #ffffff !important;
+              caret-color: #333333 !important;
+              outline: none;
+              box-sizing: border-box;
+              transition: border-color 0.2s, box-shadow 0.2s;
+            }
+            .login-input:focus {
+              border-color: #0070f3 !important;
+              box-shadow: 0 0 0 3px rgba(0, 112, 243, 0.15);
+            }
+            .login-input::placeholder {
+              color: #888888 !important;
+            }
+          `}} />
+
           <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
             <label htmlFor="email" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
               E-mail
@@ -40,7 +62,8 @@ export default async function LoginPage({ searchParams }: PageProps) {
               name="email"
               type="email"
               required
-              style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px" }}
+              className="login-input"
+              placeholder="Digite seu e-mail"
             />
           </div>
 
@@ -53,7 +76,8 @@ export default async function LoginPage({ searchParams }: PageProps) {
               name="password"
               type="password"
               required
-              style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px" }}
+              className="login-input"
+              placeholder="Digite sua senha"
             />
           </div>
 
