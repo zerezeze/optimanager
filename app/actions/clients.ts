@@ -139,6 +139,36 @@ export async function createClient(formData: FormData) {
   redirect("/clientes");
 }
 
+export async function deleteClient(id: string) {
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  if (!uuidRegex.test(id)) {
+    throw new Error("Identificador do cliente inválido.");
+  }
+
+  // Check database if consultations exist
+  const consultationsCount = await prisma.consultation.count({
+    where: { clientId: id },
+  });
+
+  if (consultationsCount > 0) {
+    throw new Error(
+      "Não é possível excluir este cliente pois ele possui consultas vinculadas no histórico. Remova ou desvincule as consultas antes de excluí-lo."
+    );
+  }
+
+  try {
+    await prisma.client.delete({
+      where: { id },
+    });
+  } catch (error) {
+    console.error("Prisma deleteClient error:", error);
+    throw new Error("Ocorreu um erro ao excluir o cliente no banco de dados.");
+  }
+
+  revalidatePath("/clientes");
+  redirect("/clientes");
+}
+
 export async function updateClient(id: string, formData: FormData) {
   const rawData = {
     nome: formData.get("nome"),

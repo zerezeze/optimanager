@@ -46,7 +46,6 @@ export default function EditarForm({ client }: EditarFormProps) {
           defaultValue={client.nome}
           required
           maxLength={255}
-          style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px" }}
         />
       </div>
 
@@ -61,7 +60,6 @@ export default function EditarForm({ client }: EditarFormProps) {
           defaultValue={client.telefone || ""}
           maxLength={20}
           placeholder="(00) 00000-0000"
-          style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px" }}
         />
       </div>
 
@@ -76,7 +74,6 @@ export default function EditarForm({ client }: EditarFormProps) {
           defaultValue={client.endereco || ""}
           maxLength={500}
           placeholder="Rua, Número, Bairro, Cidade"
-          style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px" }}
         />
       </div>
 
@@ -90,13 +87,15 @@ export default function EditarForm({ client }: EditarFormProps) {
         <button
           type="submit"
           disabled={loading}
-          style={{ flex: 1, padding: "10px", backgroundColor: "#0070f3", color: "white", border: "none", borderRadius: "4px", fontSize: "14px", fontWeight: "600", cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.7 : 1 }}
+          className="btn btn-primary"
+          style={{ flex: 1, padding: "10px" }}
         >
           {loading ? "Salvando..." : "Salvar Alterações"}
         </button>
         <Link
           href="/clientes"
-          style={{ flex: 1, padding: "10px", textAlign: "center", textDecoration: "none", color: "#333", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px", fontWeight: "600", boxSizing: "border-box" }}
+          className="btn btn-secondary"
+          style={{ flex: 1, padding: "10px" }}
         >
           Cancelar
         </Link>

@@ -2,6 +2,7 @@ import prisma from "@/lib/db";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Consultation } from "@prisma/client";
+import DeleteClientButton from "@/components/DeleteClientButton";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -40,7 +41,8 @@ export default async function ClientePerfilPage({ params }: PageProps) {
         </Link>
         <Link
           href={`/clientes/${client.id}/consultas/nova`}
-          style={{ padding: "8px 16px", textDecoration: "none", backgroundColor: "#0070f3", color: "white", borderRadius: "4px", fontSize: "14px", fontWeight: "600" }}
+          className="btn btn-primary"
+          style={{ padding: "8px 16px", fontSize: "14px" }}
         >
           + Nova Consulta
         </Link>
@@ -48,7 +50,19 @@ export default async function ClientePerfilPage({ params }: PageProps) {
 
       {/* Client Profile Info Card */}
       <div style={{ padding: "24px", border: "1px solid #e0e0e0", borderRadius: "6px", backgroundColor: "#fff", marginBottom: "32px" }}>
-        <h1 style={{ fontSize: "24px", margin: "0 0 16px 0", color: "#333" }}>{client.nome}</h1>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
+          <h1 style={{ fontSize: "24px", margin: 0, color: "#333" }}>{client.nome}</h1>
+          <div style={{ display: "flex", gap: "10px" }}>
+            <Link
+              href={`/clientes/${client.id}/editar`}
+              className="btn btn-secondary"
+              style={{ padding: "8px 16px", fontSize: "14px" }}
+            >
+              Editar
+            </Link>
+            <DeleteClientButton clientId={client.id} />
+          </div>
+        </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
           <div>
             <strong style={{ fontSize: "13px", color: "#666", display: "block", marginBottom: "4px" }}>Telefone</strong>

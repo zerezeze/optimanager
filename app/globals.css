@@ -24,3 +24,100 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Styling inputs */
+.input-standard,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+textarea {
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333333 !important;
+  background-color: #ffffff !important;
+  caret-color: #333333 !important;
+  outline: none;
+  box-sizing: border-box;
+  width: 100%;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-standard:focus,
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="date"]:focus,
+textarea:focus {
+  border-color: #0070f3 !important;
+  box-shadow: 0 0 0 3px rgba(0, 112, 243, 0.15) !important;
+}
+
+.input-standard::placeholder,
+input[type="text"]::placeholder,
+input[type="email"]::placeholder,
+input[type="password"]::placeholder,
+textarea::placeholder {
+  color: #888888 !important;
+}
+
+/* Styling buttons */
+.btn {
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.2s, opacity 0.2s, box-shadow 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.btn-primary {
+  background-color: #0070f3 !important;
+  color: #ffffff !important;
+  border: none;
+}
+.btn-primary:hover:not(:disabled) {
+  background-color: #0060df !important;
+}
+.btn-primary:focus {
+  box-shadow: 0 0 0 3px rgba(0, 112, 243, 0.3) !important;
+}
+
+.btn-secondary {
+  background-color: #ffffff !important;
+  color: #333333 !important;
+  border: 1px solid #ccc !important;
+}
+.btn-secondary:hover:not(:disabled) {
+  background-color: #f5f5f5 !important;
+  border-color: #bbb !important;
+}
+.btn-secondary:focus {
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+.btn-danger {
+  background-color: #d32f2f !important;
+  color: #ffffff !important;
+  border: none;
+}
+.btn-danger:hover:not(:disabled) {
+  background-color: #b71c1c !important;
+}
+.btn-danger:focus {
+  box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.3) !important;
+}
+

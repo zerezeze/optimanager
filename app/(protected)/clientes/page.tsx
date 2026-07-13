@@ -31,13 +31,15 @@ export default async function ClientesPage({ searchParams }: PageProps) {
         <div style={{ display: "flex", gap: "12px" }}>
           <Link
             href="/dashboard"
-            style={{ padding: "8px 16px", textDecoration: "none", color: "#666", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px" }}
+            className="btn btn-secondary"
+            style={{ padding: "8px 16px", fontSize: "14px" }}
           >
             Dashboard
           </Link>
           <Link
             href="/clientes/novo"
-            style={{ padding: "8px 16px", textDecoration: "none", backgroundColor: "#0070f3", color: "white", borderRadius: "4px", fontSize: "14px", fontWeight: "600" }}
+            className="btn btn-primary"
+            style={{ padding: "8px 16px", fontSize: "14px" }}
           >
             + Novo Cliente
           </Link>
@@ -51,18 +53,20 @@ export default async function ClientesPage({ searchParams }: PageProps) {
           name="q"
           placeholder="Buscar cliente por nome..."
           defaultValue={query}
-          style={{ flex: 1, padding: "10px 14px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px" }}
+          style={{ flex: 1 }}
         />
         <button
           type="submit"
-          style={{ padding: "10px 20px", backgroundColor: "#333", color: "white", border: "none", borderRadius: "4px", fontSize: "14px", cursor: "pointer" }}
+          className="btn btn-primary"
+          style={{ padding: "10px 20px" }}
         >
           Buscar
         </button>
         {query && (
           <Link
             href="/clientes"
-            style={{ padding: "10px 14px", textDecoration: "none", color: "#666", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px" }}
+            className="btn btn-secondary"
+            style={{ padding: "10px 14px" }}
           >
             Limpar
           </Link>
@@ -92,12 +96,20 @@ export default async function ClientesPage({ searchParams }: PageProps) {
                   <td style={{ padding: "14px 16px", fontSize: "14px", color: "#555" }}>{client.telefone || "-"}</td>
                   <td style={{ padding: "14px 16px", fontSize: "14px", color: "#555" }}>{client.endereco || "-"}</td>
                   <td style={{ padding: "14px 16px", fontSize: "14px", textAlign: "right" }}>
-                    <Link
-                      href={`/clientes/${client.id}/editar`}
-                      style={{ textDecoration: "none", color: "#0070f3", fontSize: "14px", fontWeight: "600" }}
-                    >
-                      Editar
-                    </Link>
+                    <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end" }}>
+                      <Link
+                        href={`/clientes/${client.id}`}
+                        style={{ textDecoration: "none", color: "#0070f3", fontSize: "14px", fontWeight: "600" }}
+                      >
+                        Ver Perfil
+                      </Link>
+                      <Link
+                        href={`/clientes/${client.id}/editar`}
+                        style={{ textDecoration: "none", color: "#666", fontSize: "14px", fontWeight: "600" }}
+                      >
+                        Editar
+                      </Link>
+                    </div>
                   </td>
                 </tr>
               ))}

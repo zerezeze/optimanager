@@ -228,13 +228,15 @@ export default function NovoClientePage() {
           <button
             type="submit"
             disabled={loading}
-            style={{ flex: 1, padding: "12px", backgroundColor: "#0070f3", color: "white", border: "none", borderRadius: "4px", fontSize: "14px", fontWeight: "600", cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.7 : 1 }}
+            className="btn btn-primary"
+            style={{ flex: 1, padding: "12px" }}
           >
             {loading ? "Salvando..." : "Salvar"}
           </button>
           <Link
             href="/clientes"
-            style={{ flex: 1, padding: "12px", textAlign: "center", textDecoration: "none", color: "#333", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px", fontWeight: "600", boxSizing: "border-box" }}
+            className="btn btn-secondary"
+            style={{ flex: 1, padding: "12px" }}
           >
             Cancelar
           </Link>

@@ -57,7 +57,6 @@ export default function EditarForm({ consultation }: EditarFormProps) {
           name="data"
           type="date"
           defaultValue={formattedInputDate}
-          style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px" }}
         />
       </div>
 
@@ -72,7 +71,6 @@ export default function EditarForm({ consultation }: EditarFormProps) {
           type="text"
           defaultValue={consultation.olhoDireito || ""}
           maxLength={50}
-          style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px" }}
         />
       </div>
 
@@ -87,7 +85,6 @@ export default function EditarForm({ consultation }: EditarFormProps) {
           type="text"
           defaultValue={consultation.olhoEsquerdo || ""}
           maxLength={50}
-          style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px" }}
         />
       </div>
 
@@ -102,7 +99,6 @@ export default function EditarForm({ consultation }: EditarFormProps) {
           type="text"
           defaultValue={consultation.adicao || ""}
           maxLength={50}
-          style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px" }}
         />
       </div>
 
@@ -117,7 +113,6 @@ export default function EditarForm({ consultation }: EditarFormProps) {
           type="text"
           defaultValue={consultation.lentes || ""}
           maxLength={255}
-          style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px" }}
         />
       </div>
 
@@ -132,7 +127,6 @@ export default function EditarForm({ consultation }: EditarFormProps) {
           type="text"
           defaultValue={consultation.laboratorio || ""}
           maxLength={255}
-          style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px" }}
         />
       </div>
 
@@ -148,7 +142,6 @@ export default function EditarForm({ consultation }: EditarFormProps) {
           defaultValue={formattedInputValue}
           required
           placeholder="Ex: 150,00 ou 150.50"
-          style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px" }}
         />
       </div>
 
@@ -162,7 +155,6 @@ export default function EditarForm({ consultation }: EditarFormProps) {
           name="observacao"
           defaultValue={consultation.observacao || ""}
           rows={3}
-          style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px", fontFamily: "Arial, sans-serif", resize: "vertical" }}
         />
       </div>
 
@@ -176,13 +168,15 @@ export default function EditarForm({ consultation }: EditarFormProps) {
         <button
           type="submit"
           disabled={loading}
-          style={{ flex: 1, padding: "10px", backgroundColor: "#0070f3", color: "white", border: "none", borderRadius: "4px", fontSize: "14px", fontWeight: "600", cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.7 : 1 }}
+          className="btn btn-primary"
+          style={{ flex: 1, padding: "10px" }}
         >
           {loading ? "Salvando..." : "Salvar Alterações"}
         </button>
         <Link
           href={`/consultas/${consultation.id}`}
-          style={{ flex: 1, padding: "10px", textAlign: "center", textDecoration: "none", color: "#333", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px", fontWeight: "600", boxSizing: "border-box" }}
+          className="btn btn-secondary"
+          style={{ flex: 1, padding: "10px" }}
         >
           Cancelar
         </Link>

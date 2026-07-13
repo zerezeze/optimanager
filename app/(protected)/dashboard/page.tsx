@@ -45,13 +45,13 @@ export default async function DashboardPage() {
         <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
           <Link
             href="/clientes/novo"
-            style={{ padding: "10px 20px", textDecoration: "none", backgroundColor: "#0070f3", color: "white", borderRadius: "4px", fontSize: "14px", fontWeight: "600" }}
+            className="btn btn-primary"
           >
             + Novo Cliente
           </Link>
           <Link
             href="/clientes"
-            style={{ padding: "10px 20px", textDecoration: "none", backgroundColor: "#333", color: "white", borderRadius: "4px", fontSize: "14px", fontWeight: "600" }}
+            className="btn btn-secondary"
           >
             Ver Clientes
           </Link>
