@@ -77,11 +77,11 @@ export default async function ConsultaDetalhesPage({ params }: PageProps) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-b border-gray-100 pb-3">
             <div>
               <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Olho Direito</strong>
-              <span className="text-sm text-gray-850 font-medium break-words">{consultation.olhoDireito || "Não informado"}</span>
+              <span className="text-sm text-gray-800 font-medium break-words">{consultation.olhoDireito || "Não informado"}</span>
             </div>
             <div>
               <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Olho Esquerdo</strong>
-              <span className="text-sm text-gray-855 font-medium break-words">{consultation.olhoEsquerdo || "Não informado"}</span>
+              <span className="text-sm text-gray-800 font-medium break-words">{consultation.olhoEsquerdo || "Não informado"}</span>
             </div>
           </div>
 
@@ -89,18 +89,18 @@ export default async function ConsultaDetalhesPage({ params }: PageProps) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-b border-gray-100 pb-3">
             <div>
               <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Adição</strong>
-              <span className="text-sm text-gray-850 font-medium break-words">{consultation.adicao || "Não informado"}</span>
+              <span className="text-sm text-gray-800 font-medium break-words">{consultation.adicao || "Não informado"}</span>
             </div>
             <div>
               <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Lentes</strong>
-              <span className="text-sm text-gray-850 font-medium break-words">{consultation.lentes || "Não informado"}</span>
+              <span className="text-sm text-gray-800 font-medium break-words">{consultation.lentes || "Não informado"}</span>
             </div>
           </div>
 
           {/* Laboratório */}
           <div className="border-b border-gray-100 pb-3">
             <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Laboratório</strong>
-            <span className="text-sm text-gray-850 font-medium break-words">{consultation.laboratorio || "Não informado"}</span>
+            <span className="text-sm text-gray-800 font-medium break-words">{consultation.laboratorio || "Não informado"}</span>
           </div>
 
           {/* Observação */}

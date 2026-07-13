@@ -27,7 +27,7 @@ export default async function ClientesPage({ searchParams }: PageProps) {
   return (
     <div className="p-4 sm:p-8 max-w-5xl mx-auto font-sans w-full">
       <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Gestão de Clientes</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Gestão de Clientes</h1>
         <div className="flex flex-col sm:flex-row gap-3">
           <Link
             href="/dashboard"
@@ -51,7 +51,7 @@ export default async function ClientesPage({ searchParams }: PageProps) {
         <input
           type="text"
           name="q"
-          placeholder="Buscar cliente por nome..."
+          placeholder="Buscar client por nome..."
           defaultValue={query}
           className="flex-1"
         />
@@ -97,7 +97,7 @@ export default async function ClientesPage({ searchParams }: PageProps) {
                 <tbody className="divide-y divide-gray-100">
                   {clients.map((client) => (
                     <tr key={client.id} className="hover:bg-gray-50/50">
-                      <td className="p-4 px-4 text-sm font-bold text-gray-805 truncate max-w-[200px]" title={client.nome}>
+                      <td className="p-4 px-4 text-sm font-bold text-gray-900 truncate max-w-[200px]" title={client.nome}>
                         {client.nome}
                       </td>
                       <td className="p-4 px-4 text-sm text-gray-600 truncate max-w-[150px]">{client.telefone || "-"}</td>

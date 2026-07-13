@@ -114,13 +114,13 @@ export default async function ClientePerfilPage({ params }: PageProps) {
                     return (
                       <tr key={consultation.id} className="hover:bg-gray-50/50">
                         <td className="p-4 px-4 text-sm font-bold text-gray-800">{formattedDate}</td>
-                        <td className="p-4 px-4 text-sm text-gray-650 truncate max-w-[120px]" title={consultation.olhoDireito || ""}>
+                        <td className="p-4 px-4 text-sm text-gray-600 truncate max-w-[120px]" title={consultation.olhoDireito || ""}>
                           {consultation.olhoDireito || "-"}
                         </td>
-                        <td className="p-4 px-4 text-sm text-gray-655 truncate max-w-[120px]" title={consultation.olhoEsquerdo || ""}>
+                        <td className="p-4 px-4 text-sm text-gray-600 truncate max-w-[120px]" title={consultation.olhoEsquerdo || ""}>
                           {consultation.olhoEsquerdo || "-"}
                         </td>
-                        <td className="p-4 px-4 text-sm text-gray-660 truncate max-w-[150px]" title={consultation.lentes || ""}>
+                        <td className="p-4 px-4 text-sm text-gray-600 truncate max-w-[150px]" title={consultation.lentes || ""}>
                           {consultation.lentes || "-"}
                         </td>
                         <td className="p-4 px-4 text-sm font-semibold text-gray-800">{formattedValue}</td>

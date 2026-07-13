@@ -132,7 +132,7 @@ export default function NovaForm({ clientId }: NovaFormProps) {
       </div>
 
       {error && (
-        <div className="text-red-605 text-sm">
+        <div className="text-red-600 text-sm">
           {error}
         </div>
       )}

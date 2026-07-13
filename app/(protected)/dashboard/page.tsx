@@ -25,7 +25,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="p-4 sm:p-8 max-w-5xl mx-auto font-sans w-full">
-      <h1 className="text-2xl sm:text-3xl font-bold text-gray-850 mb-6">Dashboard</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">Dashboard</h1>
 
       {/* Metrics Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
@@ -80,7 +80,7 @@ export default async function DashboardPage() {
                     </div>
                     <Link
                       href={`/clientes/${client.id}`}
-                      className="text-xs font-semibold text-blue-605 hover:text-blue-800 shrink-0"
+                      className="text-xs font-semibold text-blue-600 hover:text-blue-800 shrink-0"
                     >
                       Ver Perfil
                     </Link>
@@ -120,7 +120,7 @@ export default async function DashboardPage() {
                       </div>
                       <Link
                         href={`/consultas/${consultation.id}`}
-                        className="text-xs font-semibold text-blue-605 hover:text-blue-800 shrink-0"
+                        className="text-xs font-semibold text-blue-600 hover:text-blue-800 shrink-0"
                       >
                         Ver Ficha
                       </Link>
