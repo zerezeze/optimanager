@@ -1,6 +1,7 @@
 import prisma from "@/lib/db";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Consultation } from "@prisma/client";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -81,7 +82,7 @@ export default async function ClientePerfilPage({ params }: PageProps) {
               </tr>
             </thead>
             <tbody>
-              {client.consultations.map((consultation) => {
+              {client.consultations.map((consultation: Consultation) => {
                 const formattedDate = new Date(consultation.data).toLocaleDateString("pt-BR", {
                   timeZone: "UTC", // Keep UTC time matching database storage safely
                 });
