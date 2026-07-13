@@ -1,0 +1,50 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique @db.VarChar(255)
+  password  String   @db.VarChar(255)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model Client {
+  id            String         @id @default(uuid())
+  nome          String         @db.VarChar(255)
+  endereco      String?        @db.VarChar(500)
+  telefone      String?        @db.VarChar(20)
+  consultations Consultation[]
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+
+  @@index([nome])
+  @@index([telefone])
+  @@map("clients")
+}
+
+model Consultation {
+  id            String   @id @default(uuid())
+  clientId      String   @map("client_id")
+  client        Client   @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  olhoDireito   String?  @map("olho_direito") @db.VarChar(50)
+  olhoEsquerdo  String?  @map("olho_esquerdo") @db.VarChar(50)
+  adicao        String?  @map("adicao") @db.VarChar(50)
+  lentes        String?  @map("lentes") @db.VarChar(255)
+  laboratorio   String?  @map("laboratorio") @db.VarChar(255)
+  valor         Int // value in cents (e.g., 10000 = R$ 100,00)
+  observacao    String?  @map("observacao") @db.Text
+  data          DateTime @default(now())
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@index([data])
+  @@map("consultations")
+}
