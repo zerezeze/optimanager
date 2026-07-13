@@ -26,19 +26,19 @@ export default function NovoClientePage() {
   const defaultDate = new Date().toISOString().substring(0, 10);
 
   return (
-    <div style={{ padding: "32px", fontFamily: "Arial, sans-serif", maxWidth: "600px", margin: "0 auto" }}>
-      <h1 style={{ fontSize: "26px", fontWeight: "bold", marginBottom: "24px", color: "#333" }}>Novo Cliente</h1>
+    <div className="p-4 sm:p-8 max-w-2xl mx-auto font-sans w-full">
+      <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6">Novo Cliente</h1>
 
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6 w-full">
         
         {/* SECTION 1: DADOS DO CLIENTE */}
-        <div style={{ padding: "20px", border: "1px solid #e0e0e0", borderRadius: "6px", backgroundColor: "#fff" }}>
-          <h2 style={{ fontSize: "18px", fontWeight: "bold", margin: "0 0 16px 0", color: "#0070f3", borderBottom: "1px solid #f0f0f0", paddingBottom: "8px" }}>
+        <div className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm w-full">
+          <h2 className="text-lg font-bold text-blue-600 border-b border-gray-100 pb-2 mb-4">
             Dados do Cliente
           </h2>
-          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-            <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-              <label htmlFor="nome" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="nome" className="text-sm font-semibold text-gray-600">
                 Nome Completo *
               </label>
               <input
@@ -48,12 +48,11 @@ export default function NovoClientePage() {
                 required
                 maxLength={255}
                 placeholder="Ex: João da Silva"
-                style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px", boxSizing: "border-box" }}
               />
             </div>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-              <label htmlFor="telefone" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="telefone" className="text-sm font-semibold text-gray-600">
                 Telefone
               </label>
               <input
@@ -62,12 +61,11 @@ export default function NovoClientePage() {
                 type="text"
                 maxLength={20}
                 placeholder="(00) 00000-0000"
-                style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px", boxSizing: "border-box" }}
               />
             </div>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-              <label htmlFor="endereco" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="endereco" className="text-sm font-semibold text-gray-600">
                 Endereço
               </label>
               <input
@@ -76,36 +74,35 @@ export default function NovoClientePage() {
                 type="text"
                 maxLength={500}
                 placeholder="Rua, Número, Bairro, Cidade"
-                style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px", boxSizing: "border-box" }}
               />
             </div>
           </div>
         </div>
 
         {/* CHECKBOX CONTROL */}
-        <div style={{ display: "flex", alignItems: "center", gap: "10px", padding: "0 8px" }}>
+        <div className="flex items-center gap-3 px-1">
           <input
             id="cadastrarConsultaCheckbox"
             type="checkbox"
             checked={showConsultation}
             onChange={(e) => setShowConsultation(e.target.checked)}
-            style={{ width: "16px", height: "16px", cursor: "pointer" }}
+            className="w-5 h-5 cursor-pointer shrink-0"
           />
           <input type="hidden" name="cadastrarConsulta" value={showConsultation ? "true" : "false"} />
-          <label htmlFor="cadastrarConsultaCheckbox" style={{ fontSize: "14px", fontWeight: "600", color: "#333", cursor: "pointer" }}>
+          <label htmlFor="cadastrarConsultaCheckbox" className="text-sm font-semibold text-gray-700 cursor-pointer select-none">
             Desejo cadastrar a primeira consulta deste cliente agora
           </label>
         </div>
 
         {/* SECTION 2: PRIMEIRA CONSULTA */}
         {showConsultation && (
-          <div style={{ padding: "20px", border: "1px solid #e0e0e0", borderRadius: "6px", backgroundColor: "#fff" }}>
-            <h2 style={{ fontSize: "18px", fontWeight: "bold", margin: "0 0 16px 0", color: "#0070f3", borderBottom: "1px solid #f0f0f0", paddingBottom: "8px" }}>
+          <div className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm w-full">
+            <h2 className="text-lg font-bold text-blue-600 border-b border-gray-100 pb-2 mb-4">
               Primeira Consulta
             </h2>
-            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                <label htmlFor="data" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="data" className="text-sm font-semibold text-gray-600">
                   Data da Consulta
                 </label>
                 <input
@@ -113,12 +110,11 @@ export default function NovoClientePage() {
                   name="data"
                   type="date"
                   defaultValue={defaultDate}
-                  style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px", boxSizing: "border-box" }}
                 />
               </div>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                <label htmlFor="olhoDireito" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="olhoDireito" className="text-sm font-semibold text-gray-600">
                   Olho Direito
                 </label>
                 <input
@@ -127,12 +123,11 @@ export default function NovoClientePage() {
                   type="text"
                   maxLength={50}
                   placeholder="Ex: Esf -2.00 Cil -0.50 Eixo 180"
-                  style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px", boxSizing: "border-box" }}
                 />
               </div>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                <label htmlFor="olhoEsquerdo" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="olhoEsquerdo" className="text-sm font-semibold text-gray-600">
                   Olho Esquerdo
                 </label>
                 <input
@@ -141,12 +136,11 @@ export default function NovoClientePage() {
                   type="text"
                   maxLength={50}
                   placeholder="Ex: Esf -1.75 Cil -0.75 Eixo 170"
-                  style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px", boxSizing: "border-box" }}
                 />
               </div>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                <label htmlFor="adicao" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="adicao" className="text-sm font-semibold text-gray-600">
                   Adição
                 </label>
                 <input
@@ -155,12 +149,11 @@ export default function NovoClientePage() {
                   type="text"
                   maxLength={50}
                   placeholder="Ex: +2.00"
-                  style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px", boxSizing: "border-box" }}
                 />
               </div>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                <label htmlFor="lentes" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="lentes" className="text-sm font-semibold text-gray-600">
                   Lentes
                 </label>
                 <input
@@ -169,12 +162,11 @@ export default function NovoClientePage() {
                   type="text"
                   maxLength={255}
                   placeholder="Ex: Antirreflexo Crizal"
-                  style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px", boxSizing: "border-box" }}
                 />
               </div>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                <label htmlFor="laboratorio" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="laboratorio" className="text-sm font-semibold text-gray-600">
                   Laboratório
                 </label>
                 <input
@@ -183,12 +175,11 @@ export default function NovoClientePage() {
                   type="text"
                   maxLength={255}
                   placeholder="Ex: Essilor"
-                  style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px", boxSizing: "border-box" }}
                 />
               </div>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                <label htmlFor="valor" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="valor" className="text-sm font-semibold text-gray-600">
                   Valor (R$) *
                 </label>
                 <input
@@ -197,12 +188,11 @@ export default function NovoClientePage() {
                   type="text"
                   required={showConsultation}
                   placeholder="Ex: 150,00 ou 150.50"
-                  style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px", boxSizing: "border-box" }}
                 />
               </div>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                <label htmlFor="observacao" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="observacao" className="text-sm font-semibold text-gray-600">
                   Observação
                 </label>
                 <textarea
@@ -210,7 +200,6 @@ export default function NovoClientePage() {
                   name="observacao"
                   rows={3}
                   placeholder="Observações clínicas ou adicionais"
-                  style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px", fontFamily: "Arial, sans-serif", resize: "vertical", boxSizing: "border-box" }}
                 />
               </div>
             </div>
@@ -218,25 +207,23 @@ export default function NovoClientePage() {
         )}
 
         {error && (
-          <div style={{ color: "#d32f2f", fontSize: "14px", padding: "0 8px" }}>
+          <div className="text-red-600 text-sm px-1">
             {error}
           </div>
         )}
 
         {/* BUTTONS */}
-        <div style={{ display: "flex", gap: "12px", padding: "0 8px" }}>
+        <div className="flex flex-col sm:flex-row gap-3 pt-2">
           <button
             type="submit"
             disabled={loading}
-            className="btn btn-primary"
-            style={{ flex: 1, padding: "12px" }}
+            className="btn btn-primary w-full sm:flex-1 py-3"
           >
             {loading ? "Salvando..." : "Salvar"}
           </button>
           <Link
             href="/clientes"
-            className="btn btn-secondary"
-            style={{ flex: 1, padding: "12px" }}
+            className="btn btn-secondary w-full sm:flex-1 py-3 text-center"
           >
             Cancelar
           </Link>

@@ -7,26 +7,31 @@ interface HeaderProps {
 
 export default function Header({ email }: HeaderProps) {
   return (
-    <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 32px", borderBottom: "1px solid #e0e0e0", backgroundColor: "#fff", fontFamily: "Arial, sans-serif" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
-        <strong style={{ fontSize: "18px", color: "#333" }}>OptiManager</strong>
-        <nav style={{ display: "flex", gap: "16px" }}>
-          <Link href="/dashboard" style={{ textDecoration: "none", color: "#0070f3", fontSize: "14px", fontWeight: "600" }}>
+    <header className="flex flex-col sm:flex-row justify-between items-center gap-4 p-4 sm:py-4 sm:px-8 border-b border-gray-200 bg-white">
+      <div className="flex items-center gap-6 w-full sm:w-auto justify-between sm:justify-start">
+        <strong className="text-lg text-gray-800">OptiManager</strong>
+        <nav className="flex gap-4">
+          <Link href="/dashboard" className="text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors">
             Dashboard
           </Link>
-          <Link href="/clientes" style={{ textDecoration: "none", color: "#0070f3", fontSize: "14px", fontWeight: "600" }}>
+          <Link href="/clientes" className="text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors">
             Clientes
           </Link>
         </nav>
       </div>
 
-      <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-        {email && <span style={{ fontSize: "14px", color: "#555" }}>{email}</span>}
+      <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto border-t border-gray-100 sm:border-t-0 pt-3 sm:pt-0">
+        {email && (
+          <span className="text-sm text-gray-600 truncate max-w-[180px] sm:max-w-xs" title={email}>
+            {email}
+          </span>
+        )}
         <form
           action={async () => {
             "use server";
             await signOut();
           }}
+          className="shrink-0"
         >
           <button
             type="submit"

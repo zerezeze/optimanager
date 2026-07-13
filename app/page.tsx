@@ -11,45 +11,44 @@ export default async function HomePage() {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", fontFamily: "Arial, sans-serif", backgroundColor: "#f9f9f9" }}>
+    <div className="flex flex-col min-h-screen bg-gray-50 font-sans w-full">
       {/* Main Content Area */}
-      <main style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 20px" }}>
-        <div style={{ width: "100%", maxWidth: "540px", padding: "40px", backgroundColor: "#ffffff", border: "1px solid #e0e0e0", borderRadius: "8px", boxShadow: "0 4px 6px rgba(0,0,0,0.05)", textAlign: "center" }}>
+      <main className="flex-1 flex items-center justify-center p-4 sm:p-8">
+        <div className="w-full max-w-lg p-6 sm:p-10 bg-white border border-gray-200 rounded-lg shadow-sm text-center">
           
           {/* Header Section */}
-          <h1 style={{ fontSize: "36px", fontWeight: "bold", color: "#333", margin: "0 0 8px 0" }}>OptiManager</h1>
-          <p style={{ fontSize: "18px", color: "#0070f3", fontWeight: "600", margin: "0 0 16px 0" }}>
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-2">OptiManager</h1>
+          <p className="text-lg sm:text-xl text-blue-600 font-semibold mb-4">
             Sistema de Gestão para Óticas
           </p>
-          <p style={{ fontSize: "15px", color: "#666", lineHeight: "1.6", margin: "0 0 32px 0" }}>
+          <p className="text-sm sm:text-base text-gray-500 leading-relaxed mb-8">
             Centralize e simplifique o controle diário de sua ótica. Gerencie cadastros de clientes, prontuários de exames refrativos, prescrições de lentes e receitas comerciais em um só lugar.
           </p>
 
           {/* Feature List Section */}
-          <div style={{ textAlign: "left", marginBottom: "36px", borderTop: "1px solid #f0f0f0", paddingTop: "24px" }}>
-            <h2 style={{ fontSize: "16px", fontWeight: "bold", color: "#333", marginBottom: "16px" }}>Recursos Principais:</h2>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-              <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#555" }}>
-                <span style={{ color: "#0070f3", fontWeight: "bold" }}>&bull;</span> Cadastro de Clientes
+          <div className="text-left mb-8 border-t border-gray-100 pt-6">
+            <h2 className="text-sm font-bold text-gray-800 mb-3">Recursos Principais:</h2>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <li className="flex items-center gap-2 text-sm text-gray-600">
+                <span className="text-blue-600 font-bold">&bull;</span> Cadastro de Clientes
               </li>
-              <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#555" }}>
-                <span style={{ color: "#0070f3", fontWeight: "bold" }}>&bull;</span> Histórico de Consultas
+              <li className="flex items-center gap-2 text-sm text-gray-600">
+                <span className="text-blue-600 font-bold">&bull;</span> Histórico de Consultas
               </li>
-              <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#555" }}>
-                <span style={{ color: "#0070f3", fontWeight: "bold" }}>&bull;</span> Gestão de Receitas
+              <li className="flex items-center gap-2 text-sm text-gray-600">
+                <span className="text-blue-600 font-bold">&bull;</span> Gestão de Receitas
               </li>
-              <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#555" }}>
-                <span style={{ color: "#0070f3", fontWeight: "bold" }}>&bull;</span> Pesquisa Rápida
+              <li className="flex items-center gap-2 text-sm text-gray-600">
+                <span className="text-blue-600 font-bold">&bull;</span> Pesquisa Rápida
               </li>
             </ul>
           </div>
 
           {/* Action Button Section */}
-          <div style={{ display: "flex", justifyContent: "center" }}>
+          <div className="flex justify-center">
             <Link
               href="/login"
-              className="btn btn-primary"
-              style={{ width: "100%", maxWidth: "200px", padding: "12px", fontSize: "15px" }}
+              className="btn btn-primary w-full sm:max-w-xs py-3.5 text-base"
             >
               Entrar no Sistema
             </Link>
@@ -58,9 +57,9 @@ export default async function HomePage() {
       </main>
 
       {/* Footer Section */}
-      <footer style={{ padding: "20px", borderTop: "1px solid #e0e0e0", backgroundColor: "#ffffff", textAlign: "center", color: "#888", fontSize: "13px" }}>
-        <p style={{ margin: "0 0 4px 0", fontWeight: "600" }}>&copy; 2026 OptiManager</p>
-        <p style={{ margin: 0 }}>Desenvolvido por José Everton</p>
+      <footer className="p-6 border-t border-gray-200 bg-white text-center text-gray-400 text-xs sm:text-sm">
+        <p className="mb-1 font-semibold">&copy; 2026 OptiManager</p>
+        <p>Desenvolvido por José Everton</p>
       </footer>
     </div>
   );

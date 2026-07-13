@@ -46,10 +46,10 @@ export default function EditarForm({ consultation }: EditarFormProps) {
   const formattedInputValue = (consultation.valor / 100).toFixed(2);
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full">
       {/* Date */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <label htmlFor="data" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="data" className="text-sm font-semibold text-gray-600">
           Data da Consulta
         </label>
         <input
@@ -61,8 +61,8 @@ export default function EditarForm({ consultation }: EditarFormProps) {
       </div>
 
       {/* Olho Direito */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <label htmlFor="olhoDireito" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="olhoDireito" className="text-sm font-semibold text-gray-600">
           Olho Direito
         </label>
         <input
@@ -75,8 +75,8 @@ export default function EditarForm({ consultation }: EditarFormProps) {
       </div>
 
       {/* Olho Esquerdo */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <label htmlFor="olhoEsquerdo" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="olhoEsquerdo" className="text-sm font-semibold text-gray-600">
           Olho Esquerdo
         </label>
         <input
@@ -89,8 +89,8 @@ export default function EditarForm({ consultation }: EditarFormProps) {
       </div>
 
       {/* Adição */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <label htmlFor="adicao" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="adicao" className="text-sm font-semibold text-gray-600">
           Adição
         </label>
         <input
@@ -103,8 +103,8 @@ export default function EditarForm({ consultation }: EditarFormProps) {
       </div>
 
       {/* Lentes */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <label htmlFor="lentes" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="lentes" className="text-sm font-semibold text-gray-600">
           Lentes
         </label>
         <input
@@ -117,8 +117,8 @@ export default function EditarForm({ consultation }: EditarFormProps) {
       </div>
 
       {/* Laboratório */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <label htmlFor="laboratorio" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="laboratorio" className="text-sm font-semibold text-gray-600">
           Laboratório
         </label>
         <input
@@ -131,8 +131,8 @@ export default function EditarForm({ consultation }: EditarFormProps) {
       </div>
 
       {/* Valor */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <label htmlFor="valor" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="valor" className="text-sm font-semibold text-gray-600">
           Valor (R$) *
         </label>
         <input
@@ -146,8 +146,8 @@ export default function EditarForm({ consultation }: EditarFormProps) {
       </div>
 
       {/* Observação */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <label htmlFor="observacao" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="observacao" className="text-sm font-semibold text-gray-600">
           Observação
         </label>
         <textarea
@@ -159,24 +159,22 @@ export default function EditarForm({ consultation }: EditarFormProps) {
       </div>
 
       {error && (
-        <div style={{ color: "#d32f2f", fontSize: "13px", margin: "4px 0" }}>
+        <div className="text-red-605 text-sm">
           {error}
         </div>
       )}
 
-      <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
+      <div className="flex flex-col sm:flex-row gap-3 pt-2">
         <button
           type="submit"
           disabled={loading}
-          className="btn btn-primary"
-          style={{ flex: 1, padding: "10px" }}
+          className="btn btn-primary w-full sm:flex-1 py-3"
         >
           {loading ? "Salvando..." : "Salvar Alterações"}
         </button>
         <Link
           href={`/consultas/${consultation.id}`}
-          className="btn btn-secondary"
-          style={{ flex: 1, padding: "10px" }}
+          className="btn btn-secondary w-full sm:flex-1 py-3 text-center"
         >
           Cancelar
         </Link>

@@ -10,9 +10,9 @@ export default async function LoginPage({ searchParams }: PageProps) {
   const error = params.error;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "100vh", fontFamily: "Arial, sans-serif", backgroundColor: "#f9f9f9" }}>
-      <div style={{ width: "100%", maxWidth: "360px", padding: "32px", backgroundColor: "#ffffff", border: "1px solid #e0e0e0", borderRadius: "6px", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}>
-        <h2 style={{ margin: "0 0 24px 0", fontSize: "20px", fontWeight: "bold", textAlign: "center", color: "#333" }}>
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-50 font-sans w-full">
+      <div className="w-full max-w-sm p-6 sm:p-8 bg-white border border-gray-200 rounded-lg shadow-sm">
+        <h2 className="text-xl sm:text-2xl font-bold text-center text-gray-800 mb-6">
           OptiManager - Login
         </h2>
 
@@ -29,32 +29,10 @@ export default async function LoginPage({ searchParams }: PageProps) {
               throw err;
             }
           }}
-          style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+          className="flex flex-col gap-4 w-full"
         >
-          <style dangerouslySetInnerHTML={{__html: `
-            .login-input {
-              padding: 10px 12px;
-              border: 1px solid #ccc;
-              border-radius: 4px;
-              font-size: 14px;
-              color: #333333 !important;
-              background-color: #ffffff !important;
-              caret-color: #333333 !important;
-              outline: none;
-              box-sizing: border-box;
-              transition: border-color 0.2s, box-shadow 0.2s;
-            }
-            .login-input:focus {
-              border-color: #0070f3 !important;
-              box-shadow: 0 0 0 3px rgba(0, 112, 243, 0.15);
-            }
-            .login-input::placeholder {
-              color: #888888 !important;
-            }
-          `}} />
-
-          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-            <label htmlFor="email" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="email" className="text-sm font-semibold text-gray-600">
               E-mail
             </label>
             <input
@@ -62,13 +40,12 @@ export default async function LoginPage({ searchParams }: PageProps) {
               name="email"
               type="email"
               required
-              className="login-input"
               placeholder="Digite seu e-mail"
             />
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-            <label htmlFor="password" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="password" className="text-sm font-semibold text-gray-600">
               Senha
             </label>
             <input
@@ -76,13 +53,12 @@ export default async function LoginPage({ searchParams }: PageProps) {
               name="password"
               type="password"
               required
-              className="login-input"
               placeholder="Digite sua senha"
             />
           </div>
 
           {error && (
-            <div style={{ color: "#d32f2f", fontSize: "13px", margin: "4px 0 0 0" }}>
+            <div className="text-red-600 text-sm mt-1">
               {error === "CredentialsSignin"
                 ? "Credenciais inválidas. Verifique seu e-mail e senha."
                 : "Falha na autenticação. Tente novamente."}
@@ -91,7 +67,7 @@ export default async function LoginPage({ searchParams }: PageProps) {
 
           <button
             type="submit"
-            style={{ padding: "10px", backgroundColor: "#0070f3", color: "#ffffff", border: "none", borderRadius: "4px", fontSize: "14px", fontWeight: "600", cursor: "pointer", transition: "background-color 0.2s" }}
+            className="btn btn-primary w-full py-3 mt-2"
           >
             Entrar
           </button>

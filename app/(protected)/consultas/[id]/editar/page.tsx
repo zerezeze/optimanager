@@ -27,10 +27,10 @@ export default async function EditarConsultaPage({ params }: PageProps) {
   }
 
   return (
-    <div style={{ padding: "32px", fontFamily: "Arial, sans-serif", maxWidth: "480px", margin: "0 auto" }}>
-      <h1 style={{ fontSize: "22px", fontWeight: "bold", margin: "0 0 4px 0", color: "#333" }}>Editar Consulta</h1>
-      <p style={{ margin: "0 0 24px 0", fontSize: "14px", color: "#666" }}>
-        Cliente: <strong>{consultation.client.nome}</strong>
+    <div className="p-4 sm:p-8 max-w-lg mx-auto font-sans w-full">
+      <h1 className="text-2xl font-bold text-gray-805 mb-1">Editar Consulta</h1>
+      <p className="text-sm text-gray-500 mb-6">
+        Cliente: <strong className="text-gray-700">{consultation.client.nome}</strong>
       </p>
       <EditarForm consultation={consultation} />
     </div>

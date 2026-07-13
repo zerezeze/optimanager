@@ -33,15 +33,15 @@ export default async function ClientePerfilPage({ params }: PageProps) {
   }
 
   return (
-    <div style={{ padding: "32px", fontFamily: "Arial, sans-serif", maxWidth: "800px", margin: "0 auto" }}>
+    <div className="p-4 sm:p-8 max-w-4xl mx-auto font-sans w-full">
       {/* Navigation Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
-        <Link href="/clientes" style={{ textDecoration: "none", color: "#0070f3", fontSize: "14px", fontWeight: "600" }}>
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
+        <Link href="/clientes" className="text-sm font-semibold text-blue-600 hover:text-blue-800">
           &larr; Voltar para Clientes
         </Link>
         <Link
           href={`/clientes/${client.id}/consultas/nova`}
-          className="btn btn-primary"
+          className="btn btn-primary w-full sm:w-auto"
           style={{ padding: "8px 16px", fontSize: "14px" }}
         >
           + Nova Consulta
@@ -49,82 +49,143 @@ export default async function ClientePerfilPage({ params }: PageProps) {
       </div>
 
       {/* Client Profile Info Card */}
-      <div style={{ padding: "24px", border: "1px solid #e0e0e0", borderRadius: "6px", backgroundColor: "#fff", marginBottom: "32px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
-          <h1 style={{ fontSize: "24px", margin: 0, color: "#333" }}>{client.nome}</h1>
-          <div style={{ display: "flex", gap: "10px" }}>
+      <div className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm mb-8 w-full">
+        <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-4 pb-4 border-b border-gray-100">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-800 break-words max-w-full">{client.nome}</h1>
+          <div className="flex gap-3 w-full sm:w-auto">
             <Link
               href={`/clientes/${client.id}/editar`}
-              className="btn btn-secondary"
+              className="btn btn-secondary flex-1 sm:flex-initial"
               style={{ padding: "8px 16px", fontSize: "14px" }}
             >
               Editar
             </Link>
-            <DeleteClientButton clientId={client.id} />
+            <div className="flex-1 sm:flex-initial">
+              <DeleteClientButton clientId={client.id} />
+            </div>
           </div>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <strong style={{ fontSize: "13px", color: "#666", display: "block", marginBottom: "4px" }}>Telefone</strong>
-            <span style={{ fontSize: "15px", color: "#333" }}>{client.telefone || "Não informado"}</span>
+            <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Telefone</strong>
+            <span className="text-sm text-gray-800 font-medium">{client.telefone || "Não informado"}</span>
           </div>
           <div>
-            <strong style={{ fontSize: "13px", color: "#666", display: "block", marginBottom: "4px" }}>Endereço</strong>
-            <span style={{ fontSize: "15px", color: "#333" }}>{client.endereco || "Não informado"}</span>
+            <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Endereço</strong>
+            <span className="text-sm text-gray-800 font-medium break-words">{client.endereco || "Não informado"}</span>
           </div>
         </div>
       </div>
 
       {/* Consultations History list */}
-      <h2 style={{ fontSize: "20px", fontWeight: "bold", marginBottom: "16px", color: "#333" }}>Histórico de Consultas</h2>
+      <h2 className="text-lg sm:text-xl font-bold mb-4 text-gray-800">Histórico de Consultas</h2>
       
-      <div style={{ border: "1px solid #e0e0e0", borderRadius: "6px", backgroundColor: "#fff" }}>
+      <div className="border border-gray-200 rounded-lg bg-white overflow-hidden shadow-sm w-full">
         {client.consultations.length === 0 ? (
-          <div style={{ padding: "32px", textAlign: "center", color: "#666" }}>
+          <div className="p-8 text-center text-gray-500">
             Nenhuma consulta realizada para este cliente.
           </div>
         ) : (
-          <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
-            <thead>
-              <tr style={{ backgroundColor: "#f5f5f5", borderBottom: "1px solid #e0e0e0" }}>
-                <th style={{ padding: "12px 16px", fontSize: "14px", color: "#555" }}>Data</th>
-                <th style={{ padding: "12px 16px", fontSize: "14px", color: "#555" }}>Olho D.</th>
-                <th style={{ padding: "12px 16px", fontSize: "14px", color: "#555" }}>Olho E.</th>
-                <th style={{ padding: "12px 16px", fontSize: "14px", color: "#555" }}>Lentes</th>
-                <th style={{ padding: "12px 16px", fontSize: "14px", color: "#555" }}>Valor</th>
-                <th style={{ padding: "12px 16px", fontSize: "14px", color: "#555", textAlign: "right" }}>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
+          <>
+            {/* Desktop Table View */}
+            <div className="hidden sm:block overflow-x-auto">
+              <table className="w-full border-collapse text-left">
+                <thead>
+                  <tr className="bg-gray-50 border-b border-gray-200">
+                    <th className="p-3 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Data</th>
+                    <th className="p-3 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Olho D.</th>
+                    <th className="p-3 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Olho E.</th>
+                    <th className="p-3 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Lentes</th>
+                    <th className="p-3 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Valor</th>
+                    <th className="p-3 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Ações</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {client.consultations.map((consultation: Consultation) => {
+                    const formattedDate = new Date(consultation.data).toLocaleDateString("pt-BR", {
+                      timeZone: "UTC", // Keep UTC time matching database storage safely
+                    });
+                    const formattedValue = (consultation.valor / 100).toLocaleString("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    });
+                    
+                    return (
+                      <tr key={consultation.id} className="hover:bg-gray-50/50">
+                        <td className="p-4 px-4 text-sm font-bold text-gray-800">{formattedDate}</td>
+                        <td className="p-4 px-4 text-sm text-gray-650 truncate max-w-[120px]" title={consultation.olhoDireito || ""}>
+                          {consultation.olhoDireito || "-"}
+                        </td>
+                        <td className="p-4 px-4 text-sm text-gray-655 truncate max-w-[120px]" title={consultation.olhoEsquerdo || ""}>
+                          {consultation.olhoEsquerdo || "-"}
+                        </td>
+                        <td className="p-4 px-4 text-sm text-gray-660 truncate max-w-[150px]" title={consultation.lentes || ""}>
+                          {consultation.lentes || "-"}
+                        </td>
+                        <td className="p-4 px-4 text-sm font-semibold text-gray-800">{formattedValue}</td>
+                        <td className="p-4 px-4 text-sm text-right whitespace-nowrap">
+                          <Link
+                            href={`/consultas/${consultation.id}`}
+                            className="text-blue-600 hover:text-blue-800 font-semibold"
+                          >
+                            Ver Detalhes
+                          </Link>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="block sm:hidden divide-y divide-gray-100">
               {client.consultations.map((consultation: Consultation) => {
                 const formattedDate = new Date(consultation.data).toLocaleDateString("pt-BR", {
-                  timeZone: "UTC", // Keep UTC time matching database storage safely
+                  timeZone: "UTC",
                 });
                 const formattedValue = (consultation.valor / 100).toLocaleString("pt-BR", {
                   style: "currency",
                   currency: "BRL",
                 });
-                
+
                 return (
-                  <tr key={consultation.id} style={{ borderBottom: "1px solid #e0e0e0" }}>
-                    <td style={{ padding: "14px 16px", fontSize: "14px", color: "#333", fontWeight: "600" }}>{formattedDate}</td>
-                    <td style={{ padding: "14px 16px", fontSize: "14px", color: "#555" }}>{consultation.olhoDireito || "-"}</td>
-                    <td style={{ padding: "14px 16px", fontSize: "14px", color: "#555" }}>{consultation.olhoEsquerdo || "-"}</td>
-                    <td style={{ padding: "14px 16px", fontSize: "14px", color: "#555" }}>{consultation.lentes || "-"}</td>
-                    <td style={{ padding: "14px 16px", fontSize: "14px", color: "#333" }}>{formattedValue}</td>
-                    <td style={{ padding: "14px 16px", fontSize: "14px", textAlign: "right" }}>
+                  <div key={consultation.id} className="p-4 flex flex-col gap-2">
+                    <div className="flex justify-between items-center">
+                      <strong className="text-sm font-bold text-gray-800">{formattedDate}</strong>
+                      <strong className="text-sm text-gray-800">{formattedValue}</strong>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 text-xs text-gray-500 mt-1">
+                      <div>
+                        <span className="font-semibold text-gray-600 block">Olho D:</span>
+                        <span className="truncate block" title={consultation.olhoDireito || ""}>
+                          {consultation.olhoDireito || "-"}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="font-semibold text-gray-600 block">Olho E:</span>
+                        <span className="truncate block" title={consultation.olhoEsquerdo || ""}>
+                          {consultation.olhoEsquerdo || "-"}
+                        </span>
+                      </div>
+                      <div className="col-span-2">
+                        <span className="font-semibold text-gray-600">Lentes:</span> {consultation.lentes || "-"}
+                      </div>
+                    </div>
+                    <div className="flex gap-4 mt-2 pt-2 border-t border-gray-50">
                       <Link
                         href={`/consultas/${consultation.id}`}
-                        style={{ textDecoration: "none", color: "#0070f3", fontSize: "14px", fontWeight: "600" }}
+                        className="text-xs text-blue-600 hover:text-blue-800 font-semibold"
                       >
                         Ver Detalhes
                       </Link>
-                    </td>
-                  </tr>
+                    </div>
+                  </div>
                 );
               })}
-            </tbody>
-          </table>
+            </div>
+          </>
         )}
       </div>
     </div>

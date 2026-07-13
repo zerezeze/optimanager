@@ -24,34 +24,34 @@ export default async function DashboardPage() {
   ]);
 
   return (
-    <div style={{ padding: "32px", fontFamily: "Arial, sans-serif", maxWidth: "1000px", margin: "0 auto" }}>
-      <h1 style={{ fontSize: "28px", fontWeight: "bold", color: "#333", marginBottom: "24px" }}>Dashboard</h1>
+    <div className="p-4 sm:p-8 max-w-5xl mx-auto font-sans w-full">
+      <h1 className="text-2xl sm:text-3xl font-bold text-gray-850 mb-6">Dashboard</h1>
 
       {/* Metrics Cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "20px", marginBottom: "32px" }}>
-        <div style={{ padding: "20px", border: "1px solid #e0e0e0", borderRadius: "6px", backgroundColor: "#fff" }}>
-          <span style={{ fontSize: "14px", color: "#666", fontWeight: "600" }}>Total de Clientes</span>
-          <h2 style={{ fontSize: "36px", margin: "8px 0 0 0", color: "#0070f3", fontWeight: "bold" }}>{totalClients}</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
+        <div className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm">
+          <span className="text-sm font-semibold text-gray-500">Total de Clientes</span>
+          <h2 className="text-3xl sm:text-4xl font-bold text-blue-600 mt-2">{totalClients}</h2>
         </div>
-        <div style={{ padding: "20px", border: "1px solid #e0e0e0", borderRadius: "6px", backgroundColor: "#fff" }}>
-          <span style={{ fontSize: "14px", color: "#666", fontWeight: "600" }}>Total de Consultas</span>
-          <h2 style={{ fontSize: "36px", margin: "8px 0 0 0", color: "#0070f3", fontWeight: "bold" }}>{totalConsultations}</h2>
+        <div className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm">
+          <span className="text-sm font-semibold text-gray-500">Total de Consultas</span>
+          <h2 className="text-3xl sm:text-4xl font-bold text-blue-600 mt-2">{totalConsultations}</h2>
         </div>
       </div>
 
       {/* Shortcut Buttons */}
-      <div style={{ padding: "20px", border: "1px solid #e0e0e0", borderRadius: "6px", backgroundColor: "#fff", marginBottom: "32px" }}>
-        <h3 style={{ fontSize: "16px", margin: "0 0 16px 0", color: "#333", fontWeight: "bold" }}>Atalhos Rápidos</h3>
-        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+      <div className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm mb-8">
+        <h3 className="text-base font-bold text-gray-800 mb-4">Atalhos Rápidos</h3>
+        <div className="flex flex-col sm:flex-row gap-3">
           <Link
             href="/clientes/novo"
-            className="btn btn-primary"
+            className="btn btn-primary w-full sm:w-auto"
           >
             + Novo Cliente
           </Link>
           <Link
             href="/clientes"
-            className="btn btn-secondary"
+            className="btn btn-secondary w-full sm:w-auto"
           >
             Ver Clientes
           </Link>
@@ -59,24 +59,28 @@ export default async function DashboardPage() {
       </div>
 
       {/* Lists of Recent Activity */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))", gap: "32px" }}>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Recent Clients */}
-        <div>
-          <h3 style={{ fontSize: "18px", fontWeight: "bold", color: "#333", marginBottom: "16px" }}>Últimos Clientes Cadastrados</h3>
-          <div style={{ border: "1px solid #e0e0e0", borderRadius: "6px", backgroundColor: "#fff", padding: "12px 16px" }}>
+        <div className="min-w-0 w-full">
+          <h3 className="text-lg font-bold text-gray-800 mb-4">Últimos Clientes Cadastrados</h3>
+          <div className="border border-gray-200 rounded-lg bg-white p-4 sm:p-5 shadow-sm min-w-0 w-full">
             {recentClients.length === 0 ? (
-              <p style={{ color: "#666", fontSize: "14px", margin: "16px 0", textAlign: "center" }}>Nenhum cliente cadastrado ainda.</p>
+              <p className="text-sm text-gray-500 py-4 text-center">Nenhum cliente cadastrado ainda.</p>
             ) : (
-              <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+              <ul className="divide-y divide-gray-100">
                 {recentClients.map((client) => (
-                  <li key={client.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: "1px solid #f0f0f0" }}>
-                    <div>
-                      <strong style={{ fontSize: "14px", color: "#333" }}>{client.nome}</strong>
-                      <span style={{ fontSize: "12px", color: "#666", display: "block", marginTop: "2px" }}>{client.telefone || "Sem telefone"}</span>
+                  <li key={client.id} className="flex justify-between items-center py-3 min-w-0">
+                    <div className="min-w-0 pr-3 flex-1">
+                      <strong className="text-sm text-gray-800 block truncate" title={client.nome}>
+                        {client.nome}
+                      </strong>
+                      <span className="text-xs text-gray-500 block truncate mt-0.5">
+                        {client.telefone || "Sem telefone"}
+                      </span>
                     </div>
                     <Link
                       href={`/clientes/${client.id}`}
-                      style={{ textDecoration: "none", color: "#0070f3", fontSize: "13px", fontWeight: "600" }}
+                      className="text-xs font-semibold text-blue-605 hover:text-blue-800 shrink-0"
                     >
                       Ver Perfil
                     </Link>
@@ -88,13 +92,13 @@ export default async function DashboardPage() {
         </div>
 
         {/* Recent Consultations */}
-        <div>
-          <h3 style={{ fontSize: "18px", fontWeight: "bold", color: "#333", marginBottom: "16px" }}>Consultas Recentes</h3>
-          <div style={{ border: "1px solid #e0e0e0", borderRadius: "6px", backgroundColor: "#fff", padding: "12px 16px" }}>
+        <div className="min-w-0 w-full">
+          <h3 className="text-lg font-bold text-gray-800 mb-4">Consultas Recentes</h3>
+          <div className="border border-gray-200 rounded-lg bg-white p-4 sm:p-5 shadow-sm min-w-0 w-full">
             {recentConsultations.length === 0 ? (
-              <p style={{ color: "#666", fontSize: "14px", margin: "16px 0", textAlign: "center" }}>Nenhuma consulta realizada ainda.</p>
+              <p className="text-sm text-gray-500 py-4 text-center">Nenhuma consulta realizada ainda.</p>
             ) : (
-              <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+              <ul className="divide-y divide-gray-100">
                 {recentConsultations.map((consultation) => {
                   const formattedDate = new Date(consultation.data).toLocaleDateString("pt-BR", {
                     timeZone: "UTC",
@@ -105,16 +109,18 @@ export default async function DashboardPage() {
                   });
 
                   return (
-                    <li key={consultation.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: "1px solid #f0f0f0" }}>
-                      <div>
-                        <strong style={{ fontSize: "14px", color: "#333" }}>{consultation.client.nome}</strong>
-                        <span style={{ fontSize: "12px", color: "#666", display: "block", marginTop: "2px" }}>
+                    <li key={consultation.id} className="flex justify-between items-center py-3 min-w-0">
+                      <div className="min-w-0 pr-3 flex-1">
+                        <strong className="text-sm text-gray-800 block truncate" title={consultation.client.nome}>
+                          {consultation.client.nome}
+                        </strong>
+                        <span className="text-xs text-gray-500 block truncate mt-0.5">
                           {formattedDate} - {formattedValue}
                         </span>
                       </div>
                       <Link
                         href={`/consultas/${consultation.id}`}
-                        style={{ textDecoration: "none", color: "#0070f3", fontSize: "13px", fontWeight: "600" }}
+                        className="text-xs font-semibold text-blue-605 hover:text-blue-800 shrink-0"
                       >
                         Ver Ficha
                       </Link>

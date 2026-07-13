@@ -21,7 +21,7 @@ export default function NovaForm({ clientId }: NovaFormProps) {
     try {
       await createConsultation(clientId, formData);
     } catch (err: any) {
-      setError(err.message || "Ocorreu um erro ao registrar a consulta.");
+      setError(err.message || "Ocorreu um erro ao cadastrar a consulta.");
       setLoading(false);
     }
   };
@@ -29,9 +29,9 @@ export default function NovaForm({ clientId }: NovaFormProps) {
   const defaultDate = new Date().toISOString().substring(0, 10);
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <label htmlFor="data" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full">
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="data" className="text-sm font-semibold text-gray-600">
           Data da Consulta
         </label>
         <input
@@ -42,8 +42,8 @@ export default function NovaForm({ clientId }: NovaFormProps) {
         />
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <label htmlFor="olhoDireito" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="olhoDireito" className="text-sm font-semibold text-gray-600">
           Olho Direito
         </label>
         <input
@@ -55,8 +55,8 @@ export default function NovaForm({ clientId }: NovaFormProps) {
         />
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <label htmlFor="olhoEsquerdo" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="olhoEsquerdo" className="text-sm font-semibold text-gray-600">
           Olho Esquerdo
         </label>
         <input
@@ -68,8 +68,8 @@ export default function NovaForm({ clientId }: NovaFormProps) {
         />
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <label htmlFor="adicao" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="adicao" className="text-sm font-semibold text-gray-600">
           Adição
         </label>
         <input
@@ -81,8 +81,8 @@ export default function NovaForm({ clientId }: NovaFormProps) {
         />
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <label htmlFor="lentes" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="lentes" className="text-sm font-semibold text-gray-600">
           Lentes
         </label>
         <input
@@ -94,8 +94,8 @@ export default function NovaForm({ clientId }: NovaFormProps) {
         />
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <label htmlFor="laboratorio" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="laboratorio" className="text-sm font-semibold text-gray-600">
           Laboratório
         </label>
         <input
@@ -107,8 +107,8 @@ export default function NovaForm({ clientId }: NovaFormProps) {
         />
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <label htmlFor="valor" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="valor" className="text-sm font-semibold text-gray-600">
           Valor (R$) *
         </label>
         <input
@@ -120,8 +120,8 @@ export default function NovaForm({ clientId }: NovaFormProps) {
         />
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <label htmlFor="observacao" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="observacao" className="text-sm font-semibold text-gray-600">
           Observação
         </label>
         <textarea
@@ -132,24 +132,22 @@ export default function NovaForm({ clientId }: NovaFormProps) {
       </div>
 
       {error && (
-        <div style={{ color: "#d32f2f", fontSize: "13px", margin: "4px 0" }}>
+        <div className="text-red-605 text-sm">
           {error}
         </div>
       )}
 
-      <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
+      <div className="flex flex-col sm:flex-row gap-3 pt-2">
         <button
           type="submit"
           disabled={loading}
-          className="btn btn-primary"
-          style={{ flex: 1, padding: "10px" }}
+          className="btn btn-primary w-full sm:flex-1 py-3"
         >
           {loading ? "Salvando..." : "Salvar Consulta"}
         </button>
         <Link
           href={`/clientes/${clientId}`}
-          className="btn btn-secondary"
-          style={{ flex: 1, padding: "10px" }}
+          className="btn btn-secondary w-full sm:flex-1 py-3 text-center"
         >
           Cancelar
         </Link>

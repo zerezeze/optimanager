@@ -24,8 +24,8 @@ export default async function EditarClientePage({ params }: PageProps) {
   }
 
   return (
-    <div style={{ padding: "32px", fontFamily: "Arial, sans-serif", maxWidth: "480px", margin: "0 auto" }}>
-      <h1 style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "24px", color: "#333" }}>Editar Cliente</h1>
+    <div className="p-4 sm:p-8 max-w-lg mx-auto font-sans w-full">
+      <h1 className="text-2xl font-bold text-gray-805 mb-6">Editar Cliente</h1>
       <EditarForm client={client} />
     </div>
   );

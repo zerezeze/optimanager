@@ -34,9 +34,9 @@ export default function EditarForm({ client }: EditarFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <label htmlFor="nome" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full">
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="nome" className="text-sm font-semibold text-gray-600">
           Nome Completo *
         </label>
         <input
@@ -49,8 +49,8 @@ export default function EditarForm({ client }: EditarFormProps) {
         />
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <label htmlFor="telefone" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="telefone" className="text-sm font-semibold text-gray-600">
           Telefone
         </label>
         <input
@@ -63,8 +63,8 @@ export default function EditarForm({ client }: EditarFormProps) {
         />
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <label htmlFor="endereco" style={{ fontSize: "14px", fontWeight: "600", color: "#555" }}>
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="endereco" className="text-sm font-semibold text-gray-600">
           Endereço
         </label>
         <input
@@ -78,24 +78,22 @@ export default function EditarForm({ client }: EditarFormProps) {
       </div>
 
       {error && (
-        <div style={{ color: "#d32f2f", fontSize: "13px", margin: "4px 0" }}>
+        <div className="text-red-605 text-sm">
           {error}
         </div>
       )}
 
-      <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
+      <div className="flex flex-col sm:flex-row gap-3 pt-2">
         <button
           type="submit"
           disabled={loading}
-          className="btn btn-primary"
-          style={{ flex: 1, padding: "10px" }}
+          className="btn btn-primary w-full sm:flex-1 py-3"
         >
           {loading ? "Salvando..." : "Salvar Alterações"}
         </button>
         <Link
-          href="/clientes"
-          className="btn btn-secondary"
-          style={{ flex: 1, padding: "10px" }}
+          href={`/clientes/${client.id}`}
+          className="btn btn-secondary w-full sm:flex-1 py-3 text-center"
         >
           Cancelar
         </Link>

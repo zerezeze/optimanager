@@ -1,6 +1,6 @@
 export default function Loading() {
   return (
-    <div style={{ padding: "32px", fontFamily: "Arial, sans-serif", color: "#666", textAlign: "center" }}>
+    <div className="p-8 text-center text-gray-500 font-sans w-full">
       Carregando dados...
     </div>
   );

@@ -14,9 +14,9 @@ export default async function ProtectedLayout({ children }: ProtectedLayoutProps
   }
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#f9f9f9" }}>
+    <div className="min-h-screen bg-gray-50 flex flex-col w-full">
       <Header email={session.user.email} />
-      <main style={{ padding: "20px 0" }}>{children}</main>
+      <main className="flex-1 w-full py-4 sm:py-6">{children}</main>
     </div>
   );
 }

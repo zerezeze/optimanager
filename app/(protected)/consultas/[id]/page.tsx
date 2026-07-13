@@ -35,76 +35,78 @@ export default async function ConsultaDetalhesPage({ params }: PageProps) {
   });
 
   return (
-    <div style={{ padding: "32px", fontFamily: "Arial, sans-serif", maxWidth: "600px", margin: "0 auto" }}>
+    <div className="p-4 sm:p-8 max-w-2xl mx-auto font-sans w-full">
       {/* Navigation Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
         <Link
           href={`/clientes/${consultation.clientId}`}
-          style={{ textDecoration: "none", color: "#0070f3", fontSize: "14px", fontWeight: "600" }}
+          className="text-sm font-semibold text-blue-600 hover:text-blue-800"
         >
-          &larr; Voltar para Perfil de {consultation.client.nome}
+          <span className="hidden sm:inline">&larr; Voltar para Perfil de {consultation.client.nome}</span>
+          <span className="inline sm:hidden">&larr; Voltar ao Perfil</span>
         </Link>
         <Link
           href={`/consultas/${consultation.id}/editar`}
-          style={{ padding: "8px 16px", textDecoration: "none", backgroundColor: "#333", color: "white", borderRadius: "4px", fontSize: "14px", fontWeight: "600" }}
+          className="btn btn-secondary w-full sm:w-auto"
+          style={{ padding: "8px 16px", fontSize: "14px" }}
         >
           Editar Consulta
         </Link>
       </div>
 
-      <div style={{ border: "1px solid #e0e0e0", borderRadius: "6px", backgroundColor: "#fff", padding: "24px" }}>
-        <h1 style={{ fontSize: "20px", fontWeight: "bold", margin: "0 0 4px 0", color: "#333" }}>Ficha da Consulta</h1>
-        <p style={{ margin: "0 0 24px 0", fontSize: "14px", color: "#666" }}>
-          Cliente: <strong>{consultation.client.nome}</strong>
+      <div className="border border-gray-200 rounded-lg bg-white p-5 sm:p-6 shadow-sm w-full">
+        <h1 className="text-xl font-bold text-gray-800 mb-1">Ficha da Consulta</h1>
+        <p className="text-sm text-gray-500 mb-6">
+          Cliente: <strong className="text-gray-700">{consultation.client.nome}</strong>
         </p>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+        <div className="flex flex-col gap-4">
           {/* Data e Valor */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", borderBottom: "1px solid #f0f0f0", paddingBottom: "12px" }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-b border-gray-100 pb-3">
             <div>
-              <strong style={{ fontSize: "12px", color: "#666", display: "block", marginBottom: "4px" }}>Data da Consulta</strong>
-              <span style={{ fontSize: "15px", color: "#333", fontWeight: "600" }}>{formattedDate}</span>
+              <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Data da Consulta</strong>
+              <span className="text-sm text-gray-800 font-semibold">{formattedDate}</span>
             </div>
             <div>
-              <strong style={{ fontSize: "12px", color: "#666", display: "block", marginBottom: "4px" }}>Valor</strong>
-              <span style={{ fontSize: "15px", color: "#333", fontWeight: "600" }}>{formattedValue}</span>
+              <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Valor</strong>
+              <span className="text-sm text-gray-800 font-semibold">{formattedValue}</span>
             </div>
           </div>
 
           {/* Olho Direito e Olho Esquerdo */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", borderBottom: "1px solid #f0f0f0", paddingBottom: "12px" }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-b border-gray-100 pb-3">
             <div>
-              <strong style={{ fontSize: "12px", color: "#666", display: "block", marginBottom: "4px" }}>Olho Direito</strong>
-              <span style={{ fontSize: "14px", color: "#333" }}>{consultation.olhoDireito || "Não informado"}</span>
+              <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Olho Direito</strong>
+              <span className="text-sm text-gray-850 font-medium break-words">{consultation.olhoDireito || "Não informado"}</span>
             </div>
             <div>
-              <strong style={{ fontSize: "12px", color: "#666", display: "block", marginBottom: "4px" }}>Olho Esquerdo</strong>
-              <span style={{ fontSize: "14px", color: "#333" }}>{consultation.olhoEsquerdo || "Não informado"}</span>
+              <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Olho Esquerdo</strong>
+              <span className="text-sm text-gray-855 font-medium break-words">{consultation.olhoEsquerdo || "Não informado"}</span>
             </div>
           </div>
 
           {/* Adição e Lentes */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", borderBottom: "1px solid #f0f0f0", paddingBottom: "12px" }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-b border-gray-100 pb-3">
             <div>
-              <strong style={{ fontSize: "12px", color: "#666", display: "block", marginBottom: "4px" }}>Adição</strong>
-              <span style={{ fontSize: "14px", color: "#333" }}>{consultation.adicao || "Não informado"}</span>
+              <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Adição</strong>
+              <span className="text-sm text-gray-850 font-medium break-words">{consultation.adicao || "Não informado"}</span>
             </div>
             <div>
-              <strong style={{ fontSize: "12px", color: "#666", display: "block", marginBottom: "4px" }}>Lentes</strong>
-              <span style={{ fontSize: "14px", color: "#333" }}>{consultation.lentes || "Não informado"}</span>
+              <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Lentes</strong>
+              <span className="text-sm text-gray-850 font-medium break-words">{consultation.lentes || "Não informado"}</span>
             </div>
           </div>
 
           {/* Laboratório */}
-          <div style={{ borderBottom: "1px solid #f0f0f0", paddingBottom: "12px" }}>
-            <strong style={{ fontSize: "12px", color: "#666", display: "block", marginBottom: "4px" }}>Laboratório</strong>
-            <span style={{ fontSize: "14px", color: "#333" }}>{consultation.laboratorio || "Não informado"}</span>
+          <div className="border-b border-gray-100 pb-3">
+            <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Laboratório</strong>
+            <span className="text-sm text-gray-850 font-medium break-words">{consultation.laboratorio || "Não informado"}</span>
           </div>
 
           {/* Observação */}
           <div>
-            <strong style={{ fontSize: "12px", color: "#666", display: "block", marginBottom: "4px" }}>Observação</strong>
-            <span style={{ fontSize: "14px", color: "#333", whiteSpace: "pre-wrap", display: "block", lineHeight: "1.5" }}>
+            <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Observação</strong>
+            <span className="text-sm text-gray-800 whitespace-pre-wrap leading-relaxed block bg-gray-50 p-3 rounded border border-gray-100 mt-1">
               {consultation.observacao || "Nenhuma observação informada."}
             </span>
           </div>
