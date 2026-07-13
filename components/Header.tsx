@@ -30,7 +30,8 @@ export default function Header({ email }: HeaderProps) {
         >
           <button
             type="submit"
-            style={{ padding: "6px 12px", backgroundColor: "#f0f0f0", border: "1px solid #ccc", borderRadius: "4px", fontSize: "13px", cursor: "pointer" }}
+            className="btn btn-secondary"
+            style={{ padding: "6px 12px", fontSize: "13px" }}
           >
             Sair
           </button>
