@@ -94,8 +94,7 @@ export default async function ClientePerfilPage({ params }: PageProps) {
                 <thead>
                   <tr className="bg-gray-50 border-b border-gray-200">
                     <th className="p-3 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Data</th>
-                    <th className="p-3 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Olho D.</th>
-                    <th className="p-3 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Olho E.</th>
+                    <th className="p-3 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Graus (OD / OE)</th>
                     <th className="p-3 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Lentes</th>
                     <th className="p-3 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Valor</th>
                     <th className="p-3 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Ações</th>
@@ -111,14 +110,15 @@ export default async function ClientePerfilPage({ params }: PageProps) {
                       currency: "BRL",
                     });
                     
+                    const grauSummary = consultation.odEsferico || consultation.oeEsferico
+                      ? `${consultation.odEsferico || "PLANO"} / ${consultation.oeEsferico || "PLANO"}`
+                      : "-";
+
                     return (
                       <tr key={consultation.id} className="hover:bg-gray-50/50">
                         <td className="p-4 px-4 text-sm font-bold text-gray-800">{formattedDate}</td>
-                        <td className="p-4 px-4 text-sm text-gray-600 truncate max-w-[120px]" title={consultation.olhoDireito || ""}>
-                          {consultation.olhoDireito || "-"}
-                        </td>
-                        <td className="p-4 px-4 text-sm text-gray-600 truncate max-w-[120px]" title={consultation.olhoEsquerdo || ""}>
-                          {consultation.olhoEsquerdo || "-"}
+                        <td className="p-4 px-4 text-sm text-gray-600 truncate max-w-[150px]" title={grauSummary}>
+                          {grauSummary}
                         </td>
                         <td className="p-4 px-4 text-sm text-gray-600 truncate max-w-[150px]" title={consultation.lentes || ""}>
                           {consultation.lentes || "-"}
@@ -150,6 +150,10 @@ export default async function ClientePerfilPage({ params }: PageProps) {
                   currency: "BRL",
                 });
 
+                const grauSummary = consultation.odEsferico || consultation.oeEsferico
+                  ? `${consultation.odEsferico || "PLANO"} / ${consultation.oeEsferico || "PLANO"}`
+                  : "-";
+
                 return (
                   <div key={consultation.id} className="p-4 flex flex-col gap-2">
                     <div className="flex justify-between items-center">
@@ -158,19 +162,16 @@ export default async function ClientePerfilPage({ params }: PageProps) {
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-xs text-gray-500 mt-1">
                       <div>
-                        <span className="font-semibold text-gray-600 block">Olho D:</span>
-                        <span className="truncate block" title={consultation.olhoDireito || ""}>
-                          {consultation.olhoDireito || "-"}
+                        <span className="font-semibold text-gray-600 block">Graus (OD/OE):</span>
+                        <span className="truncate block" title={grauSummary}>
+                          {grauSummary}
                         </span>
                       </div>
                       <div>
-                        <span className="font-semibold text-gray-600 block">Olho E:</span>
-                        <span className="truncate block" title={consultation.olhoEsquerdo || ""}>
-                          {consultation.olhoEsquerdo || "-"}
+                        <span className="font-semibold text-gray-600 block">Lentes:</span>
+                        <span className="truncate block" title={consultation.lentes || ""}>
+                          {consultation.lentes || "-"}
                         </span>
-                      </div>
-                      <div className="col-span-2">
-                        <span className="font-semibold text-gray-600">Lentes:</span> {consultation.lentes || "-"}
                       </div>
                     </div>
                     <div className="flex gap-4 mt-2 pt-2 border-t border-gray-50">

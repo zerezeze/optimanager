@@ -3,6 +3,7 @@
 import { createClient } from "@/app/actions/clients";
 import Link from "next/link";
 import { useState } from "react";
+import PrescriptionFormFields from "@/components/PrescriptionFormFields";
 
 export default function NovoClientePage() {
   const [error, setError] = useState<string | null>(null);
@@ -96,114 +97,7 @@ export default function NovoClientePage() {
 
         {/* SECTION 2: PRIMEIRA CONSULTA */}
         {showConsultation && (
-          <div className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm w-full">
-            <h2 className="text-lg font-bold text-blue-600 border-b border-gray-100 pb-2 mb-4">
-              Primeira Consulta
-            </h2>
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-col gap-1.5">
-                <label htmlFor="data" className="text-sm font-semibold text-gray-600">
-                  Data da Consulta
-                </label>
-                <input
-                  id="data"
-                  name="data"
-                  type="date"
-                  defaultValue={defaultDate}
-                />
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <label htmlFor="olhoDireito" className="text-sm font-semibold text-gray-600">
-                  Olho Direito
-                </label>
-                <input
-                  id="olhoDireito"
-                  name="olhoDireito"
-                  type="text"
-                  maxLength={50}
-                  placeholder="Ex: Esf -2.00 Cil -0.50 Eixo 180"
-                />
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <label htmlFor="olhoEsquerdo" className="text-sm font-semibold text-gray-600">
-                  Olho Esquerdo
-                </label>
-                <input
-                  id="olhoEsquerdo"
-                  name="olhoEsquerdo"
-                  type="text"
-                  maxLength={50}
-                  placeholder="Ex: Esf -1.75 Cil -0.75 Eixo 170"
-                />
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <label htmlFor="adicao" className="text-sm font-semibold text-gray-600">
-                  Adição
-                </label>
-                <input
-                  id="adicao"
-                  name="adicao"
-                  type="text"
-                  maxLength={50}
-                  placeholder="Ex: +2.00"
-                />
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <label htmlFor="lentes" className="text-sm font-semibold text-gray-600">
-                  Lentes
-                </label>
-                <input
-                  id="lentes"
-                  name="lentes"
-                  type="text"
-                  maxLength={255}
-                  placeholder="Ex: Antirreflexo Crizal"
-                />
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <label htmlFor="laboratorio" className="text-sm font-semibold text-gray-600">
-                  Laboratório
-                </label>
-                <input
-                  id="laboratorio"
-                  name="laboratorio"
-                  type="text"
-                  maxLength={255}
-                  placeholder="Ex: Essilor"
-                />
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <label htmlFor="valor" className="text-sm font-semibold text-gray-600">
-                  Valor (R$) *
-                </label>
-                <input
-                  id="valor"
-                  name="valor"
-                  type="text"
-                  required={showConsultation}
-                  placeholder="Ex: 150,00 ou 150.50"
-                />
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <label htmlFor="observacao" className="text-sm font-semibold text-gray-600">
-                  Observação
-                </label>
-                <textarea
-                  id="observacao"
-                  name="observacao"
-                  rows={3}
-                  placeholder="Observações clínicas ou adicionais"
-                />
-              </div>
-            </div>
-          </div>
+          <PrescriptionFormFields />
         )}
 
         {error && (

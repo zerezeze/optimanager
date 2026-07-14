@@ -11,15 +11,38 @@ const clientSchema = z.object({
   telefone: z.string().trim().max(20, "O telefone deve ter no máximo 20 caracteres").optional().or(z.literal("")),
 });
 
+const esfericoCilindricoRegex = /^(PLANO|[+-]?\d+([.,]\d+)?)$/i;
+const numericWithDecimalsRegex = /^\d+([.,]\d{1,2})?$/;
+
 const consultationSchema = z.object({
   data: z.string().optional().or(z.literal("")),
-  olhoDireito: z.string().trim().max(50, "Olho direito deve ter no máximo 50 caracteres").optional().or(z.literal("")),
-  olhoEsquerdo: z.string().trim().max(50, "Olho esquerdo deve ter no máximo 50 caracteres").optional().or(z.literal("")),
   adicao: z.string().trim().max(50, "Adição deve ter no máximo 50 caracteres").optional().or(z.literal("")),
   lentes: z.string().trim().max(255, "Lentes deve ter no máximo 255 caracteres").optional().or(z.literal("")),
   laboratorio: z.string().trim().max(255, "Laboratório deve ter no máximo 255 caracteres").optional().or(z.literal("")),
   valor: z.string().trim().min(1, "O valor é obrigatório para cadastrar a consulta").optional().or(z.literal("")),
   observacao: z.string().trim().optional().or(z.literal("")),
+
+  // Validações refrativas OD
+  odEsferico: z.string().trim().refine(val => val === "" || esfericoCilindricoRegex.test(val), "Esférico OD inválido (Ex: +2,00, -1,75, PLANO)").optional().or(z.literal("")),
+  odCilindrico: z.string().trim().refine(val => val === "" || esfericoCilindricoRegex.test(val), "Cilíndrico OD inválido (Ex: -0,50, PLANO)").optional().or(z.literal("")),
+  odEixo: z.string().trim().refine(val => {
+    if (val === "") return true;
+    const parsed = parseInt(val, 10);
+    return !isNaN(parsed) && parsed >= 0 && parsed <= 180 && String(parsed) === val;
+  }, "Eixo OD deve ser um número inteiro entre 0 e 180").optional().or(z.literal("")),
+  odDnp: z.string().trim().refine(val => val === "" || numericWithDecimalsRegex.test(val), "DNP OD deve ser numérico com até 2 casas decimais").optional().or(z.literal("")),
+  odAltura: z.string().trim().refine(val => val === "" || numericWithDecimalsRegex.test(val), "Altura OD deve ser numérica com até 2 casas decimais").optional().or(z.literal("")),
+
+  // Validações refrativas OE
+  oeEsferico: z.string().trim().refine(val => val === "" || esfericoCilindricoRegex.test(val), "Esférico OE inválido (Ex: +2,00, -1,75, PLANO)").optional().or(z.literal("")),
+  oeCilindrico: z.string().trim().refine(val => val === "" || esfericoCilindricoRegex.test(val), "Cilíndrico OE inválido (Ex: -0,50, PLANO)").optional().or(z.literal("")),
+  oeEixo: z.string().trim().refine(val => {
+    if (val === "") return true;
+    const parsed = parseInt(val, 10);
+    return !isNaN(parsed) && parsed >= 0 && parsed <= 180 && String(parsed) === val;
+  }, "Eixo OE deve ser um número inteiro entre 0 e 180").optional().or(z.literal("")),
+  oeDnp: z.string().trim().refine(val => val === "" || numericWithDecimalsRegex.test(val), "DNP OE deve ser numérico com até 2 casas decimais").optional().or(z.literal("")),
+  oeAltura: z.string().trim().refine(val => val === "" || numericWithDecimalsRegex.test(val), "Altura OE deve ser numérica com até 2 casas decimais").optional().or(z.literal("")),
 });
 
 function parseBRLValueToCents(valStr: string): number {
@@ -61,13 +84,22 @@ export async function createClient(formData: FormData) {
   if (cadastrarConsulta) {
     const consultationRawData = {
       data: formData.get("data"),
-      olhoDireito: formData.get("olhoDireito"),
-      olhoEsquerdo: formData.get("olhoEsquerdo"),
       adicao: formData.get("adicao"),
       lentes: formData.get("lentes"),
       laboratorio: formData.get("laboratorio"),
       valor: formData.get("valor"),
       observacao: formData.get("observacao"),
+      // Novos campos
+      odEsferico: formData.get("odEsferico"),
+      odCilindrico: formData.get("odCilindrico"),
+      odEixo: formData.get("odEixo"),
+      odDnp: formData.get("odDnp"),
+      odAltura: formData.get("odAltura"),
+      oeEsferico: formData.get("oeEsferico"),
+      oeCilindrico: formData.get("oeCilindrico"),
+      oeEixo: formData.get("oeEixo"),
+      oeDnp: formData.get("oeDnp"),
+      oeAltura: formData.get("oeAltura"),
     };
 
     const consultationValidation = consultationSchema.safeParse(consultationRawData);
@@ -76,7 +108,24 @@ export async function createClient(formData: FormData) {
       throw new Error("Erro na consulta: " + Object.values(errors).flat().join(", "));
     }
 
-    const { data, olhoDireito, olhoEsquerdo, adicao, lentes, laboratorio, valor, observacao } = consultationValidation.data;
+    const {
+      data,
+      adicao,
+      lentes,
+      laboratorio,
+      valor,
+      observacao,
+      odEsferico,
+      odCilindrico,
+      odEixo,
+      odDnp,
+      odAltura,
+      oeEsferico,
+      oeCilindrico,
+      oeEixo,
+      oeDnp,
+      oeAltura,
+    } = consultationValidation.data;
 
     if (!valor) {
       throw new Error("O valor é obrigatório para cadastrar a primeira consulta.");
@@ -99,13 +148,21 @@ export async function createClient(formData: FormData) {
 
     consultationDataObj = {
       data: dataConsulta,
-      olhoDireito: olhoDireito || null,
-      olhoEsquerdo: olhoEsquerdo || null,
       adicao: adicao || null,
       lentes: lentes || null,
       laboratorio: laboratorio || null,
       valor: valorEmCentavos,
       observacao: observacao || null,
+      odEsferico: odEsferico || null,
+      odCilindrico: odCilindrico || null,
+      odEixo: odEixo || null,
+      odDnp: odDnp || null,
+      odAltura: odAltura || null,
+      oeEsferico: oeEsferico || null,
+      oeCilindrico: oeCilindrico || null,
+      oeEixo: oeEixo || null,
+      oeDnp: oeDnp || null,
+      oeAltura: oeAltura || null,
     };
   }
 

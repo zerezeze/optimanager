@@ -3,6 +3,7 @@
 import { updateConsultation } from "@/app/actions/consultations";
 import Link from "next/link";
 import { useState } from "react";
+import PrescriptionFormFields from "@/components/PrescriptionFormFields";
 
 interface ConsultationData {
   id: string;
@@ -15,6 +16,17 @@ interface ConsultationData {
   laboratorio: string | null;
   valor: number;
   observacao: string | null;
+  // Novos campos
+  odEsferico: string | null;
+  odCilindrico: string | null;
+  odEixo: string | null;
+  odDnp: string | null;
+  odAltura: string | null;
+  oeEsferico: string | null;
+  oeCilindrico: string | null;
+  oeEixo: string | null;
+  oeDnp: string | null;
+  oeAltura: string | null;
 }
 
 interface EditarFormProps {
@@ -39,124 +51,9 @@ export default function EditarForm({ consultation }: EditarFormProps) {
     }
   };
 
-  // Convert Date object to YYYY-MM-DD for the input type="date"
-  const formattedInputDate = new Date(consultation.data).toISOString().substring(0, 10);
-  
-  // Format valor (in cents) as decimal string (e.g., "150.00")
-  const formattedInputValue = (consultation.valor / 100).toFixed(2);
-
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full">
-      {/* Date */}
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="data" className="text-sm font-semibold text-gray-600">
-          Data da Consulta
-        </label>
-        <input
-          id="data"
-          name="data"
-          type="date"
-          defaultValue={formattedInputDate}
-        />
-      </div>
-
-      {/* Olho Direito */}
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="olhoDireito" className="text-sm font-semibold text-gray-600">
-          Olho Direito
-        </label>
-        <input
-          id="olhoDireito"
-          name="olhoDireito"
-          type="text"
-          defaultValue={consultation.olhoDireito || ""}
-          maxLength={50}
-        />
-      </div>
-
-      {/* Olho Esquerdo */}
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="olhoEsquerdo" className="text-sm font-semibold text-gray-600">
-          Olho Esquerdo
-        </label>
-        <input
-          id="olhoEsquerdo"
-          name="olhoEsquerdo"
-          type="text"
-          defaultValue={consultation.olhoEsquerdo || ""}
-          maxLength={50}
-        />
-      </div>
-
-      {/* Adição */}
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="adicao" className="text-sm font-semibold text-gray-600">
-          Adição
-        </label>
-        <input
-          id="adicao"
-          name="adicao"
-          type="text"
-          defaultValue={consultation.adicao || ""}
-          maxLength={50}
-        />
-      </div>
-
-      {/* Lentes */}
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="lentes" className="text-sm font-semibold text-gray-600">
-          Lentes
-        </label>
-        <input
-          id="lentes"
-          name="lentes"
-          type="text"
-          defaultValue={consultation.lentes || ""}
-          maxLength={255}
-        />
-      </div>
-
-      {/* Laboratório */}
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="laboratorio" className="text-sm font-semibold text-gray-600">
-          Laboratório
-        </label>
-        <input
-          id="laboratorio"
-          name="laboratorio"
-          type="text"
-          defaultValue={consultation.laboratorio || ""}
-          maxLength={255}
-        />
-      </div>
-
-      {/* Valor */}
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="valor" className="text-sm font-semibold text-gray-600">
-          Valor (R$) *
-        </label>
-        <input
-          id="valor"
-          name="valor"
-          type="text"
-          defaultValue={formattedInputValue}
-          required
-          placeholder="Ex: 150,00 ou 150.50"
-        />
-      </div>
-
-      {/* Observação */}
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="observacao" className="text-sm font-semibold text-gray-600">
-          Observação
-        </label>
-        <textarea
-          id="observacao"
-          name="observacao"
-          defaultValue={consultation.observacao || ""}
-          rows={3}
-        />
-      </div>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-6 w-full">
+      <PrescriptionFormFields defaultValue={consultation} />
 
       {error && (
         <div className="text-red-600 text-sm">

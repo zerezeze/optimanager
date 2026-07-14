@@ -35,9 +35,9 @@ export default async function ConsultaDetalhesPage({ params }: PageProps) {
   });
 
   return (
-    <div className="p-4 sm:p-8 max-w-2xl mx-auto font-sans w-full">
+    <div className="p-4 sm:p-8 max-w-2xl mx-auto font-sans w-full flex flex-col gap-6">
       {/* Navigation Header */}
-      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
         <Link
           href={`/clientes/${consultation.clientId}`}
           className="text-sm font-semibold text-blue-600 hover:text-blue-800"
@@ -54,14 +54,73 @@ export default async function ConsultaDetalhesPage({ params }: PageProps) {
         </Link>
       </div>
 
-      <div className="border border-gray-200 rounded-lg bg-white p-5 sm:p-6 shadow-sm w-full">
-        <h1 className="text-xl font-bold text-gray-800 mb-1">Ficha da Consulta</h1>
-        <p className="text-sm text-gray-500 mb-6">
-          Cliente: <strong className="text-gray-700">{consultation.client.nome}</strong>
-        </p>
+      <div className="flex flex-col gap-6 w-full">
+        {/* Header Title */}
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Ficha da Consulta</h1>
+          <p className="text-sm text-gray-500">
+            Cliente: <strong className="text-gray-700">{consultation.client.nome}</strong>
+          </p>
+        </div>
 
-        <div className="flex flex-col gap-4">
-          {/* Data e Valor */}
+        {/* CARD 1: DADOS REFRATIVOS */}
+        <div className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm w-full">
+          <h2 className="text-lg font-bold text-blue-600 border-b border-gray-100 pb-2 mb-4">
+            Dados Refrativos
+          </h2>
+
+          <div className="overflow-x-auto w-full">
+            <table className="w-full border-collapse text-left text-sm">
+              <thead>
+                <tr className="border-b border-gray-200 bg-gray-50 text-gray-500 uppercase tracking-wider text-xs">
+                  <th className="p-3 font-semibold">Métrica</th>
+                  <th className="p-3 font-bold text-gray-800 text-center">OD (Direito)</th>
+                  <th className="p-3 font-bold text-gray-800 text-center">OE (Esquerdo)</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100 text-gray-800 font-medium">
+                <tr>
+                  <td className="p-3 text-gray-500 font-semibold">Esférico</td>
+                  <td className="p-3 text-center">{consultation.odEsferico || "-"}</td>
+                  <td className="p-3 text-center">{consultation.oeEsferico || "-"}</td>
+                </tr>
+                <tr>
+                  <td className="p-3 text-gray-500 font-semibold">Cilíndrico</td>
+                  <td className="p-3 text-center">{consultation.odCilindrico || "-"}</td>
+                  <td className="p-3 text-center">{consultation.oeCilindrico || "-"}</td>
+                </tr>
+                <tr>
+                  <td className="p-3 text-gray-500 font-semibold">Eixo</td>
+                  <td className="p-3 text-center">{consultation.odEixo ? `${consultation.odEixo}°` : "-"}</td>
+                  <td className="p-3 text-center">{consultation.oeEixo ? `${consultation.oeEixo}°` : "-"}</td>
+                </tr>
+                <tr>
+                  <td className="p-3 text-gray-500 font-semibold">DNP</td>
+                  <td className="p-3 text-center">{consultation.odDnp ? `${consultation.odDnp} mm` : "-"}</td>
+                  <td className="p-3 text-center">{consultation.oeDnp ? `${consultation.oeDnp} mm` : "-"}</td>
+                </tr>
+                <tr>
+                  <td className="p-3 text-gray-500 font-semibold">Altura</td>
+                  <td className="p-3 text-center">{consultation.odAltura ? `${consultation.odAltura} mm` : "-"}</td>
+                  <td className="p-3 text-center">{consultation.oeAltura ? `${consultation.oeAltura} mm` : "-"}</td>
+                </tr>
+                <tr className="bg-gray-50/50">
+                  <td className="p-3 text-gray-500 font-semibold">Adição</td>
+                  <td className="p-3 text-center col-span-2 font-bold text-blue-600" colSpan={2}>
+                    {consultation.adicao || "-"}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* CARD 2: DADOS COMERCIAIS */}
+        <div className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm w-full flex flex-col gap-4">
+          <h2 className="text-lg font-bold text-blue-600 border-b border-gray-100 pb-2">
+            Dados Comerciais
+          </h2>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-b border-gray-100 pb-3">
             <div>
               <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Data da Consulta</strong>
@@ -73,37 +132,17 @@ export default async function ConsultaDetalhesPage({ params }: PageProps) {
             </div>
           </div>
 
-          {/* Olho Direito e Olho Esquerdo */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-b border-gray-100 pb-3">
-            <div>
-              <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Olho Direito</strong>
-              <span className="text-sm text-gray-800 font-medium break-words">{consultation.olhoDireito || "Não informado"}</span>
-            </div>
-            <div>
-              <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Olho Esquerdo</strong>
-              <span className="text-sm text-gray-800 font-medium break-words">{consultation.olhoEsquerdo || "Não informado"}</span>
-            </div>
-          </div>
-
-          {/* Adição e Lentes */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-b border-gray-100 pb-3">
-            <div>
-              <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Adição</strong>
-              <span className="text-sm text-gray-800 font-medium break-words">{consultation.adicao || "Não informado"}</span>
-            </div>
             <div>
               <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Lentes</strong>
-              <span className="text-sm text-gray-800 font-medium break-words">{consultation.lentes || "Não informado"}</span>
+              <span className="text-sm text-gray-800 font-semibold">{consultation.lentes || "Não informado"}</span>
+            </div>
+            <div>
+              <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Laboratório</strong>
+              <span className="text-sm text-gray-800 font-semibold">{consultation.laboratorio || "Não informado"}</span>
             </div>
           </div>
 
-          {/* Laboratório */}
-          <div className="border-b border-gray-100 pb-3">
-            <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Laboratório</strong>
-            <span className="text-sm text-gray-800 font-medium break-words">{consultation.laboratorio || "Não informado"}</span>
-          </div>
-
-          {/* Observação */}
           <div>
             <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Observação</strong>
             <span className="text-sm text-gray-800 whitespace-pre-wrap leading-relaxed block bg-gray-50 p-3 rounded border border-gray-100 mt-1">

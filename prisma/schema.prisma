@@ -36,6 +36,21 @@ model Consultation {
   client        Client   @relation(fields: [clientId], references: [id], onDelete: Restrict)
   olhoDireito   String?  @map("olho_direito") @db.VarChar(50)
   olhoEsquerdo  String?  @map("olho_esquerdo") @db.VarChar(50)
+
+  // Olho Direito
+  odEsferico    String?  @map("od_esferico") @db.VarChar(50)
+  odCilindrico  String?  @map("od_cilindrico") @db.VarChar(50)
+  odEixo        String?  @map("od_eixo") @db.VarChar(50)
+  odDnp         String?  @map("od_dnp") @db.VarChar(50)
+  odAltura      String?  @map("od_altura") @db.VarChar(50)
+  
+  // Olho Esquerdo
+  oeEsferico    String?  @map("oe_esferico") @db.VarChar(50)
+  oeCilindrico  String?  @map("oe_cilindrico") @db.VarChar(50)
+  oeEixo        String?  @map("oe_eixo") @db.VarChar(50)
+  oeDnp         String?  @map("oe_dnp") @db.VarChar(50)
+  oeAltura      String?  @map("oe_altura") @db.VarChar(50)
+
   adicao        String?  @map("adicao") @db.VarChar(50)
   lentes        String?  @map("lentes") @db.VarChar(255)
   laboratorio   String?  @map("laboratorio") @db.VarChar(255)
