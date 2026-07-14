@@ -269,3 +269,42 @@ export async function updateConsultation(id: string, formData: FormData) {
   revalidatePath(`/consultas/${id}`);
   redirect(`/consultas/${id}`);
 }
+
+export async function deleteConsultation(id: string) {
+  await requireAuthenticated();
+
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  if (!uuidRegex.test(id)) {
+    throw new Error("Identificador de consulta inválido.");
+  }
+
+  // Authorize user has access to this consultation
+  const hasAccess = await canAccessConsultation(id);
+  if (!hasAccess) {
+    throw new Error("Acesso negado. Você não tem permissão para excluir esta consulta.");
+  }
+
+  let clientId: string;
+  try {
+    const consultation = await prisma.consultation.findUnique({
+      where: { id },
+      select: { clientId: true },
+    });
+    
+    if (!consultation) {
+      throw new Error("Consulta não encontrada.");
+    }
+    
+    clientId = consultation.clientId;
+
+    await prisma.consultation.delete({
+      where: { id },
+    });
+  } catch (error) {
+    console.error("Prisma deleteConsultation error:", error);
+    throw new Error("Ocorreu um erro ao excluir a consulta no banco de dados.");
+  }
+
+  revalidatePath(`/clientes/${clientId}`);
+  redirect(`/clientes/${clientId}`);
+}

@@ -2,6 +2,7 @@ import prisma from "@/lib/db";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireAuthenticated } from "@/lib/authz";
+import { DeleteConsultationButton } from "./DeleteConsultationButton";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -53,13 +54,16 @@ export default async function ConsultaDetalhesPage({ params }: PageProps) {
           <span className="hidden sm:inline">&larr; Voltar para Perfil de {consultation.client.nome}</span>
           <span className="inline sm:hidden">&larr; Voltar ao Perfil</span>
         </Link>
-        <Link
-          href={`/consultas/${consultation.id}/editar`}
-          className="btn btn-secondary w-full sm:w-auto"
-          style={{ padding: "8px 16px", fontSize: "14px" }}
-        >
-          Editar Consulta
-        </Link>
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+          <DeleteConsultationButton consultationId={consultation.id} />
+          <Link
+            href={`/consultas/${consultation.id}/editar`}
+            className="btn btn-secondary w-full sm:w-auto"
+            style={{ padding: "8px 16px", fontSize: "14px" }}
+          >
+            Editar Consulta
+          </Link>
+        </div>
       </div>
 
       <div className="flex flex-col gap-6 w-full">
