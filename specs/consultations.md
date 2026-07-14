@@ -17,6 +17,7 @@ Cada consulta é representada no banco de dados com os seguintes campos:
     *   **Olho Direito (OD)**: `odEsferico`, `odCilindrico`, `odEixo`, `odDnp`, `odAltura`.
     *   **Olho Esquerdo (OE)**: `oeEsferico`, `oeCilindrico`, `oeEixo`, `oeDnp`, `oeAltura`.
     *   *Nota*: Os campos unificados legados (`olho_direito` e `olho_esquerdo`) foram mantidos provisoriamente no banco para retrocompatibilidade durante a transição.
+*   **Ordem de Serviço (`ordemServico`)**: Número de controle da O.S. enviado ao laboratório ou recebido deste (String opcional, máx 100 caracteres).
 *   **Adição (`adicao`)**: Grau de adição para perto (String opcional, máx 50 caracteres).
 *   **Lentes (`lentes`)**: Tipo de lente prescrita/vendida (String opcional, máx 255 caracteres).
 *   **Laboratório (`laboratorio`)**: Nome do laboratório óptico parceiro (String opcional, máx 255 caracteres).

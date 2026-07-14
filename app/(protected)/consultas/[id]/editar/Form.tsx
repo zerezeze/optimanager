@@ -17,6 +17,7 @@ interface ConsultationData {
   laboratorio: string | null;
   valor: number;
   observacao: string | null;
+  ordemServico: string | null;
   // Novos campos
   odEsferico: string | null;
   odCilindrico: string | null;
@@ -48,6 +49,8 @@ export default function EditarForm({ consultation, existingPaymentMethod }: Edit
     try {
       await updateConsultation(consultation.id, formData);
     } catch (err: any) {
+      // Rethrow redirect errors so Next.js handles them natively
+      if (err?.digest?.startsWith("NEXT_REDIRECT")) throw err;
       setError(err.message || "Ocorreu um erro ao atualizar a consulta.");
       setLoading(false);
     }

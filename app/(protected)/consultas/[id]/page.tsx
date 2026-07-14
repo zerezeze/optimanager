@@ -92,6 +92,19 @@ export default async function ConsultaDetalhesPage({ params }: PageProps) {
           </p>
         </div>
 
+        {/* CARD 0: ORDEM DE SERVIÇO */}
+        {consultation.ordemServico && (
+          <div className="p-4 border border-blue-100 rounded-lg bg-blue-50/50 shadow-sm w-full flex items-center justify-between">
+            <div>
+              <span className="text-xs text-gray-500 block uppercase tracking-wider mb-0.5">Ordem de Serviço (O.S.)</span>
+              <strong className="text-base text-blue-700">{consultation.ordemServico}</strong>
+            </div>
+            <div className="text-xs text-gray-400 bg-white border border-gray-150 rounded px-2.5 py-1">
+              Laboratório / Ótica
+            </div>
+          </div>
+        )}
+
         {/* CARD 1: DADOS REFRATIVOS */}
         <div className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm w-full">
           <h2 className="text-lg font-bold text-blue-600 border-b border-gray-100 pb-2 mb-4">
@@ -200,16 +213,31 @@ export default async function ConsultaDetalhesPage({ params }: PageProps) {
                 <div>
                   <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Total Pago</strong>
                   <span className="text-sm text-gray-800 font-semibold">
-                    {(consultation.payment.totalPago / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+                    {(() => {
+                      // totalPago = entrada. Effective paid = entrada + sum of paid installments.
+                      const paidInstallmentsSum = consultation.payment!.installments
+                        .filter((i) => i.pago)
+                        .reduce((sum, i) => sum + i.valor, 0);
+                      const effectivePaid = consultation.payment!.totalPago + paidInstallmentsSum;
+                      return (effectivePaid / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+                    })()}
                   </span>
                 </div>
                 <div>
                   <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Saldo Devedor</strong>
                   <span className="text-sm font-semibold text-red-600">
-                    {((consultation.valor - consultation.payment.totalPago) / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+                    {(() => {
+                      const paidInstallmentsSum = consultation.payment!.installments
+                        .filter((i) => i.pago)
+                        .reduce((sum, i) => sum + i.valor, 0);
+                      const effectivePaid = consultation.payment!.totalPago + paidInstallmentsSum;
+                      const saldo = consultation.valor - effectivePaid;
+                      return (Math.max(0, saldo) / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+                    })()}
                   </span>
                 </div>
               </div>
+
 
               {consultation.payment.installments.length > 0 && (
                 <div>

@@ -29,6 +29,7 @@
 - adicao (VarChar)
 - lentes (VarChar)
 - laboratorio (VarChar)
+- ordemServico (VarChar - Novo)
 - valor (Int - centavos)
 - observacao (Text)
 - data (DateTime)

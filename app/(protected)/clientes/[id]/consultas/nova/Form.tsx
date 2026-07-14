@@ -23,6 +23,8 @@ export default function NovaForm({ clientId }: NovaFormProps) {
     try {
       await createConsultation(clientId, formData);
     } catch (err: any) {
+      // Rethrow redirect errors so Next.js handles them natively
+      if (err?.digest?.startsWith("NEXT_REDIRECT")) throw err;
       setError(err.message || "Ocorreu um erro ao cadastrar a consulta.");
       setLoading(false);
     }

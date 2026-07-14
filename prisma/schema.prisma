@@ -59,6 +59,7 @@ model Consultation {
   id            String   @id @default(uuid())
   clientId      String   @map("client_id")
   client        Client   @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  ordemServico  String?  @map("ordem_servico") @db.VarChar(100)
   olhoDireito   String?  @map("olho_direito") @db.VarChar(50)
   olhoEsquerdo  String?  @map("olho_esquerdo") @db.VarChar(50)
 

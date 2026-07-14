@@ -17,6 +17,7 @@ const consultationSchema = z.object({
   laboratorio: z.string().trim().max(255, "Laboratório deve ter no máximo 255 caracteres").optional().or(z.literal("")),
   valor: z.string().trim().min(1, "O valor é obrigatório"),
   observacao: z.string().trim().optional().or(z.literal("")),
+  ordemServico: z.string().trim().max(100, "Ordem de serviço deve ter no máximo 100 caracteres").optional().or(z.literal("")),
 
   // Novos campos refrativos OD
   odEsferico: z.string().trim().refine(val => val === "" || esfericoCilindricoRegex.test(val), "Esférico OD inválido (Ex: +2,00, -1,75, PLANO)").optional().or(z.literal("")),
@@ -156,6 +157,7 @@ export async function createConsultation(clientId: string, formData: FormData) {
     laboratorio: formData.get("laboratorio"),
     valor: formData.get("valor"),
     observacao: formData.get("observacao"),
+    ordemServico: formData.get("ordemServico"),
     odEsferico: formData.get("odEsferico"),
     odCilindrico: formData.get("odCilindrico"),
     odEixo: formData.get("odEixo"),
@@ -182,6 +184,7 @@ export async function createConsultation(clientId: string, formData: FormData) {
     laboratorio,
     valor,
     observacao,
+    ordemServico,
     odEsferico,
     odCilindrico,
     odEixo,
@@ -228,6 +231,7 @@ export async function createConsultation(clientId: string, formData: FormData) {
           laboratorio: laboratorio || null,
           valor: valorEmCentavos,
           observacao: observacao || null,
+          ordemServico: ordemServico || null,
           odEsferico: odEsferico || null,
           odCilindrico: odCilindrico || null,
           odEixo: odEixo || null,
@@ -285,6 +289,7 @@ export async function updateConsultation(id: string, formData: FormData) {
     laboratorio: formData.get("laboratorio"),
     valor: formData.get("valor"),
     observacao: formData.get("observacao"),
+    ordemServico: formData.get("ordemServico"),
     odEsferico: formData.get("odEsferico"),
     odCilindrico: formData.get("odCilindrico"),
     odEixo: formData.get("odEixo"),
@@ -311,6 +316,7 @@ export async function updateConsultation(id: string, formData: FormData) {
     laboratorio,
     valor,
     observacao,
+    ordemServico,
     odEsferico,
     odCilindrico,
     odEixo,
@@ -358,6 +364,7 @@ export async function updateConsultation(id: string, formData: FormData) {
           laboratorio: laboratorio || null,
           valor: valorEmCentavos,
           observacao: observacao || null,
+          ordemServico: ordemServico || null,
           odEsferico: odEsferico || null,
           odCilindrico: odCilindrico || null,
           odEixo: odEixo || null,
@@ -478,7 +485,7 @@ export async function markInstallmentPaid(installmentId: string, consultationId:
         data: { pago: true, paidAt: new Date() },
       });
 
-      // Re-check all installments for this payment
+      // Re-check all installments to determine new status
       const allInstallments = await tx.installment.findMany({
         where: { paymentId: installment.paymentId },
         select: { pago: true },
@@ -487,22 +494,20 @@ export async function markInstallmentPaid(installmentId: string, consultationId:
       const allPaid = allInstallments.every((i) => i.pago);
       const newStatus: PaymentStatus = allPaid ? "PAGO" : "PARCIAL";
 
-      // Recalculate total paid
-      const paidInstallments = await tx.installment.findMany({
-        where: { paymentId: installment.paymentId, pago: true },
-        select: { valor: true },
-      });
-      const newTotalPago = paidInstallments.reduce((sum, i) => sum + i.valor, 0);
-
+      // Only update status. totalPago stores the entrada value (set at creation)
+      // and must NOT be overwritten here — the page calculates effective total paid
+      // as (payment.totalPago + sum of paid installments) on the fly.
       await tx.payment.update({
         where: { id: installment.paymentId },
-        data: { status: newStatus, totalPago: newTotalPago },
+        data: { status: newStatus },
       });
     });
   } catch (error) {
     console.error("Prisma markInstallmentPaid error:", error);
     throw new Error("Ocorreu um erro ao atualizar a parcela.");
   }
+
+
 
   revalidatePath(`/consultas/${consultationId}`);
 }

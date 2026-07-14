@@ -17,6 +17,7 @@ interface PrescriptionData {
   valor?: number | null;
   data?: Date | string | null;
   observacao?: string | null;
+  ordemServico?: string | null;
 }
 
 interface PrescriptionFormFieldsProps {
@@ -71,6 +72,24 @@ export default function PrescriptionFormFields({ defaultValue }: PrescriptionFor
 
   return (
     <div className="flex flex-col gap-6 w-full">
+      {/* ORDEM DE SERVIÇO */}
+      <div className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm w-full">
+        <label htmlFor="ordemServico" className="text-sm font-semibold text-gray-700 block mb-1">
+          Ordem de Serviço (O.S.)
+        </label>
+        <input
+          id="ordemServico"
+          name="ordemServico"
+          type="text"
+          placeholder="Ex: OS-12345"
+          defaultValue={defaultValue?.ordemServico || ""}
+          className="w-full sm:max-w-xs border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <p className="text-xs text-gray-400 mt-1">
+          Número de controle do laboratório ou da ótica.
+        </p>
+      </div>
+
       {/* CARD 1: DADOS REFRATIVOS */}
       <div className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm w-full">
         <h2 className="text-lg font-bold text-blue-600 border-b border-gray-100 pb-2 mb-4">
