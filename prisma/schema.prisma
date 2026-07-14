@@ -11,6 +11,20 @@ enum UserRole {
   OPERATOR
 }
 
+enum PaymentMethod {
+  DINHEIRO
+  PIX
+  CARTAO_CREDITO
+  CARTAO_DEBITO
+  CREDIARIO
+}
+
+enum PaymentStatus {
+  PAGO
+  PENDENTE
+  PARCIAL
+}
+
 model User {
   id        String   @id @default(uuid())
   name      String   @db.VarChar(255)
@@ -71,6 +85,40 @@ model Consultation {
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
 
+  payment       Payment?
+
   @@index([data])
   @@map("consultations")
+}
+
+model Payment {
+  id             String        @id @default(uuid())
+  consultationId String        @unique @map("consultation_id")
+  consultation   Consultation  @relation(fields: [consultationId], references: [id], onDelete: Cascade)
+  status         PaymentStatus @default(PENDENTE)
+  method         PaymentMethod
+  totalPago      Int           @default(0) @map("total_pago") // in cents
+  installments   Installment[]
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
+
+  @@index([consultationId])
+  @@map("payments")
+}
+
+model Installment {
+  id         String    @id @default(uuid())
+  paymentId  String    @map("payment_id")
+  payment    Payment   @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  numero     Int
+  valor      Int // in cents
+  vencimento DateTime
+  pago       Boolean   @default(false)
+  paidAt     DateTime? @map("paid_at")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+
+  @@index([paymentId])
+  @@index([pago])
+  @@map("installments")
 }

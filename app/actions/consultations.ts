@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { requireAuthenticated, canAccessClient, canAccessConsultation } from "@/lib/authz";
+import { PaymentMethod, PaymentStatus } from "@prisma/client";
 
 const esfericoCilindricoRegex = /^(PLANO|[+-]?\d+([.,]\d+)?)$/i;
 const numericWithDecimalsRegex = /^\d+([.,]\d{1,2})?$/;
@@ -40,6 +41,14 @@ const consultationSchema = z.object({
   oeAltura: z.string().trim().refine(val => val === "" || numericWithDecimalsRegex.test(val), "Altura OE deve ser numérica com até 2 casas decimais").optional().or(z.literal("")),
 });
 
+const VALID_PAYMENT_METHODS: PaymentMethod[] = [
+  "DINHEIRO",
+  "PIX",
+  "CARTAO_CREDITO",
+  "CARTAO_DEBITO",
+  "CREDIARIO",
+];
+
 function parseBRLValueToCents(valStr: string): number {
   let clean = valStr.trim();
   clean = clean.replace(/\s/g, "");
@@ -54,6 +63,75 @@ function parseBRLValueToCents(valStr: string): number {
   }
   
   return Math.round(parsed * 100);
+}
+
+/**
+ * Builds Payment + Installment data objects from formData.
+ * Returns null if operator chose not to register payment.
+ */
+function buildPaymentData(
+  formData: FormData,
+  valorTotalCentavos: number
+): null | {
+  method: PaymentMethod;
+  status: PaymentStatus;
+  totalPago: number;
+  installments: Array<{ numero: number; valor: number; vencimento: Date }>;
+} {
+  const registerPayment = formData.get("registerPayment");
+  if (registerPayment !== "true") return null;
+
+  const rawMethod = (formData.get("paymentMethodValue") as string)?.trim();
+  if (!rawMethod || !VALID_PAYMENT_METHODS.includes(rawMethod as PaymentMethod)) {
+    throw new Error("Método de pagamento inválido.");
+  }
+  const method = rawMethod as PaymentMethod;
+
+  if (method !== "CREDIARIO") {
+    // À vista: fully paid
+    return { method, status: "PAGO", totalPago: valorTotalCentavos, installments: [] };
+  }
+
+  // Crediário
+  const rawEntrada = (formData.get("paymentEntrada") as string) || "0";
+  let entradaCentavos = 0;
+  try {
+    entradaCentavos = rawEntrada.trim() === "" || rawEntrada === "0" || rawEntrada === "0,00"
+      ? 0
+      : parseBRLValueToCents(rawEntrada);
+  } catch {
+    throw new Error("Valor de entrada inválido.");
+  }
+
+  if (entradaCentavos > valorTotalCentavos) {
+    throw new Error("Valor de entrada não pode ser maior que o valor total da venda.");
+  }
+
+  const numeroParcelas = parseInt(formData.get("paymentNumeroParcelas") as string, 10) || 2;
+  if (numeroParcelas < 1 || numeroParcelas > 24) {
+    throw new Error("Número de parcelas deve ser entre 1 e 24.");
+  }
+
+  const restante = valorTotalCentavos - entradaCentavos;
+  const valorParcela = Math.floor(restante / numeroParcelas);
+  const diferenca = restante - valorParcela * numeroParcelas; // distribuir centavos residuais
+
+  const installments: Array<{ numero: number; valor: number; vencimento: Date }> = [];
+  const hoje = new Date();
+
+  for (let i = 1; i <= numeroParcelas; i++) {
+    const vencimento = new Date(hoje);
+    vencimento.setMonth(vencimento.getMonth() + i);
+    vencimento.setHours(0, 0, 0, 0);
+
+    // Add any residual cents to the last installment
+    const valor = i === numeroParcelas ? valorParcela + diferenca : valorParcela;
+    installments.push({ numero: i, valor, vencimento });
+  }
+
+  const status: PaymentStatus = entradaCentavos > 0 ? "PARCIAL" : "PENDENTE";
+
+  return { method, status, totalPago: entradaCentavos, installments };
 }
 
 export async function createConsultation(clientId: string, formData: FormData) {
@@ -131,27 +209,51 @@ export async function createConsultation(clientId: string, formData: FormData) {
     }
   }
 
+  // Parse payment data (optional)
+  let paymentData: ReturnType<typeof buildPaymentData> = null;
   try {
-    await prisma.consultation.create({
-      data: {
-        clientId,
-        data: dataConsulta,
-        adicao: adicao || null,
-        lentes: lentes || null,
-        laboratorio: laboratorio || null,
-        valor: valorEmCentavos,
-        observacao: observacao || null,
-        odEsferico: odEsferico || null,
-        odCilindrico: odCilindrico || null,
-        odEixo: odEixo || null,
-        odDnp: odDnp || null,
-        odAltura: odAltura || null,
-        oeEsferico: oeEsferico || null,
-        oeCilindrico: oeCilindrico || null,
-        oeEixo: oeEixo || null,
-        oeDnp: oeDnp || null,
-        oeAltura: oeAltura || null,
-      },
+    paymentData = buildPaymentData(formData, valorEmCentavos);
+  } catch (err: any) {
+    throw new Error(err.message);
+  }
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      const consultation = await tx.consultation.create({
+        data: {
+          clientId,
+          data: dataConsulta,
+          adicao: adicao || null,
+          lentes: lentes || null,
+          laboratorio: laboratorio || null,
+          valor: valorEmCentavos,
+          observacao: observacao || null,
+          odEsferico: odEsferico || null,
+          odCilindrico: odCilindrico || null,
+          odEixo: odEixo || null,
+          odDnp: odDnp || null,
+          odAltura: odAltura || null,
+          oeEsferico: oeEsferico || null,
+          oeCilindrico: oeCilindrico || null,
+          oeEixo: oeEixo || null,
+          oeDnp: oeDnp || null,
+          oeAltura: oeAltura || null,
+        },
+      });
+
+      if (paymentData) {
+        await tx.payment.create({
+          data: {
+            consultationId: consultation.id,
+            method: paymentData.method,
+            status: paymentData.status,
+            totalPago: paymentData.totalPago,
+            installments: paymentData.installments.length > 0
+              ? { create: paymentData.installments }
+              : undefined,
+          },
+        });
+      }
     });
   } catch (error) {
     console.error("Prisma createConsultation error:", error);
@@ -236,36 +338,78 @@ export async function updateConsultation(id: string, formData: FormData) {
     }
   }
 
+  // Parse payment data (optional – upsert if provided)
+  let paymentData: ReturnType<typeof buildPaymentData> = null;
+  try {
+    paymentData = buildPaymentData(formData, valorEmCentavos);
+  } catch (err: any) {
+    throw new Error(err.message);
+  }
+
   let clientId: string;
   try {
-    const updated = await prisma.consultation.update({
-      where: { id },
-      data: {
-        data: dataConsulta,
-        adicao: adicao || null,
-        lentes: lentes || null,
-        laboratorio: laboratorio || null,
-        valor: valorEmCentavos,
-        observacao: observacao || null,
-        odEsferico: odEsferico || null,
-        odCilindrico: odCilindrico || null,
-        odEixo: odEixo || null,
-        odDnp: odDnp || null,
-        odAltura: odAltura || null,
-        oeEsferico: oeEsferico || null,
-        oeCilindrico: oeCilindrico || null,
-        oeEixo: oeEixo || null,
-        oeDnp: oeDnp || null,
-        oeAltura: oeAltura || null,
-      },
+    await prisma.$transaction(async (tx) => {
+      const updated = await tx.consultation.update({
+        where: { id },
+        data: {
+          data: dataConsulta,
+          adicao: adicao || null,
+          lentes: lentes || null,
+          laboratorio: laboratorio || null,
+          valor: valorEmCentavos,
+          observacao: observacao || null,
+          odEsferico: odEsferico || null,
+          odCilindrico: odCilindrico || null,
+          odEixo: odEixo || null,
+          odDnp: odDnp || null,
+          odAltura: odAltura || null,
+          oeEsferico: oeEsferico || null,
+          oeCilindrico: oeCilindrico || null,
+          oeEixo: oeEixo || null,
+          oeDnp: oeDnp || null,
+          oeAltura: oeAltura || null,
+        },
+      });
+      clientId = updated.clientId;
+
+      if (paymentData) {
+        // Upsert the payment (replace installments if method is crediario)
+        const existing = await tx.payment.findUnique({ where: { consultationId: id } });
+        if (existing) {
+          // Delete old installments and recreate
+          await tx.installment.deleteMany({ where: { paymentId: existing.id } });
+          await tx.payment.update({
+            where: { consultationId: id },
+            data: {
+              method: paymentData.method,
+              status: paymentData.status,
+              totalPago: paymentData.totalPago,
+              installments: paymentData.installments.length > 0
+                ? { create: paymentData.installments }
+                : undefined,
+            },
+          });
+        } else {
+          await tx.payment.create({
+            data: {
+              consultationId: id,
+              method: paymentData.method,
+              status: paymentData.status,
+              totalPago: paymentData.totalPago,
+              installments: paymentData.installments.length > 0
+                ? { create: paymentData.installments }
+                : undefined,
+            },
+          });
+        }
+      }
     });
-    clientId = updated.clientId;
   } catch (error) {
     console.error("Prisma updateConsultation error:", error);
     throw new Error("Ocorreu um erro ao atualizar os dados da consulta no banco de dados.");
   }
 
-  revalidatePath(`/clientes/${clientId}`);
+  revalidatePath(`/clientes/${clientId!}`);
   revalidatePath(`/consultas/${id}`);
   redirect(`/consultas/${id}`);
 }
@@ -307,4 +451,58 @@ export async function deleteConsultation(id: string) {
 
   revalidatePath(`/clientes/${clientId}`);
   redirect(`/clientes/${clientId}`);
+}
+
+/**
+ * Mark a single installment as paid and recalculate payment status.
+ */
+export async function markInstallmentPaid(installmentId: string, consultationId: string) {
+  await requireAuthenticated();
+
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  if (!uuidRegex.test(installmentId) || !uuidRegex.test(consultationId)) {
+    throw new Error("Identificador inválido.");
+  }
+
+  // Authorize access via consultation ownership chain
+  const hasAccess = await canAccessConsultation(consultationId);
+  if (!hasAccess) {
+    throw new Error("Acesso negado.");
+  }
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      // Mark the installment as paid
+      const installment = await tx.installment.update({
+        where: { id: installmentId },
+        data: { pago: true, paidAt: new Date() },
+      });
+
+      // Re-check all installments for this payment
+      const allInstallments = await tx.installment.findMany({
+        where: { paymentId: installment.paymentId },
+        select: { pago: true },
+      });
+
+      const allPaid = allInstallments.every((i) => i.pago);
+      const newStatus: PaymentStatus = allPaid ? "PAGO" : "PARCIAL";
+
+      // Recalculate total paid
+      const paidInstallments = await tx.installment.findMany({
+        where: { paymentId: installment.paymentId, pago: true },
+        select: { valor: true },
+      });
+      const newTotalPago = paidInstallments.reduce((sum, i) => sum + i.valor, 0);
+
+      await tx.payment.update({
+        where: { id: installment.paymentId },
+        data: { status: newStatus, totalPago: newTotalPago },
+      });
+    });
+  } catch (error) {
+    console.error("Prisma markInstallmentPaid error:", error);
+    throw new Error("Ocorreu um erro ao atualizar a parcela.");
+  }
+
+  revalidatePath(`/consultas/${consultationId}`);
 }

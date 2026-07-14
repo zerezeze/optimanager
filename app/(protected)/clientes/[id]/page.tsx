@@ -3,8 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Consultation } from "@prisma/client";
 import DeleteClientButton from "@/components/DeleteClientButton";
-
+import { PaymentStatusBadge } from "@/components/PaymentStatusBadge";
 import { requireAuthenticated } from "@/lib/authz";
+
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -27,6 +28,11 @@ export default async function ClientePerfilPage({ params }: PageProps) {
       consultations: {
         orderBy: {
           data: "desc",
+        },
+        include: {
+          payment: {
+            select: { status: true },
+          },
         },
       },
     },
@@ -106,6 +112,7 @@ export default async function ClientePerfilPage({ params }: PageProps) {
                     <th className="p-3 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Graus (OD / OE)</th>
                     <th className="p-3 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Lentes</th>
                     <th className="p-3 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Valor</th>
+                    <th className="p-3 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Pagamento</th>
                     <th className="p-3 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Ações</th>
                   </tr>
                 </thead>
@@ -133,6 +140,9 @@ export default async function ClientePerfilPage({ params }: PageProps) {
                           {consultation.lentes || "-"}
                         </td>
                         <td className="p-4 px-4 text-sm font-semibold text-gray-800">{formattedValue}</td>
+                        <td className="p-4 px-4">
+                          <PaymentStatusBadge status={(consultation as any).payment?.status ?? null} />
+                        </td>
                         <td className="p-4 px-4 text-sm text-right whitespace-nowrap">
                           <Link
                             href={`/consultas/${consultation.id}`}

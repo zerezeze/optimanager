@@ -22,6 +22,7 @@ export default async function EditarConsultaPage({ params }: PageProps) {
     where: { id },
     include: {
       client: true,
+      payment: true,
     },
   });
 
@@ -40,7 +41,10 @@ export default async function EditarConsultaPage({ params }: PageProps) {
       <p className="text-sm text-gray-500 mb-6">
         Cliente: <strong className="text-gray-700">{consultation.client.nome}</strong>
       </p>
-      <EditarForm consultation={consultation} />
+      <EditarForm
+        consultation={consultation}
+        existingPaymentMethod={consultation.payment?.method ?? undefined}
+      />
     </div>
   );
 }

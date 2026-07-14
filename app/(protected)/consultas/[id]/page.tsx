@@ -3,6 +3,16 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireAuthenticated } from "@/lib/authz";
 import { DeleteConsultationButton } from "./DeleteConsultationButton";
+import { PaymentStatusBadge } from "@/components/PaymentStatusBadge";
+import { InstallmentsTable } from "@/components/InstallmentsTable";
+
+const PAYMENT_METHOD_LABELS: Record<string, string> = {
+  DINHEIRO: "Dinheiro",
+  PIX: "PIX",
+  CARTAO_CREDITO: "Cartão de Crédito",
+  CARTAO_DEBITO: "Cartão de Débito",
+  CREDIARIO: "Crediário",
+};
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -23,6 +33,13 @@ export default async function ConsultaDetalhesPage({ params }: PageProps) {
     where: { id },
     include: {
       client: true,
+      payment: {
+        include: {
+          installments: {
+            orderBy: { numero: "asc" },
+          },
+        },
+      },
     },
   });
 
@@ -161,6 +178,50 @@ export default async function ConsultaDetalhesPage({ params }: PageProps) {
               {consultation.observacao || "Nenhuma observação informada."}
             </span>
           </div>
+        </div>
+        {/* CARD 3: SITUAÇÃO FINANCEIRA */}
+        <div className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm w-full flex flex-col gap-4">
+          <div className="flex items-center justify-between border-b border-gray-100 pb-2">
+            <h2 className="text-lg font-bold text-blue-600">Situação Financeira</h2>
+            {consultation.payment && <PaymentStatusBadge status={consultation.payment.status} />}
+          </div>
+
+          {!consultation.payment ? (
+            <p className="text-sm text-gray-400 italic">Nenhum pagamento registrado para esta consulta.</p>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Método</strong>
+                  <span className="text-sm text-gray-800 font-semibold">
+                    {PAYMENT_METHOD_LABELS[consultation.payment.method] ?? consultation.payment.method}
+                  </span>
+                </div>
+                <div>
+                  <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Total Pago</strong>
+                  <span className="text-sm text-gray-800 font-semibold">
+                    {(consultation.payment.totalPago / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+                  </span>
+                </div>
+                <div>
+                  <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Saldo Devedor</strong>
+                  <span className="text-sm font-semibold text-red-600">
+                    {((consultation.valor - consultation.payment.totalPago) / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+                  </span>
+                </div>
+              </div>
+
+              {consultation.payment.installments.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-bold text-gray-700 mb-3">Parcelas do Crediário</h3>
+                  <InstallmentsTable
+                    installments={consultation.payment.installments}
+                    consultationId={consultation.id}
+                  />
+                </div>
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>

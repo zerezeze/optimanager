@@ -4,6 +4,7 @@ import { updateConsultation } from "@/app/actions/consultations";
 import Link from "next/link";
 import { useState } from "react";
 import PrescriptionFormFields from "@/components/PrescriptionFormFields";
+import { PaymentFormFields } from "@/components/PaymentFormFields";
 
 interface ConsultationData {
   id: string;
@@ -31,9 +32,10 @@ interface ConsultationData {
 
 interface EditarFormProps {
   consultation: ConsultationData;
+  existingPaymentMethod?: string;
 }
 
-export default function EditarForm({ consultation }: EditarFormProps) {
+export default function EditarForm({ consultation, existingPaymentMethod }: EditarFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -54,6 +56,17 @@ export default function EditarForm({ consultation }: EditarFormProps) {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6 w-full">
       <PrescriptionFormFields defaultValue={consultation} />
+
+      {/* Payment Section */}
+      <div className="border border-gray-200 rounded-lg p-4 flex flex-col gap-3">
+        <h3 className="text-sm font-bold text-gray-700">Pagamento</h3>
+        {existingPaymentMethod && (
+          <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-md px-3 py-2">
+            ⚠️ Alterar o pagamento aqui <strong>substituirá</strong> o registro financeiro existente e apagará as parcelas antigas.
+          </p>
+        )}
+        <PaymentFormFields defaultMethod={existingPaymentMethod} />
+      </div>
 
       {error && (
         <div className="text-red-600 text-sm">

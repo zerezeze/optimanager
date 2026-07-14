@@ -9,8 +9,12 @@ export default async function DashboardPage() {
   const whereClient = isAdmin ? {} : { userId: sessionUser.id };
   const whereConsultation = isAdmin ? {} : { client: { userId: sessionUser.id } };
 
+  const whereInstallment = isAdmin
+    ? { pago: false }
+    : { pago: false, payment: { consultation: { client: { userId: sessionUser.id } } } };
+
   // Query all statistics and lists in parallel via Promise.all
-  const [totalClients, totalConsultations, recentClients, recentConsultations] = await Promise.all([
+  const [totalClients, totalConsultations, recentClients, recentConsultations, installmentsAbertos] = await Promise.all([
     prisma.client.count({ where: whereClient }),
     prisma.consultation.count({ where: whereConsultation }),
     prisma.client.findMany({
@@ -30,14 +34,20 @@ export default async function DashboardPage() {
         client: true,
       },
     }),
+    prisma.installment.aggregate({
+      where: whereInstallment,
+      _sum: { valor: true },
+    }),
   ]);
+
+  const totalEmAberto = installmentsAbertos._sum.valor ?? 0;
 
   return (
     <div className="p-4 sm:p-8 max-w-5xl mx-auto font-sans w-full">
       <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">Dashboard</h1>
 
       {/* Metrics Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
         <div className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm">
           <span className="text-sm font-semibold text-gray-500">Total de Clientes</span>
           <h2 className="text-3xl sm:text-4xl font-bold text-blue-600 mt-2">{totalClients}</h2>
@@ -45,6 +55,13 @@ export default async function DashboardPage() {
         <div className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm">
           <span className="text-sm font-semibold text-gray-500">Total de Consultas</span>
           <h2 className="text-3xl sm:text-4xl font-bold text-blue-600 mt-2">{totalConsultations}</h2>
+        </div>
+        <div className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm border-l-4 border-l-red-400">
+          <span className="text-sm font-semibold text-gray-500">Valores em Aberto</span>
+          <h2 className="text-2xl sm:text-3xl font-bold text-red-600 mt-2">
+            {(totalEmAberto / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+          </h2>
+          <span className="text-xs text-gray-400 mt-1 block">Parcelas não pagas</span>
         </div>
       </div>
 

@@ -4,6 +4,7 @@ import { createConsultation } from "@/app/actions/consultations";
 import Link from "next/link";
 import { useState } from "react";
 import PrescriptionFormFields from "@/components/PrescriptionFormFields";
+import { PaymentFormFields } from "@/components/PaymentFormFields";
 
 interface NovaFormProps {
   clientId: string;
@@ -30,6 +31,12 @@ export default function NovaForm({ clientId }: NovaFormProps) {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6 w-full">
       <PrescriptionFormFields />
+
+      {/* Payment Section */}
+      <div className="border border-gray-200 rounded-lg p-4 flex flex-col gap-3">
+        <h3 className="text-sm font-bold text-gray-700">Pagamento</h3>
+        <PaymentFormFields />
+      </div>
 
       {error && (
         <div className="text-red-600 text-sm">
