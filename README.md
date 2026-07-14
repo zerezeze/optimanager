@@ -32,6 +32,7 @@ O projeto foi desenvolvido utilizando tecnologias modernas do ecossistema JavaSc
 * Visualização detalhada
 * Registro de:
 
+  * Ordem de Serviço (O.S.) no topo da ficha
   * Olho direito
   * Olho esquerdo
   * Adição
@@ -40,6 +41,17 @@ O projeto foi desenvolvido utilizando tecnologias modernas do ecossistema JavaSc
   * Observações
   * Valor
   * Data
+
+### 💵 Gestão Financeira & Parcelamentos (Novo)
+
+* Cadastro do método de pagamento (Dinheiro, PIX, Cartão de Crédito/Débito, Crediário)
+* Geração automatizada de parcelas mensais do crediário com cálculo de vencimento automático (30 em 30 dias)
+* Lógica inteligente de amortização (computando pagamentos de entrada + parcelas pagas em tempo real)
+* Quitação individual de parcelas com controle de datas (`paidAt`)
+* Atualização em tempo real do status de pagamento da venda (`PENDENTE`, `PARCIAL`, `PAGO`)
+* Indicador visual de status financeiro (badges coloridos) no perfil do cliente
+* Métrica de destaque "Valores em Aberto" no Dashboard respeitando o isolamento do tenant
+
 
 ### 📊 Dashboard
 
@@ -80,7 +92,7 @@ App Router
 │
 ├── Auth.js (Sessão baseada em JWT com id e role estendidos)
 │
-├── Prisma ORM
+├── Prisma ORM (Mapeamento de relações cascade: Consultation ➔ Payment ➔ Installment)
 │
 └── PostgreSQL (Neon)
 ```
@@ -210,15 +222,17 @@ O OptiManager nasceu para solucionar um problema real de gestão em uma ótica, 
 * [x] Deploy em produção
 * [x] Multiusuário (Multi-Tenant)
 * [x] Controle de permissões (ADMIN / OPERATOR)
+* [x] Gestão Financeira & Parcelamentos (Sprint 11)
+* [x] Ordem de Serviço (O.S.) (Sprint 11)
 
 Próximas funcionalidades:
 
 * [ ] Impressão de receitas
 * [ ] Exportação em PDF
 * [ ] Upload de documentos
-* [ ] Dashboard financeiro
 * [ ] Relatórios
 * [ ] Backup automático
+
 
 ---
 
