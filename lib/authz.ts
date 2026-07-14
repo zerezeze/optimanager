@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import prisma from "@/lib/db";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 export interface AuthUser {
   id: string;
@@ -31,7 +31,7 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
 export async function requireAuthenticated(): Promise<AuthUser> {
   const user = await getCurrentUser();
   if (!user) {
-    throw new Error("Não autenticado. Por favor, faça login para continuar.");
+    redirect("/login");
   }
   return user;
 }
