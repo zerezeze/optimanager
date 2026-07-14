@@ -13,8 +13,10 @@ Cada consulta é representada no banco de dados com os seguintes campos:
 *   **Identificador Único (`id`)**: UUID gerado de forma randômica e segura.
 *   **Cliente Vinculado (`client_id`)**: ID (UUID) do cliente proprietário da consulta (estritamente obrigatório).
 *   **Data da Consulta (`data`)**: Data do exame (padrão: data/hora de criação, editável).
-*   **Olho Direito (`olho_direito`)**: Medições/grau do olho direito (String opcional, máx 50 caracteres).
-*   **Olho Esquerdo (`olho_esquerdo`)**: Medições/grau do olho esquerdo (String opcional, máx 50 caracteres).
+*   **Campos de Refração Específicos (Novos)**:
+    *   **Olho Direito (OD)**: `odEsferico`, `odCilindrico`, `odEixo`, `odDnp`, `odAltura`.
+    *   **Olho Esquerdo (OE)**: `oeEsferico`, `oeCilindrico`, `oeEixo`, `oeDnp`, `oeAltura`.
+    *   *Nota*: Os campos unificados legados (`olho_direito` e `olho_esquerdo`) foram mantidos provisoriamente no banco para retrocompatibilidade durante a transição.
 *   **Adição (`adicao`)**: Grau de adição para perto (String opcional, máx 50 caracteres).
 *   **Lentes (`lentes`)**: Tipo de lente prescrita/vendida (String opcional, máx 255 caracteres).
 *   **Laboratório (`laboratorio`)**: Nome do laboratório óptico parceiro (String opcional, máx 255 caracteres).
@@ -42,7 +44,11 @@ Cada consulta é representada no banco de dados com os seguintes campos:
 
 ### 3.4 Editar uma Consulta
 *   **Ação**: Corrigir informações preenchidas incorretamente em uma consulta cadastrada.
-*   **Fluxo**: O operador clica em "Editar" na página da consulta, atualiza os campos necessários e salva. O registro é atualizado no banco.
+*   **Fluxo**: O operador clica em "Editar" na página da consulta, atualiza os campos necessários (com formato tabular de receita) e salva. O registro é atualizado no banco.
+
+### 3.5 Excluir uma Consulta
+*   **Ação**: Remover permanentemente uma consulta do histórico do cliente.
+*   **Fluxo**: O operador clica no botão "Excluir Consulta", confirma a caixa de diálogo de segurança e a exclusão é efetuada, retornando ao perfil do cliente.
 
 ---
 

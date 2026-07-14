@@ -57,11 +57,12 @@ Para garantir uma experiência de uso coesa, implementaremos um cabeçalho simpl
 *   A página `/dashboard` será um **React Server Component** responsável por carregar todas as informações simultaneamente no lado do servidor.
 *   Para evitar consultas lentas sequenciais (bloqueio de thread), utilizaremos `Promise.all` para disparar as contagens e listagens de forma paralela no PostgreSQL:
     ```typescript
+    // Queries filtradas pelo ID do usuário da sessão (Multi-Tenant)
     const [totalClientes, totalConsultas, ultimosClientes, consultasRecentes] = await Promise.all([
-      prisma.client.count(),
-      prisma.consultation.count(),
-      prisma.client.findMany({ take: 5, orderBy: { createdAt: "desc" } }),
-      prisma.consultation.findMany({ take: 5, orderBy: { data: "desc" }, include: { client: true } })
+      prisma.client.count({ where: { userId: session.user.id } }),
+      prisma.consultation.count({ where: { client: { userId: session.user.id } } }),
+      prisma.client.findMany({ where: { userId: session.user.id }, take: 5, orderBy: { createdAt: "desc" } }),
+      prisma.consultation.findMany({ where: { client: { userId: session.user.id } }, take: 5, orderBy: { data: "desc" }, include: { client: true } })
     ]);
     ```
 

@@ -14,6 +14,7 @@ Cada cliente deve conter os seguintes campos representados no banco de dados:
 *   **Nome Completo (`nome`)**: Texto obrigatório, limitado a 255 caracteres.
 *   **Endereço (`endereco`)**: Texto opcional, limitado a 500 caracteres (pode conter rua, número, bairro, cidade).
 *   **Telefone (`telefone`)**: Texto opcional, limitado a 20 caracteres (utilizado para contato direto).
+*   **Usuário Proprietário (`userId`)**: ID da ótica/usuário que cadastrou o cliente (Arquitetura Multi-Tenant).
 *   **Campos de Auditoria**:
     *   `createdAt`: Data e hora do cadastro inicial (não editável).
     *   `updatedAt`: Data e hora da última modificação.
@@ -53,7 +54,8 @@ Cada cliente deve conter os seguintes campos representados no banco de dados:
 1.  **Nome Obrigatório**: É vedada a criação ou edição de clientes com o campo de Nome nulo ou em branco.
 2.  **Unicidade do ID**: O ID do cliente deve ser gerado no formato UUIDv4.
 3.  **Proteção do Histórico (Integridade)**: As consultas históricas nunca devem ser perdidas acidentalmente. A exclusão de um cliente é estritamente proibida caso ele tenha qualquer consulta associada no banco de dados.
-4.  **Acesso Restrito**: Somente operadores autenticados no sistema podem ler, criar ou modificar dados de clientes.
+4.  **Acesso Restrito (Multi-Tenant)**: Somente operadores autenticados no sistema podem ler, criar ou modificar dados de clientes. Além disso, os operadores só têm acesso aos clientes que possuem o `userId` igual ao ID da própria sessão (isolamento).
+5.  **Exclusão Tratada**: O Next.js utiliza redirecionamentos no servidor que lançam a exceção `NEXT_REDIRECT`. Botões de exclusão lidam com isso mapeando o sucesso para o redirecionamento imediato sem estourar alertas falsos de erro na interface.
 
 ---
 

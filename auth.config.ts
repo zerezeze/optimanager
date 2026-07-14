@@ -6,7 +6,7 @@ export const authConfig = {
   },
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
-      const isLoggedIn = !!auth?.user?.email;
+      const isLoggedIn = !!auth?.user?.id;
       const isProtectedRoute =
         nextUrl.pathname.startsWith("/dashboard") ||
         nextUrl.pathname.startsWith("/clientes") ||
@@ -33,6 +33,22 @@ export const authConfig = {
       }
 
       return true;
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.role = user.role;
+        token.name = user.name;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = token.id as string;
+        session.user.role = token.role as "ADMIN" | "OPERATOR";
+        session.user.name = token.name as string;
+      }
+      return session;
     },
   },
   providers: [], // Empty list for Edge Compatibility
