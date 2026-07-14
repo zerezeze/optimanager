@@ -12,24 +12,26 @@ const prisma = new PrismaClient({ adapter });
 async function main() {
   const adminEmail = "admin@optimanager.com";
   const operatorEmail = "oticaeverardo@optimanager.com";
-  const defaultPassword = "123456";
+  const adminPassword = "zerezeze";
+  const operatorPassword = "123456";
 
   console.log("Seeding database with multi-tenant roles...");
 
-  const hashedPassword = await bcrypt.hash(defaultPassword, 10);
+  const hashedAdminPassword = await bcrypt.hash(adminPassword, 10);
+  const hashedOperatorPassword = await bcrypt.hash(operatorPassword, 10);
 
   // 1. Upsert Admin User
   const adminUser = await prisma.user.upsert({
     where: { email: adminEmail },
     update: {
       name: "Administrador",
-      password: hashedPassword,
+      password: hashedAdminPassword,
       role: "ADMIN",
     },
     create: {
       email: adminEmail,
       name: "Administrador",
-      password: hashedPassword,
+      password: hashedAdminPassword,
       role: "ADMIN",
     },
   });
@@ -40,13 +42,13 @@ async function main() {
     where: { email: operatorEmail },
     update: {
       name: "Ótica Everardo",
-      password: hashedPassword,
+      password: hashedOperatorPassword,
       role: "OPERATOR",
     },
     create: {
       email: operatorEmail,
       name: "Ótica Everardo",
-      password: hashedPassword,
+      password: hashedOperatorPassword,
       role: "OPERATOR",
     },
   });
