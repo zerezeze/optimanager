@@ -8,20 +8,21 @@ O projeto foi desenvolvido utilizando tecnologias modernas do ecossistema JavaSc
 
 ## ✨ Funcionalidades
 
-### 🔐 Autenticação
+### 🔐 Autenticação & Isolamento Multi-Tenant
 
-* Login seguro utilizando Auth.js
-* Rotas protegidas
-* Controle de sessão
-* Logout
+* Login seguro utilizando Auth.js (NextAuth v5)
+* Isolamento de dados multiusuário (Multi-Tenant) no nível de banco de dados
+* Controle de sessão e privilégios fortemente tipados (ADMIN / OPERATOR)
+* Camada centralizada de controle de acesso e auditoria no servidor (helpers de autorização)
+* Proteção estrita de rotas administrativas e redirecionamentos automáticos
 
 ### 👤 Clientes
 
-* Cadastro de clientes
-* Pesquisa rápida por nome
-* Edição
-* Exclusão com validação de integridade
-* Histórico completo
+* Cadastro de clientes vinculados ao usuário proprietário
+* Pesquisa rápida por nome respeitando o isolamento do operador
+* Edição e visualização com checagem de autorização no servidor
+* Exclusão com validação de integridade e posse do registro
+* Histórico completo de consultas do cliente
 
 ### 👓 Consultas
 
@@ -53,7 +54,7 @@ O projeto foi desenvolvido utilizando tecnologias modernas do ecossistema JavaSc
 # 🚀 Tecnologias
 
 * Next.js 16 (App Router)
-* React
+* React 19
 * TypeScript
 * Tailwind CSS
 * Prisma ORM 7
@@ -66,32 +67,29 @@ O projeto foi desenvolvido utilizando tecnologias modernas do ecossistema JavaSc
 
 # 🏗 Arquitetura
 
-O projeto utiliza uma arquitetura moderna baseada em Server Components e Server Actions.
+O projeto utiliza uma arquitetura baseada em Server Components e Server Actions com isolamento de dados no nível de usuário (Multi-Tenant).
 
 ```text
 App Router
 │
-├── Server Components
+├── Server Components (Filtros de Tenant e autorização de leitura)
 │
-├── Server Actions
+├── Server Actions (Autorização no servidor, escrita de dados, userId de sessão)
 │
-├── Auth.js
+├── Camada de Autorização (lib/authz.ts - regras de acesso centralizadas)
+│
+├── Auth.js (Sessão baseada em JWT com id e role estendidos)
 │
 ├── Prisma ORM
 │
-└── PostgreSQL
+└── PostgreSQL (Neon)
 ```
 
 Principais características:
 
-* React Server Components
-* Server Actions
-* Prisma ORM
-* Banco PostgreSQL
-* Autenticação baseada em sessão
-* Layout protegido
-* Componentização
-* Validação com Zod
+* **Isolamento de Dados Estrito**: Operadores (`OPERATOR`) acessam apenas seus próprios clientes e consultas correspondentes. Administradores (`ADMIN`) possuem acesso global irrestrito para monitoramento geral do sistema.
+* **Segurança no Servidor**: O identificador do proprietário (`userId`) é extraído diretamente dos cookies de sessão criptografados do servidor no momento do processamento, nunca confiando em campos ocultos ou parâmetros enviados pelo cliente/navegador.
+* **Helpers Centralizados**: As validações são orquestradas por métodos reutilizáveis (`requireAuthenticated`, `requireAdmin`, `canAccessClient`, `canAccessConsultation`), evitando redundâncias e facilitando auditorias de segurança.
 
 ---
 
@@ -101,7 +99,11 @@ Principais características:
 app/
 components/
 lib/
+  ├── authz.ts (helpers de autorização multi-tenant)
+  └── db.ts (singleton Prisma)
 prisma/
+types/
+  └── next-auth.d.ts (declarações de tipos estendidos)
 public/
 specs/
 
@@ -111,12 +113,12 @@ specs/
 
 # 🔒 Segurança
 
-* Senhas criptografadas com bcrypt
-* Rotas protegidas
-* Middleware/Proxy de autenticação
-* Validação de formulários com Zod
+* Senhas criptografadas com bcryptjs
+* Rotas protegidas e regras de acesso por privilégios no Middleware
+* Validação de propriedade no nível do registro (Row-Level Security conceitual no Prisma)
+* Validação de formulários e tipos com Zod
 * UUID como chave primária
-* Integridade referencial no banco
+* Integridade referencial no banco (onDelete: Restrict)
 * Variáveis de ambiente protegidas
 
 ---
@@ -160,13 +162,13 @@ NEXTAUTH_URL=http://localhost:3000
 Execute as migrations
 
 ```bash
-npx prisma migrate deploy
+npx prisma migrate dev
 ```
 
-Execute o seed
+Execute o seed (cria o Administrador e a Ótica Everardo padrão)
 
 ```bash
-npx prisma db seed
+npm run db:seed
 ```
 
 Inicie o projeto
@@ -187,14 +189,13 @@ Sugestão de imagens para adicionar:
 * Cadastro de cliente
 * Perfil do cliente
 * Cadastro de consulta
+* Usuários (Visão do Administrador)
 
 ---
 
 # 💡 Objetivo
 
-O OptiManager nasceu para solucionar um problema real de gestão em uma ótica, simplificando o cadastro de clientes e o controle das consultas oftalmológicas.
-
-O foco do projeto foi desenvolver uma aplicação moderna, segura e preparada para evolução futura.
+O OptiManager nasceu para solucionar um problema real de gestão em uma ótica, simplificando o cadastro de clientes, receitas oftalmológicas e o controle das consultas oftalmológicas de forma isolada e profissional.
 
 ---
 
@@ -207,14 +208,14 @@ O foco do projeto foi desenvolver uma aplicação moderna, segura e preparada pa
 * [x] Cadastro de consultas
 * [x] Histórico por cliente
 * [x] Deploy em produção
+* [x] Multiusuário (Multi-Tenant)
+* [x] Controle de permissões (ADMIN / OPERATOR)
 
 Próximas funcionalidades:
 
 * [ ] Impressão de receitas
 * [ ] Exportação em PDF
 * [ ] Upload de documentos
-* [ ] Multiusuário
-* [ ] Controle de permissões
 * [ ] Dashboard financeiro
 * [ ] Relatórios
 * [ ] Backup automático

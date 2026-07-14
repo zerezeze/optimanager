@@ -4,6 +4,7 @@ import prisma from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { requireAuthenticated, canAccessClient } from "@/lib/authz";
 
 const clientSchema = z.object({
   nome: z.string().trim().min(1, "O nome é obrigatório").max(255, "O nome deve ter no máximo 255 caracteres"),
@@ -62,6 +63,8 @@ function parseBRLValueToCents(valStr: string): number {
 }
 
 export async function createClient(formData: FormData) {
+  const sessionUser = await requireAuthenticated();
+
   const clientRawData = {
     nome: formData.get("nome"),
     endereco: formData.get("endereco"),
@@ -89,7 +92,6 @@ export async function createClient(formData: FormData) {
       laboratorio: formData.get("laboratorio"),
       valor: formData.get("valor"),
       observacao: formData.get("observacao"),
-      // Novos campos
       odEsferico: formData.get("odEsferico"),
       odCilindrico: formData.get("odCilindrico"),
       odEixo: formData.get("odEixo"),
@@ -168,12 +170,13 @@ export async function createClient(formData: FormData) {
 
   try {
     await prisma.$transaction(async (tx) => {
-      // 1. Create client
+      // 1. Create client, owned by the logged-in user
       const newClient = await tx.client.create({
         data: {
           nome,
           endereco: endereco || null,
           telefone: telefone || null,
+          userId: sessionUser.id,
         },
       });
 
@@ -197,9 +200,17 @@ export async function createClient(formData: FormData) {
 }
 
 export async function deleteClient(id: string) {
+  await requireAuthenticated();
+
   const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   if (!uuidRegex.test(id)) {
     throw new Error("Identificador do cliente inválido.");
+  }
+
+  // Authorize client access/ownership
+  const hasAccess = await canAccessClient(id);
+  if (!hasAccess) {
+    throw new Error("Acesso negado. Você não tem permissão para excluir este cliente.");
   }
 
   // Check database if consultations exist
@@ -227,6 +238,20 @@ export async function deleteClient(id: string) {
 }
 
 export async function updateClient(id: string, formData: FormData) {
+  await requireAuthenticated();
+
+  // Validate UUID format
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  if (!uuidRegex.test(id)) {
+    throw new Error("Identificador do cliente inválido.");
+  }
+
+  // Authorize client access/ownership
+  const hasAccess = await canAccessClient(id);
+  if (!hasAccess) {
+    throw new Error("Acesso negado. Você não tem permissão para alterar este cliente.");
+  }
+
   const rawData = {
     nome: formData.get("nome"),
     endereco: formData.get("endereco"),
@@ -241,12 +266,6 @@ export async function updateClient(id: string, formData: FormData) {
   }
 
   const { nome, endereco, telefone } = validation.data;
-
-  // Validate UUID format
-  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-  if (!uuidRegex.test(id)) {
-    throw new Error("Identificador do cliente inválido.");
-  }
 
   try {
     await prisma.client.update({

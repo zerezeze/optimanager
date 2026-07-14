@@ -1,24 +1,37 @@
 import prisma from "@/lib/db";
 import Link from "next/link";
+import { requireAuthenticated } from "@/lib/authz";
 
 interface PageProps {
   searchParams: Promise<{ q?: string }>;
 }
 
 export default async function ClientesPage({ searchParams }: PageProps) {
+  const sessionUser = await requireAuthenticated();
+  
   const params = await searchParams;
   const query = params.q || "";
 
-  // Query database directly
+  const isAdmin = sessionUser.role === "ADMIN";
+  const searchFilter = query
+    ? {
+        nome: {
+          contains: query,
+          mode: "insensitive" as const, // PostgreSQL case-insensitive search
+        },
+      }
+    : {};
+
+  const whereCondition = isAdmin
+    ? searchFilter
+    : {
+        userId: sessionUser.id,
+        ...searchFilter,
+      };
+
+  // Query database with tenancy constraint
   const clients = await prisma.client.findMany({
-    where: query
-      ? {
-          nome: {
-            contains: query,
-            mode: "insensitive", // PostgreSQL case-insensitive search
-          },
-        }
-      : undefined,
+    where: whereCondition,
     orderBy: {
       nome: "asc",
     },

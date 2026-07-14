@@ -4,11 +4,15 @@ import { notFound } from "next/navigation";
 import { Consultation } from "@prisma/client";
 import DeleteClientButton from "@/components/DeleteClientButton";
 
+import { requireAuthenticated } from "@/lib/authz";
+
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
 export default async function ClientePerfilPage({ params }: PageProps) {
+  const sessionUser = await requireAuthenticated();
+  
   const { id } = await params;
 
   // Validate UUID format to prevent database crash
@@ -29,6 +33,11 @@ export default async function ClientePerfilPage({ params }: PageProps) {
   });
 
   if (!client) {
+    notFound();
+  }
+
+  // Multi-tenant permission check
+  if (sessionUser.role !== "ADMIN" && client.userId !== sessionUser.id) {
     notFound();
   }
 

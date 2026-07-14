@@ -1,18 +1,27 @@
 import prisma from "@/lib/db";
 import Link from "next/link";
+import { requireAuthenticated } from "@/lib/authz";
 
 export default async function DashboardPage() {
+  const sessionUser = await requireAuthenticated();
+  
+  const isAdmin = sessionUser.role === "ADMIN";
+  const whereClient = isAdmin ? {} : { userId: sessionUser.id };
+  const whereConsultation = isAdmin ? {} : { client: { userId: sessionUser.id } };
+
   // Query all statistics and lists in parallel via Promise.all
   const [totalClients, totalConsultations, recentClients, recentConsultations] = await Promise.all([
-    prisma.client.count(),
-    prisma.consultation.count(),
+    prisma.client.count({ where: whereClient }),
+    prisma.consultation.count({ where: whereConsultation }),
     prisma.client.findMany({
+      where: whereClient,
       take: 5,
       orderBy: {
         createdAt: "desc",
       },
     }),
     prisma.consultation.findMany({
+      where: whereConsultation,
       take: 5,
       orderBy: {
         data: "desc",

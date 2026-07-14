@@ -4,6 +4,7 @@ import prisma from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { requireAuthenticated, canAccessClient, canAccessConsultation } from "@/lib/authz";
 
 const esfericoCilindricoRegex = /^(PLANO|[+-]?\d+([.,]\d+)?)$/i;
 const numericWithDecimalsRegex = /^\d+([.,]\d{1,2})?$/;
@@ -56,10 +57,18 @@ function parseBRLValueToCents(valStr: string): number {
 }
 
 export async function createConsultation(clientId: string, formData: FormData) {
+  await requireAuthenticated();
+
   // Validate UUID format of clientId
   const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   if (!uuidRegex.test(clientId)) {
     throw new Error("Cliente inválido.");
+  }
+
+  // Authorize user has access to the target client
+  const hasAccess = await canAccessClient(clientId);
+  if (!hasAccess) {
+    throw new Error("Acesso negado. Você não tem permissão para cadastrar consultas para este cliente.");
   }
 
   const rawData = {
@@ -69,7 +78,6 @@ export async function createConsultation(clientId: string, formData: FormData) {
     laboratorio: formData.get("laboratorio"),
     valor: formData.get("valor"),
     observacao: formData.get("observacao"),
-    // Novos campos
     odEsferico: formData.get("odEsferico"),
     odCilindrico: formData.get("odCilindrico"),
     odEixo: formData.get("odEixo"),
@@ -133,7 +141,6 @@ export async function createConsultation(clientId: string, formData: FormData) {
         laboratorio: laboratorio || null,
         valor: valorEmCentavos,
         observacao: observacao || null,
-        // Novos campos refrativos mapeados
         odEsferico: odEsferico || null,
         odCilindrico: odCilindrico || null,
         odEixo: odEixo || null,
@@ -156,9 +163,17 @@ export async function createConsultation(clientId: string, formData: FormData) {
 }
 
 export async function updateConsultation(id: string, formData: FormData) {
+  await requireAuthenticated();
+
   const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   if (!uuidRegex.test(id)) {
     throw new Error("Identificador de consulta inválido.");
+  }
+
+  // Authorize user has access to this consultation
+  const hasAccess = await canAccessConsultation(id);
+  if (!hasAccess) {
+    throw new Error("Acesso negado. Você não tem permissão para alterar esta consulta.");
   }
 
   const rawData = {
@@ -168,7 +183,6 @@ export async function updateConsultation(id: string, formData: FormData) {
     laboratorio: formData.get("laboratorio"),
     valor: formData.get("valor"),
     observacao: formData.get("observacao"),
-    // Novos campos
     odEsferico: formData.get("odEsferico"),
     odCilindrico: formData.get("odCilindrico"),
     odEixo: formData.get("odEixo"),
@@ -233,7 +247,6 @@ export async function updateConsultation(id: string, formData: FormData) {
         laboratorio: laboratorio || null,
         valor: valorEmCentavos,
         observacao: observacao || null,
-        // Novos campos refrativos mapeados
         odEsferico: odEsferico || null,
         odCilindrico: odCilindrico || null,
         odEixo: odEixo || null,

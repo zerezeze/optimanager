@@ -1,12 +1,15 @@
 import prisma from "@/lib/db";
 import { notFound } from "next/navigation";
 import EditarForm from "./Form";
+import { requireAuthenticated } from "@/lib/authz";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
 export default async function EditarClientePage({ params }: PageProps) {
+  const sessionUser = await requireAuthenticated();
+  
   const { id } = await params;
 
   // Validate UUID format to prevent database crash on invalid UUID syntax
@@ -20,6 +23,11 @@ export default async function EditarClientePage({ params }: PageProps) {
   });
 
   if (!client) {
+    notFound();
+  }
+
+  // Multi-tenant permission check
+  if (sessionUser.role !== "ADMIN" && client.userId !== sessionUser.id) {
     notFound();
   }
 

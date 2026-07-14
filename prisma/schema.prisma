@@ -6,10 +6,18 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum UserRole {
+  ADMIN
+  OPERATOR
+}
+
 model User {
   id        String   @id @default(uuid())
+  name      String   @db.VarChar(255)
   email     String   @unique @db.VarChar(255)
   password  String   @db.VarChar(255)
+  role      UserRole @default(OPERATOR)
+  clients   Client[]
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -21,12 +29,15 @@ model Client {
   nome          String         @db.VarChar(255)
   endereco      String?        @db.VarChar(500)
   telefone      String?        @db.VarChar(20)
+  userId        String         @map("user_id")
+  user          User           @relation(fields: [userId], references: [id], onDelete: Restrict)
   consultations Consultation[]
   createdAt     DateTime       @default(now()) @map("created_at")
   updatedAt     DateTime       @updatedAt @map("updated_at")
 
   @@index([nome])
   @@index([telefone])
+  @@index([userId])
   @@map("clients")
 }
 

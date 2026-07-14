@@ -15,7 +15,7 @@ export default async function ProtectedLayout({ children }: ProtectedLayoutProps
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col w-full">
-      <Header email={session.user.email} />
+      <Header email={session.user.email} role={session.user.role} />
       <main className="flex-1 w-full py-4 sm:py-6">{children}</main>
     </div>
   );

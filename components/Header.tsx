@@ -3,9 +3,10 @@ import Link from "next/link";
 
 interface HeaderProps {
   email?: string | null;
+  role?: string | null;
 }
 
-export default function Header({ email }: HeaderProps) {
+export default function Header({ email, role }: HeaderProps) {
   return (
     <header className="flex flex-col sm:flex-row justify-between items-center gap-4 p-4 sm:py-4 sm:px-8 border-b border-gray-200 bg-white">
       <div className="flex items-center gap-6 w-full sm:w-auto justify-between sm:justify-start">
@@ -17,15 +18,27 @@ export default function Header({ email }: HeaderProps) {
           <Link href="/clientes" className="text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors">
             Clientes
           </Link>
+          {role === "ADMIN" && (
+            <Link href="/usuarios" className="text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors">
+              Usuários
+            </Link>
+          )}
         </nav>
       </div>
 
-      <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto border-t border-gray-100 sm:border-t-0 pt-3 sm:pt-0">
-        {email && (
-          <span className="text-sm text-gray-600 truncate max-w-[180px] sm:max-w-xs" title={email}>
-            {email}
-          </span>
-        )}
+      <div className="flex items-center justify-between sm:justify-end gap-5 w-full sm:w-auto border-t border-gray-100 sm:border-t-0 pt-3 sm:pt-0">
+        <div className="flex flex-col text-left sm:text-right">
+          {email && (
+            <span className="text-sm text-gray-800 font-semibold truncate max-w-[180px] sm:max-w-xs" title={email}>
+              {email}
+            </span>
+          )}
+          {role && (
+            <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">
+              {role === "ADMIN" ? "Administrador" : "Operador"}
+            </span>
+          )}
+        </div>
         <form
           action={async () => {
             "use server";

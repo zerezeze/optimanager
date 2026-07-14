@@ -1,12 +1,15 @@
 import prisma from "@/lib/db";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { requireAuthenticated } from "@/lib/authz";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
 export default async function ConsultaDetalhesPage({ params }: PageProps) {
+  const sessionUser = await requireAuthenticated();
+  
   const { id } = await params;
 
   // Validate UUID format to prevent database crash
@@ -23,6 +26,11 @@ export default async function ConsultaDetalhesPage({ params }: PageProps) {
   });
 
   if (!consultation) {
+    notFound();
+  }
+
+  // Multi-tenant permission check
+  if (sessionUser.role !== "ADMIN" && consultation.client.userId !== sessionUser.id) {
     notFound();
   }
 
