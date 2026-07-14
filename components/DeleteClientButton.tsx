@@ -22,6 +22,10 @@ export default function DeleteClientButton({ clientId }: DeleteClientButtonProps
     try {
       await deleteClient(clientId);
     } catch (err: any) {
+      if (err?.message === "NEXT_REDIRECT" || err?.digest?.startsWith("NEXT_REDIRECT")) {
+        alert("Cliente excluído com sucesso.");
+        throw err;
+      }
       setError(err.message || "Ocorreu um erro ao excluir o cliente.");
       setLoading(false);
     }

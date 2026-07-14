@@ -16,6 +16,10 @@ export function DeleteConsultationButton({ consultationId }: DeleteConsultationB
         try {
           await deleteConsultation(consultationId);
         } catch (error: any) {
+          if (error?.message === "NEXT_REDIRECT" || error?.digest?.startsWith("NEXT_REDIRECT")) {
+            alert("Consulta excluída com sucesso.");
+            throw error;
+          }
           alert(error.message || "Erro ao excluir consulta.");
         }
       });
