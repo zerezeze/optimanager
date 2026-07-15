@@ -105,55 +105,48 @@ export default async function ConsultaDetalhesPage({ params }: PageProps) {
           </div>
         )}
 
-        {/* CARD 1: DADOS REFRATIVOS */}
+        {/* CARD 1: RECEITA OFTALMOLÓGICA */}
         <div className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm w-full">
-          <h2 className="text-lg font-bold text-blue-600 border-b border-gray-100 pb-2 mb-4">
-            Dados Refrativos
+          <h2 className="text-lg font-bold text-blue-600 border-b border-gray-100 pb-2 mb-4 text-center tracking-wide">
+            RECEITA OFTALMOLÓGICA
           </h2>
 
           <div className="overflow-x-auto w-full">
-            <table className="w-full border-collapse text-left text-sm">
+            <table className="w-full border-collapse text-center text-sm">
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-50 text-gray-500 uppercase tracking-wider text-xs">
-                  <th className="p-3 font-semibold">Métrica</th>
-                  <th className="p-3 font-bold text-gray-800 text-center">OD (Direito)</th>
-                  <th className="p-3 font-bold text-gray-800 text-center">OE (Esquerdo)</th>
+                  <th className="p-3 font-bold text-gray-700 text-left">Olho</th>
+                  <th className="p-3 font-semibold">Esférico</th>
+                  <th className="p-3 font-semibold">Cilíndrico</th>
+                  <th className="p-3 font-semibold">Eixo</th>
+                  <th className="p-3 font-semibold">DNP</th>
+                  <th className="p-3 font-semibold">Altura</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 text-gray-800 font-medium">
                 <tr>
-                  <td className="p-3 text-gray-500 font-semibold">Esférico</td>
-                  <td className="p-3 text-center">{consultation.odEsferico || "-"}</td>
-                  <td className="p-3 text-center">{consultation.oeEsferico || "-"}</td>
+                  <td className="p-3 font-bold text-left text-gray-500">OD (Direito)</td>
+                  <td className="p-3">{consultation.odEsferico || "-"}</td>
+                  <td className="p-3">{consultation.odCilindrico || "-"}</td>
+                  <td className="p-3">{consultation.odEixo ? `${consultation.odEixo}°` : "-"}</td>
+                  <td className="p-3">{consultation.odDnp ? `${consultation.odDnp} mm` : "-"}</td>
+                  <td className="p-3">{consultation.odAltura ? `${consultation.odAltura} mm` : "-"}</td>
                 </tr>
                 <tr>
-                  <td className="p-3 text-gray-500 font-semibold">Cilíndrico</td>
-                  <td className="p-3 text-center">{consultation.odCilindrico || "-"}</td>
-                  <td className="p-3 text-center">{consultation.oeCilindrico || "-"}</td>
-                </tr>
-                <tr>
-                  <td className="p-3 text-gray-500 font-semibold">Eixo</td>
-                  <td className="p-3 text-center">{consultation.odEixo ? `${consultation.odEixo}°` : "-"}</td>
-                  <td className="p-3 text-center">{consultation.oeEixo ? `${consultation.oeEixo}°` : "-"}</td>
-                </tr>
-                <tr>
-                  <td className="p-3 text-gray-500 font-semibold">DNP</td>
-                  <td className="p-3 text-center">{consultation.odDnp ? `${consultation.odDnp} mm` : "-"}</td>
-                  <td className="p-3 text-center">{consultation.oeDnp ? `${consultation.oeDnp} mm` : "-"}</td>
-                </tr>
-                <tr>
-                  <td className="p-3 text-gray-500 font-semibold">Altura</td>
-                  <td className="p-3 text-center">{consultation.odAltura ? `${consultation.odAltura} mm` : "-"}</td>
-                  <td className="p-3 text-center">{consultation.oeAltura ? `${consultation.oeAltura} mm` : "-"}</td>
-                </tr>
-                <tr className="bg-gray-50/50">
-                  <td className="p-3 text-gray-500 font-semibold">Adição</td>
-                  <td className="p-3 text-center col-span-2 font-bold text-blue-600" colSpan={2}>
-                    {consultation.adicao || "-"}
-                  </td>
+                  <td className="p-3 font-bold text-left text-gray-500">OE (Esquerdo)</td>
+                  <td className="p-3">{consultation.oeEsferico || "-"}</td>
+                  <td className="p-3">{consultation.oeCilindrico || "-"}</td>
+                  <td className="p-3">{consultation.oeEixo ? `${consultation.oeEixo}°` : "-"}</td>
+                  <td className="p-3">{consultation.oeDnp ? `${consultation.oeDnp} mm` : "-"}</td>
+                  <td className="p-3">{consultation.oeAltura ? `${consultation.oeAltura} mm` : "-"}</td>
                 </tr>
               </tbody>
             </table>
+          </div>
+
+          <div className="mt-4 pt-3 border-t border-gray-100 flex items-center gap-2 text-sm justify-start pl-2">
+            <span className="text-gray-500 font-semibold">Adição:</span>
+            <span className="font-bold text-blue-600 text-base">{consultation.adicao || "-"}</span>
           </div>
         </div>
 
@@ -174,7 +167,7 @@ export default async function ConsultaDetalhesPage({ params }: PageProps) {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-b border-gray-100 pb-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 border-b border-gray-100 pb-3">
             <div>
               <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Lentes</strong>
               <span className="text-sm text-gray-800 font-semibold">{consultation.lentes || "Não informado"}</span>
@@ -182,6 +175,10 @@ export default async function ConsultaDetalhesPage({ params }: PageProps) {
             <div>
               <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Laboratório</strong>
               <span className="text-sm text-gray-800 font-semibold">{consultation.laboratorio || "Não informado"}</span>
+            </div>
+            <div>
+              <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Ordem de Serviço (O.S.)</strong>
+              <span className="text-sm text-gray-800 font-semibold">{consultation.ordemServico || "Não informado"}</span>
             </div>
           </div>
 

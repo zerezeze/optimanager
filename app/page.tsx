@@ -15,7 +15,7 @@ export default async function HomePage() {
       {/* Main Content Area */}
       <main className="flex-1 flex items-center justify-center p-4 sm:p-8">
         <div className="w-full max-w-lg p-6 sm:p-10 bg-white border border-gray-200 rounded-lg shadow-sm text-center">
-          
+
           {/* Header Section */}
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-2">OptiManager</h1>
           <p className="text-lg sm:text-xl text-blue-600 font-semibold mb-4">

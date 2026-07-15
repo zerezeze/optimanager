@@ -132,7 +132,14 @@ export default async function ClientePerfilPage({ params }: PageProps) {
 
                     return (
                       <tr key={consultation.id} className="hover:bg-gray-50/50">
-                        <td className="p-4 px-4 text-sm font-bold text-gray-800">{formattedDate}</td>
+                        <td className="p-4 px-4 text-sm font-bold text-gray-800">
+                          {formattedDate}
+                          {consultation.ordemServico && (
+                            <span className="block text-xs text-blue-600 font-semibold mt-0.5">
+                              O.S.: {consultation.ordemServico}
+                            </span>
+                          )}
+                        </td>
                         <td className="p-4 px-4 text-sm text-gray-600 truncate max-w-[150px]" title={grauSummary}>
                           {grauSummary}
                         </td>
@@ -176,7 +183,14 @@ export default async function ClientePerfilPage({ params }: PageProps) {
                 return (
                   <div key={consultation.id} className="p-4 flex flex-col gap-2">
                     <div className="flex justify-between items-center">
-                      <strong className="text-sm font-bold text-gray-800">{formattedDate}</strong>
+                      <div className="flex flex-col">
+                        <strong className="text-sm font-bold text-gray-800">{formattedDate}</strong>
+                        {consultation.ordemServico && (
+                          <span className="text-xs text-blue-600 font-semibold mt-0.5">
+                            O.S.: {consultation.ordemServico}
+                          </span>
+                        )}
+                      </div>
                       <strong className="text-sm text-gray-800">{formattedValue}</strong>
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-xs text-gray-500 mt-1">
