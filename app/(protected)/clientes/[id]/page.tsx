@@ -5,6 +5,8 @@ import { Consultation } from "@prisma/client";
 import DeleteClientButton from "@/components/DeleteClientButton";
 import { PaymentStatusBadge } from "@/components/PaymentStatusBadge";
 import { requireAuthenticated } from "@/lib/authz";
+import { EmptyState } from "@/components/EmptyState";
+import { FileX } from "lucide-react";
 
 
 interface PageProps {
@@ -96,15 +98,20 @@ export default async function ClientePerfilPage({ params }: PageProps) {
       {/* Consultations History list */}
       <h2 className="text-lg sm:text-xl font-bold mb-4 text-gray-800">Histórico de Consultas</h2>
       
-      <div className="border border-gray-200 rounded-lg bg-white overflow-hidden shadow-sm w-full">
+      <div>
         {client.consultations.length === 0 ? (
-          <div className="p-8 text-center text-gray-500">
-            Nenhuma consulta realizada para este cliente.
-          </div>
+          <EmptyState
+            icon={FileX}
+            title="Nenhuma consulta cadastrada"
+            description="Este cliente ainda não possui nenhuma consulta óptica registrada."
+            actionText="+ Cadastrar Consulta"
+            actionHref={`/clientes/${client.id}/consultas/nova`}
+          />
         ) : (
-          <>
-            {/* Desktop Table View */}
-            <div className="hidden sm:block overflow-x-auto">
+          <div className="border border-gray-200 rounded-lg bg-white overflow-hidden shadow-sm w-full">
+            <>
+              {/* Desktop Table View */}
+              <div className="hidden sm:block overflow-x-auto">
               <table className="w-full border-collapse text-left">
                 <thead>
                   <tr className="bg-gray-50 border-b border-gray-200">
@@ -220,6 +227,7 @@ export default async function ClientePerfilPage({ params }: PageProps) {
               })}
             </div>
           </>
+          </div>
         )}
       </div>
     </div>

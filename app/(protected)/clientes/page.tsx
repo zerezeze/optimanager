@@ -1,6 +1,8 @@
 import prisma from "@/lib/db";
 import Link from "next/link";
 import { requireAuthenticated } from "@/lib/authz";
+import { EmptyState } from "@/components/EmptyState";
+import { UserX, Search } from "lucide-react";
 
 interface PageProps {
   searchParams: Promise<{ q?: string }>;
@@ -64,14 +66,14 @@ export default async function ClientesPage({ searchParams }: PageProps) {
         <input
           type="text"
           name="q"
-          placeholder="Buscar client por nome..."
+          placeholder="Buscar cliente por nome..."
           defaultValue={query}
           className="flex-1"
         />
         <div className="flex gap-3">
           <button
             type="submit"
-            className="btn btn-primary flex-1 sm:flex-initial"
+            className="btn btn-primary flex-1 sm:flex-initial cursor-pointer"
             style={{ padding: "10px 20px" }}
           >
             Buscar
@@ -89,12 +91,27 @@ export default async function ClientesPage({ searchParams }: PageProps) {
       </form>
 
       {/* Clients List/Cards */}
-      <div className="border border-gray-200 rounded-lg bg-white overflow-hidden shadow-sm w-full">
+      <div>
         {clients.length === 0 ? (
-          <div className="p-8 text-center text-gray-500">
-            Nenhum cliente encontrado.
-          </div>
+          query ? (
+            <EmptyState
+              icon={Search}
+              title="Nenhum cliente encontrado"
+              description={`Não encontramos nenhum resultado correspondente a "${query}".`}
+              actionText="Limpar busca"
+              actionHref="/clientes"
+            />
+          ) : (
+            <EmptyState
+              icon={UserX}
+              title="Nenhum cliente cadastrado"
+              description="Sua ótica ainda não possui clientes cadastrados. Cadastre seu primeiro cliente para iniciar."
+              actionText="Cadastrar Cliente"
+              actionHref="/clientes/novo"
+            />
+          )
         ) : (
+          <div className="border border-gray-200 rounded-lg bg-white overflow-hidden shadow-sm w-full">
           <>
             {/* Desktop Table View */}
             <div className="hidden sm:block overflow-x-auto">
@@ -175,6 +192,7 @@ export default async function ClientesPage({ searchParams }: PageProps) {
               ))}
             </div>
           </>
+          </div>
         )}
       </div>
     </div>

@@ -1,6 +1,8 @@
 import prisma from "@/lib/db";
 import Link from "next/link";
 import { requireAdmin } from "@/lib/authz";
+import { EmptyState } from "@/components/EmptyState";
+import { UserX } from "lucide-react";
 
 export default async function UsuariosListPage() {
   // Enforce ADMIN permission at the server component level
@@ -31,13 +33,18 @@ export default async function UsuariosListPage() {
       </div>
 
       {/* Users List Container */}
-      <div className="border border-gray-200 rounded-lg bg-white overflow-hidden shadow-sm w-full">
+      <div>
         {users.length === 0 ? (
-          <div className="p-8 text-center text-gray-500">
-            Nenhum usuário cadastrado.
-          </div>
+          <EmptyState
+            icon={UserX}
+            title="Nenhum usuário cadastrado"
+            description="Não há operadores cadastrados no sistema. Cadastre um novo operador para liberar acesso."
+            actionText="+ Novo Usuário"
+            actionHref="/usuarios/novo"
+          />
         ) : (
-          <>
+          <div className="border border-gray-200 rounded-lg bg-white overflow-hidden shadow-sm w-full">
+            <>
             {/* Desktop Table View (hidden on mobile) */}
             <div className="hidden sm:block overflow-x-auto">
               <table className="w-full border-collapse text-left">
@@ -112,6 +119,7 @@ export default async function UsuariosListPage() {
               })}
             </div>
           </>
+          </div>
         )}
       </div>
     </div>

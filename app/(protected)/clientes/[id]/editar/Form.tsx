@@ -3,6 +3,7 @@
 import { updateClient } from "@/app/actions/clients";
 import Link from "next/link";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface ClientData {
   id: string;
@@ -28,7 +29,11 @@ export default function EditarForm({ client }: EditarFormProps) {
     try {
       await updateClient(client.id, formData);
     } catch (err: any) {
-      setError(err.message || "Ocorreu um erro ao atualizar o cliente.");
+      if (err?.digest?.startsWith("NEXT_REDIRECT")) {
+        toast.success("Cliente atualizado com sucesso.");
+        throw err;
+      }
+      setError(err.message || "Não foi possível atualizar os dados do cliente.");
       setLoading(false);
     }
   };

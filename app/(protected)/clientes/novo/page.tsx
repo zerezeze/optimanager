@@ -4,6 +4,7 @@ import { createClient } from "@/app/actions/clients";
 import Link from "next/link";
 import { useState } from "react";
 import PrescriptionFormFields from "@/components/PrescriptionFormFields";
+import { toast } from "sonner";
 
 export default function NovoClientePage() {
   const [error, setError] = useState<string | null>(null);
@@ -19,7 +20,11 @@ export default function NovoClientePage() {
     try {
       await createClient(formData);
     } catch (err: any) {
-      setError(err.message || "Ocorreu um erro ao cadastrar o cliente.");
+      if (err?.digest?.startsWith("NEXT_REDIRECT")) {
+        toast.success("Cliente cadastrado com sucesso.");
+        throw err;
+      }
+      setError(err.message || "Não foi possível cadastrar o cliente.");
       setLoading(false);
     }
   };

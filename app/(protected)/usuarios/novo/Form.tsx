@@ -3,6 +3,7 @@
 import { createUser } from "@/app/actions/users";
 import Link from "next/link";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function NovoUsuarioForm() {
   const [error, setError] = useState<string | null>(null);
@@ -17,7 +18,11 @@ export default function NovoUsuarioForm() {
     try {
       await createUser(formData);
     } catch (err: any) {
-      setError(err.message || "Ocorreu um erro ao cadastrar o usuário.");
+      if (err?.digest?.startsWith("NEXT_REDIRECT")) {
+        toast.success("Usuário cadastrado com sucesso.");
+        throw err;
+      }
+      setError(err.message || "Não foi possível cadastrar o usuário.");
       setLoading(false);
     }
   };

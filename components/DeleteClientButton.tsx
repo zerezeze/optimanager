@@ -1,51 +1,58 @@
 "use client";
 
 import { deleteClient } from "@/app/actions/clients";
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { ConfirmDialog } from "./ConfirmDialog";
+import { Trash2 } from "lucide-react";
 
 interface DeleteClientButtonProps {
   clientId: string;
 }
 
 export default function DeleteClientButton({ clientId }: DeleteClientButtonProps) {
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
-  const handleDelete = async () => {
-    if (!window.confirm("Tem certeza que deseja excluir este cliente? Esta ação não pode ser desfeita.")) {
-      return;
-    }
-
-    setError(null);
-    setLoading(true);
-
-    try {
-      await deleteClient(clientId);
-    } catch (err: any) {
-      if (err?.message === "NEXT_REDIRECT" || err?.digest?.startsWith("NEXT_REDIRECT")) {
-        alert("Cliente excluído com sucesso.");
-        throw err;
+  const handleDelete = () => {
+    setIsOpen(false);
+    startTransition(async () => {
+      try {
+        const result = await deleteClient(clientId);
+        if (result?.success) {
+          toast.success("Cliente excluído com sucesso.");
+          router.push("/clientes");
+        }
+      } catch (err: any) {
+        toast.error(err.message || "Não foi possível excluir o cliente.");
       }
-      setError(err.message || "Ocorreu um erro ao excluir o cliente.");
-      setLoading(false);
-    }
+    });
   };
 
   return (
-    <div style={{ display: "inline-block" }}>
+    <>
       <button
-        onClick={handleDelete}
-        disabled={loading}
-        className="btn btn-danger"
+        onClick={() => setIsOpen(true)}
+        disabled={isPending}
+        className="btn btn-danger flex items-center gap-2 cursor-pointer disabled:opacity-50"
         style={{ padding: "8px 16px", fontSize: "14px" }}
       >
-        {loading ? "Excluindo..." : "Excluir Cliente"}
+        <Trash2 className="w-4 h-4" />
+        {isPending ? "Excluindo..." : "Excluir Cliente"}
       </button>
-      {error && (
-        <div style={{ color: "#d32f2f", fontSize: "13px", marginTop: "8px", display: "block" }}>
-          {error}
-        </div>
-      )}
-    </div>
+
+      <ConfirmDialog
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+        title="Excluir Cliente"
+        description="Tem certeza que deseja excluir este cliente? Essa ação não poderá ser desfeita e removerá o cadastro permanentemente."
+        onConfirm={handleDelete}
+        confirmText="Excluir"
+        cancelText="Cancelar"
+        isPending={isPending}
+      />
+    </>
   );
 }

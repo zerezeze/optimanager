@@ -3,6 +3,7 @@
 import { useTransition } from "react";
 import { markInstallmentPaid } from "@/app/actions/consultations";
 import { Installment } from "@prisma/client";
+import { toast } from "sonner";
 
 interface InstallmentsTableProps {
   installments: Installment[];
@@ -16,9 +17,10 @@ export function InstallmentsTable({ installments, consultationId }: Installments
     startTransition(async () => {
       try {
         await markInstallmentPaid(installmentId, consultationId);
+        toast.success("Parcela baixada com sucesso!");
       } catch (err: any) {
         if (err?.digest?.startsWith("NEXT_REDIRECT")) throw err;
-        alert(err.message || "Erro ao atualizar parcela.");
+        toast.error(err.message || "Erro ao atualizar a parcela.");
       }
     });
   };

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import PrescriptionFormFields from "@/components/PrescriptionFormFields";
 import { PaymentFormFields } from "@/components/PaymentFormFields";
+import { toast } from "sonner";
 
 interface ConsultationData {
   id: string;
@@ -49,9 +50,11 @@ export default function EditarForm({ consultation, existingPaymentMethod }: Edit
     try {
       await updateConsultation(consultation.id, formData);
     } catch (err: any) {
-      // Rethrow redirect errors so Next.js handles them natively
-      if (err?.digest?.startsWith("NEXT_REDIRECT")) throw err;
-      setError(err.message || "Ocorreu um erro ao atualizar a consulta.");
+      if (err?.digest?.startsWith("NEXT_REDIRECT")) {
+        toast.success("Consulta atualizada com sucesso.");
+        throw err;
+      }
+      setError(err.message || "Não foi possível salvar as alterações da consulta.");
       setLoading(false);
     }
   };
