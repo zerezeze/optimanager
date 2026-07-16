@@ -457,7 +457,7 @@ export async function deleteConsultation(id: string) {
   }
 
   revalidatePath(`/clientes/${clientId}`);
-  return { success: true, clientId };
+  redirect(`/clientes/${clientId}`);
 }
 
 /**

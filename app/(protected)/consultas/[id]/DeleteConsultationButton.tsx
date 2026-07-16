@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
 import { deleteConsultation } from "@/app/actions/consultations";
 import { toast } from "sonner";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
@@ -14,19 +13,19 @@ interface DeleteConsultationButtonProps {
 export function DeleteConsultationButton({ consultationId }: DeleteConsultationButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
-  const router = useRouter();
 
   const handleDelete = () => {
-    setIsOpen(false);
     startTransition(async () => {
       try {
-        const result = await deleteConsultation(consultationId);
-        if (result?.success) {
-          toast.success("Consulta excluída com sucesso.");
-          router.push(`/clientes/${result.clientId}`);
-        }
+        await deleteConsultation(consultationId);
       } catch (error: any) {
+        if (error?.digest?.startsWith("NEXT_REDIRECT") || error?.message === "NEXT_REDIRECT") {
+          toast.success("Consulta excluída com sucesso.");
+          setIsOpen(false);
+          throw error; // Rethrow so Next.js redirects
+        }
         toast.error(error.message || "Não foi possível excluir a consulta.");
+        setIsOpen(false);
       }
     });
   };

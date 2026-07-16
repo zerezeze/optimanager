@@ -2,7 +2,6 @@
 
 import { deleteClient } from "@/app/actions/clients";
 import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { Trash2 } from "lucide-react";
@@ -14,19 +13,19 @@ interface DeleteClientButtonProps {
 export default function DeleteClientButton({ clientId }: DeleteClientButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
-  const router = useRouter();
 
   const handleDelete = () => {
-    setIsOpen(false);
     startTransition(async () => {
       try {
-        const result = await deleteClient(clientId);
-        if (result?.success) {
-          toast.success("Cliente excluído com sucesso.");
-          router.push("/clientes");
-        }
+        await deleteClient(clientId);
       } catch (err: any) {
+        if (err?.digest?.startsWith("NEXT_REDIRECT") || err?.message === "NEXT_REDIRECT") {
+          toast.success("Cliente excluído com sucesso.");
+          setIsOpen(false);
+          throw err; // Rethrow so Next.js redirects
+        }
         toast.error(err.message || "Não foi possível excluir o cliente.");
+        setIsOpen(false);
       }
     });
   };

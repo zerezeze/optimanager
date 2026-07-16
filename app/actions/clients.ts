@@ -234,7 +234,7 @@ export async function deleteClient(id: string) {
   }
 
   revalidatePath("/clientes");
-  return { success: true };
+  redirect("/clientes");
 }
 
 export async function updateClient(id: string, formData: FormData) {
