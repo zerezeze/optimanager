@@ -150,42 +150,63 @@ export default async function ConsultaDetalhesPage({ params }: PageProps) {
           </div>
         </div>
 
-        {/* CARD 2: DADOS COMERCIAIS */}
+        {/* CARD 2: DADOS DA RECEITA / COMERCIAIS */}
         <div className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm w-full flex flex-col gap-4">
           <h2 className="text-lg font-bold text-blue-600 border-b border-gray-100 pb-2">
-            Dados Comerciais
+            Dados da Receita
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-b border-gray-100 pb-3">
             <div>
-              <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Data da Consulta</strong>
-              <span className="text-sm text-gray-800 font-semibold">{formattedDate}</span>
+              <strong className="text-xs text-gray-500 flex items-center gap-1.5 uppercase tracking-wider mb-1">
+                <span>👨‍⚕️</span> Médico
+              </strong>
+              <span className="text-sm text-gray-800 font-semibold">{consultation.medico || "Não informado"}</span>
             </div>
             <div>
-              <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Valor</strong>
-              <span className="text-sm text-gray-800 font-semibold">{formattedValue}</span>
+              <strong className="text-xs text-gray-500 flex items-center gap-1.5 uppercase tracking-wider mb-1">
+                <span>📅</span> Data da Consulta
+              </strong>
+              <span className="text-sm text-gray-800 font-semibold">{formattedDate}</span>
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 border-b border-gray-100 pb-3">
             <div>
-              <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Lentes</strong>
-              <span className="text-sm text-gray-800 font-semibold">{consultation.lentes || "Não informado"}</span>
-            </div>
-            <div>
-              <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Laboratório</strong>
+              <strong className="text-xs text-gray-500 flex items-center gap-1.5 uppercase tracking-wider mb-1">
+                <span>🏭</span> Laboratório
+              </strong>
               <span className="text-sm text-gray-800 font-semibold">{consultation.laboratorio || "Não informado"}</span>
             </div>
             <div>
-              <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Ordem de Serviço (O.S.)</strong>
-              <span className="text-sm text-gray-800 font-semibold">{consultation.ordemServico || "Não informado"}</span>
+              <strong className="text-xs text-gray-500 flex items-center gap-1.5 uppercase tracking-wider mb-1">
+                <span>👓</span> Lentes
+              </strong>
+              <span className="text-sm text-gray-800 font-semibold">{consultation.lentes || "Não informado"}</span>
+            </div>
+            <div>
+              <strong className="text-xs text-gray-500 flex items-center gap-1.5 uppercase tracking-wider mb-1">
+                <span>💰</span> Valor
+              </strong>
+              <span className="text-sm text-gray-800 font-semibold">{formattedValue}</span>
             </div>
           </div>
 
-          <div>
-            <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Observação</strong>
+          <div className="border-b border-gray-100 pb-3">
+            <strong className="text-xs text-gray-500 flex items-center gap-1.5 uppercase tracking-wider mb-1">
+              <span>📝</span> Observações
+            </strong>
             <span className="text-sm text-gray-800 whitespace-pre-wrap leading-relaxed block bg-gray-50 p-3 rounded border border-gray-100 mt-1">
-              {consultation.observacao || "Nenhuma observação informada."}
+              {consultation.observacao || "Não informado"}
+            </span>
+          </div>
+
+          <div>
+            <strong className="text-xs text-gray-500 flex items-center gap-1.5 uppercase tracking-wider mb-1">
+              <span>📄</span> Ordem de Serviço
+            </strong>
+            <span className="text-sm text-gray-800 font-semibold block mt-1">
+              {consultation.ordemServico || "Não informado"}
             </span>
           </div>
         </div>

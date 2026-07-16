@@ -14,6 +14,7 @@ interface PrescriptionData {
   adicao?: string | null;
   lentes?: string | null;
   laboratorio?: string | null;
+  medico?: string | null;
   valor?: number | null;
   data?: Date | string | null;
   observacao?: string | null;
@@ -257,21 +258,33 @@ export default function PrescriptionFormFields({ defaultValue }: PrescriptionFor
         </h2>
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="lentes" className="text-sm font-semibold text-gray-600">
-              Lentes
+            <label htmlFor="medico" className="text-sm font-semibold text-gray-600 flex items-center gap-1.5">
+              <span>👨‍⚕️</span> Médico
             </label>
             <input
-              id="lentes"
-              name="lentes"
+              id="medico"
+              name="medico"
               type="text"
-              placeholder="Ex: Antirreflexo Crizal"
-              defaultValue={defaultValue?.lentes || ""}
+              placeholder="Ex: Dr. Carlos Eduardo"
+              defaultValue={defaultValue?.medico || ""}
             />
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="laboratorio" className="text-sm font-semibold text-gray-600">
-              Laboratório
+            <label htmlFor="data" className="text-sm font-semibold text-gray-600 flex items-center gap-1.5">
+              <span>📅</span> Data da Consulta
+            </label>
+            <input
+              id="data"
+              name="data"
+              type="date"
+              defaultValue={defaultDate}
+            />
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="laboratorio" className="text-sm font-semibold text-gray-600 flex items-center gap-1.5">
+              <span>🏭</span> Laboratório
             </label>
             <input
               id="laboratorio"
@@ -283,8 +296,21 @@ export default function PrescriptionFormFields({ defaultValue }: PrescriptionFor
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="valor" className="text-sm font-semibold text-gray-600">
-              Valor (R$) *
+            <label htmlFor="lentes" className="text-sm font-semibold text-gray-600 flex items-center gap-1.5">
+              <span>👓</span> Lentes
+            </label>
+            <input
+              id="lentes"
+              name="lentes"
+              type="text"
+              placeholder="Ex: Antirreflexo Crizal"
+              defaultValue={defaultValue?.lentes || ""}
+            />
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="valor" className="text-sm font-semibold text-gray-600 flex items-center gap-1.5">
+              <span>💰</span> Valor (R$) *
             </label>
             <input
               id="valor"
@@ -297,20 +323,8 @@ export default function PrescriptionFormFields({ defaultValue }: PrescriptionFor
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="data" className="text-sm font-semibold text-gray-600">
-              Data da Consulta
-            </label>
-            <input
-              id="data"
-              name="data"
-              type="date"
-              defaultValue={defaultDate}
-            />
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="observacao" className="text-sm font-semibold text-gray-600">
-              Observação
+            <label htmlFor="observacao" className="text-sm font-semibold text-gray-600 flex items-center gap-1.5">
+              <span>📝</span> Observação
             </label>
             <textarea
               id="observacao"

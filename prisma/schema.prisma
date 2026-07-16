@@ -80,6 +80,7 @@ model Consultation {
   adicao        String?  @map("adicao") @db.VarChar(50)
   lentes        String?  @map("lentes") @db.VarChar(255)
   laboratorio   String?  @map("laboratorio") @db.VarChar(255)
+  medico        String?  @map("medico") @db.VarChar(255)
   valor         Int // value in cents (e.g., 10000 = R$ 100,00)
   observacao    String?  @map("observacao") @db.Text
   data          DateTime @default(now())
@@ -89,6 +90,7 @@ model Consultation {
   payment       Payment?
 
   @@index([data])
+  @@index([medico])
   @@map("consultations")
 }
 

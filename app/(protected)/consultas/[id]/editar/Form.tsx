@@ -16,6 +16,7 @@ interface ConsultationData {
   adicao: string | null;
   lentes: string | null;
   laboratorio: string | null;
+  medico: string | null;
   valor: number;
   observacao: string | null;
   ordemServico: string | null;
