@@ -4,13 +4,22 @@ import { useTransition } from "react";
 import { markInstallmentPaid } from "@/app/actions/consultations";
 import { Installment } from "@prisma/client";
 import { toast } from "sonner";
+import { MessageCircle } from "lucide-react";
+import { getWhatsAppUrl } from "@/lib/whatsapp";
 
 interface InstallmentsTableProps {
   installments: Installment[];
   consultationId: string;
+  clientPhone?: string | null;
+  clientNome?: string;
 }
 
-export function InstallmentsTable({ installments, consultationId }: InstallmentsTableProps) {
+export function InstallmentsTable({
+  installments,
+  consultationId,
+  clientPhone,
+  clientNome,
+}: InstallmentsTableProps) {
   const [isPending, startTransition] = useTransition();
 
   const handleMarkPaid = (installmentId: string) => {
@@ -34,7 +43,7 @@ export function InstallmentsTable({ installments, consultationId }: Installments
             <th className="p-3 font-semibold">Vencimento</th>
             <th className="p-3 font-semibold text-right">Valor</th>
             <th className="p-3 font-semibold text-center">Status</th>
-            <th className="p-3 font-semibold text-right">Ação</th>
+            <th className="p-3 font-semibold text-right">Ações</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100 text-gray-800">
@@ -80,15 +89,32 @@ export function InstallmentsTable({ installments, consultationId }: Installments
                   )}
                 </td>
                 <td className="p-3 text-right">
-                  {!inst.pago && (
-                    <button
-                      onClick={() => handleMarkPaid(inst.id)}
-                      disabled={isPending}
-                      className="text-xs font-semibold text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {isPending ? "Salvando..." : "Marcar como paga"}
-                    </button>
-                  )}
+                  <div className="flex items-center justify-end gap-3.5">
+                    {!inst.pago && clientPhone && (
+                      <a
+                        href={getWhatsAppUrl(
+                          clientPhone,
+                          `Olá ${clientNome || "cliente"}, lembramos que sua ${inst.numero}ª parcela no valor de ${valor} vence em ${vencimento}.`
+                        )}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-green-600 hover:text-green-800"
+                        title="Enviar cobrança via WhatsApp"
+                      >
+                        <MessageCircle className="w-3.5 h-3.5" />
+                        <span>Cobrar</span>
+                      </a>
+                    )}
+                    {!inst.pago && (
+                      <button
+                        onClick={() => handleMarkPaid(inst.id)}
+                        disabled={isPending}
+                        className="text-xs font-semibold text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:cursor-not-allowed border-none bg-transparent cursor-pointer"
+                      >
+                        {isPending ? "Salvando..." : "Marcar paga"}
+                      </button>
+                    )}
+                  </div>
                 </td>
               </tr>
             );

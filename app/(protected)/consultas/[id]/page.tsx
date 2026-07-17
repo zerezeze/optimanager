@@ -5,6 +5,8 @@ import { requireAuthenticated } from "@/lib/authz";
 import { DeleteConsultationButton } from "./DeleteConsultationButton";
 import { PaymentStatusBadge } from "@/components/PaymentStatusBadge";
 import { InstallmentsTable } from "@/components/InstallmentsTable";
+import { MessageCircle } from "lucide-react";
+import { getWhatsAppUrl } from "@/lib/whatsapp";
 
 const PAYMENT_METHOD_LABELS: Record<string, string> = {
   DINHEIRO: "Dinheiro",
@@ -87,20 +89,50 @@ export default async function ConsultaDetalhesPage({ params }: PageProps) {
         {/* Header Title */}
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Ficha da Consulta</h1>
-          <p className="text-sm text-gray-500">
-            Cliente: <strong className="text-gray-700">{consultation.client.nome}</strong>
-          </p>
+          <div className="flex items-center gap-2 mt-1">
+            <span className="text-sm text-gray-500">
+              Cliente: <strong className="text-gray-700">{consultation.client.nome}</strong>
+            </span>
+            {consultation.client.telefone && (
+              <a
+                href={getWhatsAppUrl(consultation.client.telefone, `Olá ${consultation.client.nome}, `)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-xs text-green-600 hover:text-green-800 font-semibold"
+                title="Conversar no WhatsApp"
+              >
+                <MessageCircle className="w-3.5 h-3.5" />
+                <span>Conversar</span>
+              </a>
+            )}
+          </div>
         </div>
 
         {/* CARD 0: ORDEM DE SERVIÇO */}
         {consultation.ordemServico && (
-          <div className="p-4 border border-blue-100 rounded-lg bg-blue-50/50 shadow-sm w-full flex items-center justify-between">
+          <div className="p-4 border border-blue-100 rounded-lg bg-blue-50/50 shadow-sm w-full flex flex-col sm:flex-row justify-between sm:items-center gap-3">
             <div>
               <span className="text-xs text-gray-500 block uppercase tracking-wider mb-0.5">Ordem de Serviço (O.S.)</span>
               <strong className="text-base text-blue-700">{consultation.ordemServico}</strong>
             </div>
-            <div className="text-xs text-gray-400 bg-white border border-gray-150 rounded px-2.5 py-1">
-              Laboratório / Ótica
+            <div className="flex items-center gap-3">
+              {consultation.client.telefone && (
+                <a
+                  href={getWhatsAppUrl(
+                    consultation.client.telefone,
+                    `Olá ${consultation.client.nome}, seus óculos da O.S. ${consultation.ordemServico} já estão prontos na Ótica Everardo! Pode vir buscar.`
+                  )}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn bg-green-600 hover:bg-green-700 active:bg-green-800 text-white flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold border-none cursor-pointer"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  <span>Avisar O.S. Pronta</span>
+                </a>
+              )}
+              <div className="text-xs text-gray-400 bg-white border border-gray-150 rounded px-2.5 py-1.5 font-medium">
+                Laboratório / Ótica
+              </div>
             </div>
           </div>
         )}
@@ -263,6 +295,8 @@ export default async function ConsultaDetalhesPage({ params }: PageProps) {
                   <InstallmentsTable
                     installments={consultation.payment.installments}
                     consultationId={consultation.id}
+                    clientPhone={consultation.client.telefone}
+                    clientNome={consultation.client.nome}
                   />
                 </div>
               )}

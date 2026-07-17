@@ -6,7 +6,8 @@ import DeleteClientButton from "@/components/DeleteClientButton";
 import { PaymentStatusBadge } from "@/components/PaymentStatusBadge";
 import { requireAuthenticated } from "@/lib/authz";
 import { EmptyState } from "@/components/EmptyState";
-import { FileX } from "lucide-react";
+import { FileX, MessageCircle } from "lucide-react";
+import { getWhatsAppUrl } from "@/lib/whatsapp";
 
 
 interface PageProps {
@@ -86,7 +87,21 @@ export default async function ClientePerfilPage({ params }: PageProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Telefone</strong>
-            <span className="text-sm text-gray-800 font-medium">{client.telefone || "Não informado"}</span>
+            <div className="flex items-center gap-2.5">
+              <span className="text-sm text-gray-800 font-medium">{client.telefone || "Não informado"}</span>
+              {client.telefone && (
+                <a
+                  href={getWhatsAppUrl(client.telefone, `Olá ${client.nome}, `)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-xs text-green-600 hover:text-green-800 font-semibold"
+                  title="Conversar no WhatsApp"
+                >
+                  <MessageCircle className="w-3.5 h-3.5" />
+                  <span>WhatsApp</span>
+                </a>
+              )}
+            </div>
           </div>
           <div>
             <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Endereço</strong>
