@@ -42,11 +42,20 @@ export default function PrescriptionFormFields({ defaultValue }: PrescriptionFor
       e.target.value = "PLANO";
       return;
     }
+    const isCilindrico = e.target.name === "odCilindrico" || e.target.name === "oeCilindrico";
     const normalized = val.replace(",", ".");
     const parsed = parseFloat(normalized);
     if (!isNaN(parsed)) {
-      const sign = parsed >= 0 ? "+" : "";
-      e.target.value = `${sign}${parsed.toFixed(2).replace(".", ",")}`;
+      if (isCilindrico) {
+        // Cilíndrico é sempre negativo
+        const absVal = Math.abs(parsed);
+        e.target.value = `-${absVal.toFixed(2).replace(".", ",")}`;
+      } else {
+        // Esférico e Adição podem ser positivos ou negativos
+        const isNegative = parsed < 0 || Object.is(parsed, -0);
+        const sign = isNegative ? "" : "+";
+        e.target.value = `${sign}${parsed.toFixed(2).replace(".", ",")}`;
+      }
     }
   };
 
