@@ -161,3 +161,42 @@ textarea::placeholder {
 .dialog-content:focus {
   outline: none;
 }
+
+/* Estilos de Impressão */
+@media print {
+  header, footer, nav, .btn, .no-print, button, a[href*="/clientes"], a[href*="/consultas"] {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 11pt !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  main, .max-w-2xl, .p-4, .p-8, .p-5, .p-6 {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 10px !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  .border, .shadow-sm {
+    border: 1px solid #e5e7eb !important;
+    box-shadow: none !important;
+  }
+
+  /* Impressão Ficha de Laboratório (Oculta Financeiro) */
+  body.print-lab-only .print-section-financial {
+    display: none !important;
+  }
+
+  /* Impressão Recibo Comercial (Oculta Graus Refrativos) */
+  body.print-receipt-only .print-section-refractive {
+    display: none !important;
+  }
+}

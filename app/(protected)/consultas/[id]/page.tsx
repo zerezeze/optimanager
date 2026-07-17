@@ -7,6 +7,7 @@ import { PaymentStatusBadge } from "@/components/PaymentStatusBadge";
 import { InstallmentsTable } from "@/components/InstallmentsTable";
 import { MessageCircle } from "lucide-react";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
+import { PrintActions } from "./PrintActions";
 
 const PAYMENT_METHOD_LABELS: Record<string, string> = {
   DINHEIRO: "Dinheiro",
@@ -62,10 +63,32 @@ export default async function ConsultaDetalhesPage({ params }: PageProps) {
     currency: "BRL",
   });
 
+  const prescriptionData = {
+    clientNome: consultation.client.nome,
+    clientTelefone: consultation.client.telefone,
+    data: formattedDate,
+    medico: consultation.medico,
+    adicao: consultation.adicao,
+    lentes: consultation.lentes,
+    laboratorio: consultation.laboratorio,
+    ordemServico: consultation.ordemServico,
+    observacao: consultation.observacao,
+    odEsferico: consultation.odEsferico,
+    odCilindrico: consultation.odCilindrico,
+    odEixo: consultation.odEixo,
+    odDnp: consultation.odDnp,
+    odAltura: consultation.odAltura,
+    oeEsferico: consultation.oeEsferico,
+    oeCilindrico: consultation.oeCilindrico,
+    oeEixo: consultation.oeEixo,
+    oeDnp: consultation.oeDnp,
+    oeAltura: consultation.oeAltura,
+  };
+
   return (
     <div className="p-4 sm:p-8 max-w-2xl mx-auto font-sans w-full flex flex-col gap-6">
       {/* Navigation Header */}
-      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 no-print">
         <Link
           href={`/clientes/${consultation.clientId}`}
           className="text-sm font-semibold text-blue-600 hover:text-blue-800"
@@ -83,6 +106,12 @@ export default async function ConsultaDetalhesPage({ params }: PageProps) {
             Editar Consulta
           </Link>
         </div>
+      </div>
+
+      {/* Print and PDF actions toolbar */}
+      <div className="bg-gray-50 border border-gray-150 p-4 rounded-lg flex flex-col gap-2.5 no-print">
+        <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Documentos e Impressão</span>
+        <PrintActions data={prescriptionData} />
       </div>
 
       <div className="flex flex-col gap-6 w-full">
@@ -138,7 +167,7 @@ export default async function ConsultaDetalhesPage({ params }: PageProps) {
         )}
 
         {/* CARD 1: RECEITA OFTALMOLÓGICA */}
-        <div className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm w-full">
+        <div className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm w-full print-section-refractive">
           <h2 className="text-lg font-bold text-blue-600 border-b border-gray-100 pb-2 mb-4 text-center tracking-wide">
             RECEITA OFTALMOLÓGICA
           </h2>
@@ -243,7 +272,7 @@ export default async function ConsultaDetalhesPage({ params }: PageProps) {
           </div>
         </div>
         {/* CARD 3: SITUAÇÃO FINANCEIRA */}
-        <div className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm w-full flex flex-col gap-4">
+        <div className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm w-full flex flex-col gap-4 print-section-financial">
           <div className="flex items-center justify-between border-b border-gray-100 pb-2">
             <h2 className="text-lg font-bold text-blue-600">Situação Financeira</h2>
             {consultation.payment && <PaymentStatusBadge status={consultation.payment.status} />}
