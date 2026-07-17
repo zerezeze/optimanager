@@ -6,6 +6,8 @@ import { Installment } from "@prisma/client";
 import { toast } from "sonner";
 import { MessageCircle } from "lucide-react";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 
 interface InstallmentsTableProps {
   installments: Installment[];
@@ -38,15 +40,15 @@ export function InstallmentsTable({
     <div className="overflow-x-auto w-full">
       <table className="w-full border-collapse text-left text-sm">
         <thead>
-          <tr className="border-b border-gray-200 bg-gray-50 text-gray-500 uppercase tracking-wider text-xs">
-            <th className="p-3 font-semibold">#</th>
-            <th className="p-3 font-semibold">Vencimento</th>
-            <th className="p-3 font-semibold text-right">Valor</th>
-            <th className="p-3 font-semibold text-center">Status</th>
-            <th className="p-3 font-semibold text-right">Ações</th>
+          <tr className="border-b border-slate-100 bg-slate-50/75 text-slate-400 uppercase tracking-wider text-[10px] font-bold">
+            <th className="p-3 px-4">#</th>
+            <th className="p-3 px-4">Vencimento</th>
+            <th className="p-3 px-4 text-right">Valor</th>
+            <th className="p-3 px-4 text-center">Status</th>
+            <th className="p-3 px-4 text-right no-print">Ações</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-100 text-gray-800">
+        <tbody className="divide-y divide-slate-100 text-slate-700 font-medium">
           {installments.map((inst) => {
             const vencimento = new Date(inst.vencimento).toLocaleDateString("pt-BR", {
               timeZone: "UTC",
@@ -60,36 +62,32 @@ export function InstallmentsTable({
               : null;
 
             return (
-              <tr key={inst.id} className={inst.pago ? "bg-green-50/30" : ""}>
-                <td className="p-3 font-semibold text-gray-600">{inst.numero}ª</td>
-                <td className="p-3">
-                  <span className={inst.pago ? "text-gray-400 line-through" : "text-gray-800"}>
+              <tr key={inst.id} className={inst.pago ? "bg-green-50/10" : "hover:bg-slate-50/20"}>
+                <td className="p-3 px-4 font-bold text-slate-400">{inst.numero}ª</td>
+                <td className="p-3 px-4">
+                  <span className={inst.pago ? "text-slate-400 line-through" : "text-slate-800"}>
                     {vencimento}
                   </span>
                   {paidAt && (
-                    <span className="block text-xs text-green-600 mt-0.5">
+                    <span className="block text-[10px] text-green-600 font-semibold mt-0.5">
                       Pago em {paidAt}
                     </span>
                   )}
                 </td>
-                <td className="p-3 text-right font-semibold">
-                  <span className={inst.pago ? "text-gray-400 line-through" : "text-gray-800"}>
+                <td className="p-3 px-4 text-right font-bold">
+                  <span className={inst.pago ? "text-slate-400 line-through" : "text-slate-800"}>
                     {valor}
                   </span>
                 </td>
-                <td className="p-3 text-center">
+                <td className="p-3 px-4 text-center">
                   {inst.pago ? (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800 border border-green-200">
-                      🟢 Paga
-                    </span>
+                    <Badge variant="success">Paga</Badge>
                   ) : (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800 border border-red-200">
-                      🔴 Aberta
-                    </span>
+                    <Badge variant="danger">Aberta</Badge>
                   )}
                 </td>
-                <td className="p-3 text-right">
-                  <div className="flex items-center justify-end gap-3.5">
+                <td className="p-3 px-4 text-right no-print">
+                  <div className="flex items-center justify-end gap-3">
                     {!inst.pago && clientPhone && (
                       <a
                         href={getWhatsAppUrl(
@@ -98,7 +96,7 @@ export function InstallmentsTable({
                         )}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-xs font-semibold text-green-600 hover:text-green-800"
+                        className="inline-flex items-center gap-1 text-xs font-bold text-green-600 hover:text-green-800"
                         title="Enviar cobrança via WhatsApp"
                       >
                         <MessageCircle className="w-3.5 h-3.5" />
@@ -106,13 +104,14 @@ export function InstallmentsTable({
                       </a>
                     )}
                     {!inst.pago && (
-                      <button
+                      <Button
+                        variant="ghost"
                         onClick={() => handleMarkPaid(inst.id)}
                         disabled={isPending}
-                        className="text-xs font-semibold text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:cursor-not-allowed border-none bg-transparent cursor-pointer"
+                        className="py-1 px-2.5 text-xs font-bold"
                       >
-                        {isPending ? "Salvando..." : "Marcar paga"}
-                      </button>
+                        {isPending ? "Salvando..." : "Baixar"}
+                      </Button>
                     )}
                   </div>
                 </td>

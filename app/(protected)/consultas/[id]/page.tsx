@@ -5,9 +5,13 @@ import { requireAuthenticated } from "@/lib/authz";
 import { DeleteConsultationButton } from "./DeleteConsultationButton";
 import { PaymentStatusBadge } from "@/components/PaymentStatusBadge";
 import { InstallmentsTable } from "@/components/InstallmentsTable";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, Printer, FileText } from "lucide-react";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
 import { PrintActions } from "./PrintActions";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { SectionCard } from "@/components/ui/SectionCard";
+import { Card } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
 
 const PAYMENT_METHOD_LABELS: Record<string, string> = {
   DINHEIRO: "Dinheiro",
@@ -87,64 +91,53 @@ export default async function ConsultaDetalhesPage({ params }: PageProps) {
 
   return (
     <div className="p-4 sm:p-8 max-w-2xl mx-auto font-sans w-full flex flex-col gap-6">
-      {/* Navigation Header */}
-      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 no-print">
-        <Link
-          href={`/clientes/${consultation.clientId}`}
-          className="text-sm font-semibold text-blue-600 hover:text-blue-800"
-        >
-          <span className="hidden sm:inline">&larr; Voltar para Perfil de {consultation.client.nome}</span>
-          <span className="inline sm:hidden">&larr; Voltar ao Perfil</span>
-        </Link>
-        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-          <DeleteConsultationButton consultationId={consultation.id} />
-          <Link
-            href={`/consultas/${consultation.id}/editar`}
-            className="btn btn-secondary w-full sm:w-auto"
-            style={{ padding: "8px 16px", fontSize: "14px" }}
-          >
-            Editar Consulta
+      {/* Page Header */}
+      <PageHeader
+        title="Ficha da Consulta"
+        description={`Cliente: ${consultation.client.nome}`}
+        backHref={`/clientes/${consultation.clientId}`}
+        backLabel="Voltar ao Perfil"
+      >
+        <div className="flex flex-col sm:flex-row gap-2.5 w-full sm:w-auto">
+          {consultation.client.telefone && (
+            <a
+              href={getWhatsAppUrl(consultation.client.telefone, `Olá ${consultation.client.nome}, `)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto shrink-0"
+            >
+              <Button variant="secondary" className="w-full text-xs py-2 px-3.5 shadow-sm text-green-700 hover:text-green-800">
+                <MessageCircle className="w-4 h-4" />
+                <span>Conversar</span>
+              </Button>
+            </a>
+          )}
+          <Link href={`/consultas/${consultation.id}/editar`} className="w-full sm:w-auto">
+            <Button variant="secondary" className="w-full sm:w-auto text-xs py-2 px-3.5 shadow-sm">
+              <span>Editar Consulta</span>
+            </Button>
           </Link>
+          <div className="w-full sm:w-auto shrink-0">
+            <DeleteConsultationButton consultationId={consultation.id} />
+          </div>
         </div>
-      </div>
+      </PageHeader>
 
       {/* Print and PDF actions toolbar */}
-      <div className="bg-gray-50 border border-gray-150 p-4 rounded-lg flex flex-col gap-2.5 no-print">
-        <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Documentos e Impressão</span>
+      <div className="bg-slate-50 border border-slate-150 p-4 rounded-xl flex flex-col gap-3 no-print">
+        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Documentos e Impressão</span>
         <PrintActions data={prescriptionData} />
       </div>
 
       <div className="flex flex-col gap-6 w-full">
-        {/* Header Title */}
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Ficha da Consulta</h1>
-          <div className="flex items-center gap-2 mt-1">
-            <span className="text-sm text-gray-500">
-              Cliente: <strong className="text-gray-700">{consultation.client.nome}</strong>
-            </span>
-            {consultation.client.telefone && (
-              <a
-                href={getWhatsAppUrl(consultation.client.telefone, `Olá ${consultation.client.nome}, `)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-xs text-green-600 hover:text-green-800 font-semibold"
-                title="Conversar no WhatsApp"
-              >
-                <MessageCircle className="w-3.5 h-3.5" />
-                <span>Conversar</span>
-              </a>
-            )}
-          </div>
-        </div>
-
         {/* CARD 0: ORDEM DE SERVIÇO */}
         {consultation.ordemServico && (
-          <div className="p-4 border border-blue-100 rounded-lg bg-blue-50/50 shadow-sm w-full flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+          <div className="p-4 border border-blue-100 rounded-xl bg-blue-50/20 shadow-sm w-full flex flex-col sm:flex-row justify-between sm:items-center gap-3">
             <div>
-              <span className="text-xs text-gray-500 block uppercase tracking-wider mb-0.5">Ordem de Serviço (O.S.)</span>
+              <span className="text-[9px] font-bold text-slate-400 block uppercase tracking-wider mb-0.5">Ordem de Serviço (O.S.)</span>
               <strong className="text-base text-blue-700">{consultation.ordemServico}</strong>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               {consultation.client.telefone && (
                 <a
                   href={getWhatsAppUrl(
@@ -153,13 +146,15 @@ export default async function ConsultaDetalhesPage({ params }: PageProps) {
                   )}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn bg-green-600 hover:bg-green-700 active:bg-green-800 text-white flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold border-none cursor-pointer"
+                  className="inline-flex shrink-0"
                 >
-                  <MessageCircle className="w-4 h-4" />
-                  <span>Avisar O.S. Pronta</span>
+                  <Button className="bg-green-600 hover:bg-green-700 active:bg-green-800 text-white text-xs py-1.5 px-3 rounded-lg border-none shadow-sm font-semibold">
+                    <MessageCircle className="w-3.5 h-3.5" />
+                    <span>Avisar O.S. Pronta</span>
+                  </Button>
                 </a>
               )}
-              <div className="text-xs text-gray-400 bg-white border border-gray-150 rounded px-2.5 py-1.5 font-medium">
+              <div className="text-[10px] text-slate-400 bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 font-bold uppercase tracking-wider">
                 Laboratório / Ótica
               </div>
             </div>
@@ -167,170 +162,149 @@ export default async function ConsultaDetalhesPage({ params }: PageProps) {
         )}
 
         {/* CARD 1: RECEITA OFTALMOLÓGICA */}
-        <div className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm w-full print-section-refractive">
-          <h2 className="text-lg font-bold text-blue-600 border-b border-gray-100 pb-2 mb-4 text-center tracking-wide">
-            RECEITA OFTALMOLÓGICA
-          </h2>
+        <div className="print-section-refractive">
+          <SectionCard title="Receita Oftalmológica">
+            <div className="overflow-x-auto w-full">
+              <table className="w-full border-collapse text-center text-sm">
+                <thead>
+                  <tr className="border-b border-slate-100 bg-slate-50/75 text-slate-400 uppercase tracking-wider text-[10px] font-bold">
+                    <th className="p-3 font-bold text-left">Olho</th>
+                    <th className="p-3 font-semibold">Esférico</th>
+                    <th className="p-3 font-semibold">Cilíndrico</th>
+                    <th className="p-3 font-semibold">Eixo</th>
+                    <th className="p-3 font-semibold">DNP</th>
+                    <th className="p-3 font-semibold">Altura</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 text-slate-700 font-medium">
+                  <tr>
+                    <td className="p-3 font-bold text-left text-slate-400">OD (Direito)</td>
+                    <td className="p-3">{consultation.odEsferico || "-"}</td>
+                    <td className="p-3">{consultation.odCilindrico || "-"}</td>
+                    <td className="p-3">{consultation.odEixo ? `${consultation.odEixo}°` : "-"}</td>
+                    <td className="p-3">{consultation.odDnp ? `${consultation.odDnp} mm` : "-"}</td>
+                    <td className="p-3">{consultation.odAltura ? `${consultation.odAltura} mm` : "-"}</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3 font-bold text-left text-slate-400">OE (Esquerdo)</td>
+                    <td className="p-3">{consultation.oeEsferico || "-"}</td>
+                    <td className="p-3">{consultation.oeCilindrico || "-"}</td>
+                    <td className="p-3">{consultation.oeEixo ? `${consultation.oeEixo}°` : "-"}</td>
+                    <td className="p-3">{consultation.oeDnp ? `${consultation.oeDnp} mm` : "-"}</td>
+                    <td className="p-3">{consultation.oeAltura ? `${consultation.oeAltura} mm` : "-"}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
 
-          <div className="overflow-x-auto w-full">
-            <table className="w-full border-collapse text-center text-sm">
-              <thead>
-                <tr className="border-b border-gray-200 bg-gray-50 text-gray-500 uppercase tracking-wider text-xs">
-                  <th className="p-3 font-bold text-gray-700 text-left">Olho</th>
-                  <th className="p-3 font-semibold">Esférico</th>
-                  <th className="p-3 font-semibold">Cilíndrico</th>
-                  <th className="p-3 font-semibold">Eixo</th>
-                  <th className="p-3 font-semibold">DNP</th>
-                  <th className="p-3 font-semibold">Altura</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100 text-gray-800 font-medium">
-                <tr>
-                  <td className="p-3 font-bold text-left text-gray-500">OD (Direito)</td>
-                  <td className="p-3">{consultation.odEsferico || "-"}</td>
-                  <td className="p-3">{consultation.odCilindrico || "-"}</td>
-                  <td className="p-3">{consultation.odEixo ? `${consultation.odEixo}°` : "-"}</td>
-                  <td className="p-3">{consultation.odDnp ? `${consultation.odDnp} mm` : "-"}</td>
-                  <td className="p-3">{consultation.odAltura ? `${consultation.odAltura} mm` : "-"}</td>
-                </tr>
-                <tr>
-                  <td className="p-3 font-bold text-left text-gray-500">OE (Esquerdo)</td>
-                  <td className="p-3">{consultation.oeEsferico || "-"}</td>
-                  <td className="p-3">{consultation.oeCilindrico || "-"}</td>
-                  <td className="p-3">{consultation.oeEixo ? `${consultation.oeEixo}°` : "-"}</td>
-                  <td className="p-3">{consultation.oeDnp ? `${consultation.oeDnp} mm` : "-"}</td>
-                  <td className="p-3">{consultation.oeAltura ? `${consultation.oeAltura} mm` : "-"}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div className="mt-4 pt-3 border-t border-gray-100 flex items-center gap-2 text-sm justify-start pl-2">
-            <span className="text-gray-500 font-semibold">Adição:</span>
-            <span className="font-bold text-blue-600 text-base">{consultation.adicao || "-"}</span>
-          </div>
+            <div className="mt-4 pt-3 border-t border-slate-100 flex items-center gap-2 text-sm justify-start pl-2">
+              <span className="text-slate-400 font-bold uppercase tracking-wider text-xs">Adição:</span>
+              <span className="font-extrabold text-blue-600 text-base">{consultation.adicao || "-"}</span>
+            </div>
+          </SectionCard>
         </div>
 
         {/* CARD 2: DADOS DA RECEITA / COMERCIAIS */}
-        <div className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm w-full flex flex-col gap-4">
-          <h2 className="text-lg font-bold text-blue-600 border-b border-gray-100 pb-2">
-            Dados da Receita
-          </h2>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-b border-gray-100 pb-3">
+        <SectionCard title="Dados da Receita">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-b border-slate-100 pb-3.5">
             <div>
-              <strong className="text-xs text-gray-500 flex items-center gap-1.5 uppercase tracking-wider mb-1">
-                <span>👨‍⚕️</span> Médico
-              </strong>
-              <span className="text-sm text-gray-800 font-semibold">{consultation.medico || "Não informado"}</span>
+              <strong className="text-[10px] text-slate-400 block uppercase tracking-wider mb-1 font-bold">Médico</strong>
+              <span className="text-sm text-slate-800 font-bold">{consultation.medico || "Não informado"}</span>
             </div>
             <div>
-              <strong className="text-xs text-gray-500 flex items-center gap-1.5 uppercase tracking-wider mb-1">
-                <span>📅</span> Data da Consulta
-              </strong>
-              <span className="text-sm text-gray-800 font-semibold">{formattedDate}</span>
+              <strong className="text-[10px] text-slate-400 block uppercase tracking-wider mb-1 font-bold">Data da Consulta</strong>
+              <span className="text-sm text-slate-800 font-bold">{formattedDate}</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 border-b border-gray-100 pb-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 border-b border-slate-100 pb-3.5">
             <div>
-              <strong className="text-xs text-gray-500 flex items-center gap-1.5 uppercase tracking-wider mb-1">
-                <span>🏭</span> Laboratório
-              </strong>
-              <span className="text-sm text-gray-800 font-semibold">{consultation.laboratorio || "Não informado"}</span>
+              <strong className="text-[10px] text-slate-400 block uppercase tracking-wider mb-1 font-bold">Laboratório</strong>
+              <span className="text-sm text-slate-800 font-bold">{consultation.laboratorio || "Não informado"}</span>
             </div>
             <div>
-              <strong className="text-xs text-gray-500 flex items-center gap-1.5 uppercase tracking-wider mb-1">
-                <span>👓</span> Lentes
-              </strong>
-              <span className="text-sm text-gray-800 font-semibold">{consultation.lentes || "Não informado"}</span>
+              <strong className="text-[10px] text-slate-400 block uppercase tracking-wider mb-1 font-bold">Lentes</strong>
+              <span className="text-sm text-slate-800 font-bold">{consultation.lentes || "Não informado"}</span>
             </div>
             <div>
-              <strong className="text-xs text-gray-500 flex items-center gap-1.5 uppercase tracking-wider mb-1">
-                <span>💰</span> Valor
-              </strong>
-              <span className="text-sm text-gray-800 font-semibold">{formattedValue}</span>
+              <strong className="text-[10px] text-slate-400 block uppercase tracking-wider mb-1 font-bold">Valor</strong>
+              <span className="text-sm text-slate-800 font-bold">{formattedValue}</span>
             </div>
           </div>
 
-          <div className="border-b border-gray-100 pb-3">
-            <strong className="text-xs text-gray-500 flex items-center gap-1.5 uppercase tracking-wider mb-1">
-              <span>📝</span> Observações
-            </strong>
-            <span className="text-sm text-gray-800 whitespace-pre-wrap leading-relaxed block bg-gray-50 p-3 rounded border border-gray-100 mt-1">
+          <div className="border-b border-slate-100 pb-3.5">
+            <strong className="text-[10px] text-slate-400 block uppercase tracking-wider mb-1 font-bold">Observações</strong>
+            <span className="text-xs text-slate-700 whitespace-pre-wrap leading-relaxed block bg-slate-50 border border-slate-100 p-3 rounded-lg mt-1 font-medium">
               {consultation.observacao || "Não informado"}
             </span>
           </div>
 
           <div>
-            <strong className="text-xs text-gray-500 flex items-center gap-1.5 uppercase tracking-wider mb-1">
-              <span>📄</span> Ordem de Serviço
-            </strong>
-            <span className="text-sm text-gray-800 font-semibold block mt-1">
+            <strong className="text-[10px] text-slate-400 block uppercase tracking-wider mb-1 font-bold">Ordem de Serviço</strong>
+            <span className="text-sm text-slate-800 font-bold block mt-1">
               {consultation.ordemServico || "Não informado"}
             </span>
           </div>
-        </div>
+        </SectionCard>
+
         {/* CARD 3: SITUAÇÃO FINANCEIRA */}
-        <div className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm w-full flex flex-col gap-4 print-section-financial">
-          <div className="flex items-center justify-between border-b border-gray-100 pb-2">
-            <h2 className="text-lg font-bold text-blue-600">Situação Financeira</h2>
-            {consultation.payment && <PaymentStatusBadge status={consultation.payment.status} />}
-          </div>
+        <div className="print-section-financial">
+          <SectionCard
+            title="Situação Financeira"
+            action={consultation.payment && <PaymentStatusBadge status={consultation.payment.status} />}
+          >
+            {!consultation.payment ? (
+              <p className="text-sm text-slate-400 italic py-2">Nenhum pagamento registrado para esta consulta.</p>
+            ) : (
+              <div className="flex flex-col gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <strong className="text-[10px] text-slate-400 block uppercase tracking-wider mb-1 font-bold">Método</strong>
+                    <span className="text-sm text-slate-800 font-bold">
+                      {PAYMENT_METHOD_LABELS[consultation.payment.method] ?? consultation.payment.method}
+                    </span>
+                  </div>
+                  <div>
+                    <strong className="text-[10px] text-slate-400 block uppercase tracking-wider mb-1 font-bold">Total Pago</strong>
+                    <span className="text-sm text-slate-800 font-bold">
+                      {(() => {
+                        const paidInstallmentsSum = consultation.payment!.installments
+                          .filter((i) => i.pago)
+                          .reduce((sum, i) => sum + i.valor, 0);
+                        const effectivePaid = consultation.payment!.totalPago + paidInstallmentsSum;
+                        return (effectivePaid / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+                      })()}
+                    </span>
+                  </div>
+                  <div>
+                    <strong className="text-[10px] text-slate-400 block uppercase tracking-wider mb-1 font-bold">Saldo Devedor</strong>
+                    <span className="text-sm font-extrabold text-red-600">
+                      {(() => {
+                        const paidInstallmentsSum = consultation.payment!.installments
+                          .filter((i) => i.pago)
+                          .reduce((sum, i) => sum + i.valor, 0);
+                        const effectivePaid = consultation.payment!.totalPago + paidInstallmentsSum;
+                        const saldo = consultation.valor - effectivePaid;
+                        return (Math.max(0, saldo) / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+                      })()}
+                    </span>
+                  </div>
+                </div>
 
-          {!consultation.payment ? (
-            <p className="text-sm text-gray-400 italic">Nenhum pagamento registrado para esta consulta.</p>
-          ) : (
-            <>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Método</strong>
-                  <span className="text-sm text-gray-800 font-semibold">
-                    {PAYMENT_METHOD_LABELS[consultation.payment.method] ?? consultation.payment.method}
-                  </span>
-                </div>
-                <div>
-                  <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Total Pago</strong>
-                  <span className="text-sm text-gray-800 font-semibold">
-                    {(() => {
-                      // totalPago = entrada. Effective paid = entrada + sum of paid installments.
-                      const paidInstallmentsSum = consultation.payment!.installments
-                        .filter((i) => i.pago)
-                        .reduce((sum, i) => sum + i.valor, 0);
-                      const effectivePaid = consultation.payment!.totalPago + paidInstallmentsSum;
-                      return (effectivePaid / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-                    })()}
-                  </span>
-                </div>
-                <div>
-                  <strong className="text-xs text-gray-500 block uppercase tracking-wider mb-1">Saldo Devedor</strong>
-                  <span className="text-sm font-semibold text-red-600">
-                    {(() => {
-                      const paidInstallmentsSum = consultation.payment!.installments
-                        .filter((i) => i.pago)
-                        .reduce((sum, i) => sum + i.valor, 0);
-                      const effectivePaid = consultation.payment!.totalPago + paidInstallmentsSum;
-                      const saldo = consultation.valor - effectivePaid;
-                      return (Math.max(0, saldo) / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-                    })()}
-                  </span>
-                </div>
+                {consultation.payment.installments.length > 0 && (
+                  <div className="border-t border-slate-100 pt-4 flex flex-col gap-3">
+                    <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Parcelas do Crediário</h3>
+                    <InstallmentsTable
+                      installments={consultation.payment.installments}
+                      consultationId={consultation.id}
+                      clientPhone={consultation.client.telefone}
+                      clientNome={consultation.client.nome}
+                    />
+                  </div>
+                )}
               </div>
-
-
-              {consultation.payment.installments.length > 0 && (
-                <div>
-                  <h3 className="text-sm font-bold text-gray-700 mb-3">Parcelas do Crediário</h3>
-                  <InstallmentsTable
-                    installments={consultation.payment.installments}
-                    consultationId={consultation.id}
-                    clientPhone={consultation.client.telefone}
-                    clientNome={consultation.client.nome}
-                  />
-                </div>
-              )}
-            </>
-          )}
+            )}
+          </SectionCard>
         </div>
       </div>
     </div>

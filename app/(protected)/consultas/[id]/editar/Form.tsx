@@ -6,6 +6,8 @@ import { useState } from "react";
 import PrescriptionFormFields from "@/components/PrescriptionFormFields";
 import { PaymentFormFields } from "@/components/PaymentFormFields";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/Button";
+import { SectionCard } from "@/components/ui/SectionCard";
 
 interface ConsultationData {
   id: string;
@@ -65,35 +67,38 @@ export default function EditarForm({ consultation, existingPaymentMethod }: Edit
       <PrescriptionFormFields defaultValue={consultation} />
 
       {/* Payment Section */}
-      <div className="border border-gray-200 rounded-lg p-4 flex flex-col gap-3">
-        <h3 className="text-sm font-bold text-gray-700">Pagamento</h3>
-        {existingPaymentMethod && (
-          <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-md px-3 py-2">
-            ⚠️ Alterar o pagamento aqui <strong>substituirá</strong> o registro financeiro existente e apagará as parcelas antigas.
-          </p>
-        )}
-        <PaymentFormFields defaultMethod={existingPaymentMethod} />
-      </div>
+      <SectionCard title="Pagamento">
+        <div className="flex flex-col gap-4">
+          {existingPaymentMethod && (
+            <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3.5 py-3 font-semibold leading-relaxed">
+              Importante: Alterar o pagamento aqui substituirá o registro financeiro existente e apagará as parcelas antigas.
+            </p>
+          )}
+          <PaymentFormFields defaultMethod={existingPaymentMethod} />
+        </div>
+      </SectionCard>
 
       {error && (
-        <div className="text-red-600 text-sm">
+        <div className="text-red-600 text-sm px-1 font-semibold">
           {error}
         </div>
       )}
 
       <div className="flex flex-col sm:flex-row gap-3 pt-2">
-        <button
+        <Button
           type="submit"
-          disabled={loading}
-          className="btn btn-primary w-full sm:flex-1 py-3"
+          isLoading={loading}
+          className="w-full sm:flex-1 py-3 text-sm font-bold shadow-sm"
         >
-          {loading ? "Salvando..." : "Salvar Alterações"}
-        </button>
-        <Link
-          href={`/consultas/${consultation.id}`}
-          className="btn btn-secondary w-full sm:flex-1 py-3 text-center"
-        >
-          Cancelar
+          Salvar Alterações
+        </Button>
+        <Link href={`/consultas/${consultation.id}`} className="w-full sm:flex-1">
+          <Button
+            variant="secondary"
+            className="w-full py-3 text-sm font-bold shadow-sm"
+          >
+            Cancelar
+          </Button>
         </Link>
       </div>
     </form>

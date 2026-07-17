@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import EditarForm from "./Form";
 import { requireAuthenticated } from "@/lib/authz";
 
+import { PageHeader } from "@/components/ui/PageHeader";
+
 interface PageProps {
   params: Promise<{ id: string }>;
 }
@@ -32,8 +34,13 @@ export default async function EditarClientePage({ params }: PageProps) {
   }
 
   return (
-    <div className="p-4 sm:p-8 max-w-lg mx-auto font-sans w-full">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Editar Cliente</h1>
+    <div className="p-4 sm:p-8 max-w-lg mx-auto font-sans w-full flex flex-col gap-6">
+      <PageHeader
+        title="Editar Cliente"
+        description="Atualize as informações cadastrais do cliente nos campos abaixo."
+        backHref={`/clientes/${id}`}
+        backLabel="Voltar ao Perfil"
+      />
       <EditarForm client={client} />
     </div>
   );

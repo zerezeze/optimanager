@@ -5,6 +5,9 @@ import Link from "next/link";
 import { useState } from "react";
 import PrescriptionFormFields from "@/components/PrescriptionFormFields";
 import { toast } from "sonner";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { SectionCard } from "@/components/ui/SectionCard";
+import { Button } from "@/components/ui/Button";
 
 export default function NovoClientePage() {
   const [error, setError] = useState<string | null>(null);
@@ -29,22 +32,22 @@ export default function NovoClientePage() {
     }
   };
 
-  const defaultDate = new Date().toISOString().substring(0, 10);
-
   return (
-    <div className="p-4 sm:p-8 max-w-2xl mx-auto font-sans w-full">
-      <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6">Novo Cliente</h1>
+    <div className="p-4 sm:p-8 max-w-2xl mx-auto font-sans w-full flex flex-col gap-6">
+      <PageHeader
+        title="Novo Cliente"
+        description="Preencha os dados do cliente abaixo para adicioná-lo ao sistema."
+        backHref="/clientes"
+        backLabel="Voltar"
+      />
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-6 w-full">
         
         {/* SECTION 1: DADOS DO CLIENTE */}
-        <div className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm w-full">
-          <h2 className="text-lg font-bold text-blue-600 border-b border-gray-100 pb-2 mb-4">
-            Dados do Cliente
-          </h2>
+        <SectionCard title="Dados do Cliente">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="nome" className="text-sm font-semibold text-gray-600">
+              <label htmlFor="nome" className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                 Nome Completo *
               </label>
               <input
@@ -54,11 +57,12 @@ export default function NovoClientePage() {
                 required
                 maxLength={255}
                 placeholder="Ex: João da Silva"
+                className="input-standard"
               />
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="telefone" className="text-sm font-semibold text-gray-600">
+              <label htmlFor="telefone" className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                 Telefone
               </label>
               <input
@@ -67,11 +71,12 @@ export default function NovoClientePage() {
                 type="text"
                 maxLength={20}
                 placeholder="(00) 00000-0000"
+                className="input-standard"
               />
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="endereco" className="text-sm font-semibold text-gray-600">
+              <label htmlFor="endereco" className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                 Endereço
               </label>
               <input
@@ -80,10 +85,11 @@ export default function NovoClientePage() {
                 type="text"
                 maxLength={500}
                 placeholder="Rua, Número, Bairro, Cidade"
+                className="input-standard"
               />
             </div>
           </div>
-        </div>
+        </SectionCard>
 
         {/* CHECKBOX CONTROL */}
         <div className="flex items-center gap-3 px-1">
@@ -92,10 +98,10 @@ export default function NovoClientePage() {
             type="checkbox"
             checked={showConsultation}
             onChange={(e) => setShowConsultation(e.target.checked)}
-            className="w-5 h-5 cursor-pointer shrink-0"
+            className="w-4 h-4 cursor-pointer shrink-0 border-slate-300 text-blue-600 focus:ring-blue-500/20 rounded"
           />
           <input type="hidden" name="cadastrarConsulta" value={showConsultation ? "true" : "false"} />
-          <label htmlFor="cadastrarConsultaCheckbox" className="text-sm font-semibold text-gray-700 cursor-pointer select-none">
+          <label htmlFor="cadastrarConsultaCheckbox" className="text-sm font-bold text-slate-600 cursor-pointer select-none">
             Desejo cadastrar a primeira consulta deste cliente agora
           </label>
         </div>
@@ -106,25 +112,27 @@ export default function NovoClientePage() {
         )}
 
         {error && (
-          <div className="text-red-600 text-sm px-1">
+          <div className="text-red-600 text-sm px-1 font-semibold">
             {error}
           </div>
         )}
 
         {/* BUTTONS */}
         <div className="flex flex-col sm:flex-row gap-3 pt-2">
-          <button
+          <Button
             type="submit"
-            disabled={loading}
-            className="btn btn-primary w-full sm:flex-1 py-3"
+            isLoading={loading}
+            className="w-full sm:flex-1 py-3 text-sm shadow-sm font-bold"
           >
-            {loading ? "Salvando..." : "Salvar"}
-          </button>
-          <Link
-            href="/clientes"
-            className="btn btn-secondary w-full sm:flex-1 py-3 text-center"
-          >
-            Cancelar
+            Salvar
+          </Button>
+          <Link href="/clientes" className="w-full sm:flex-1">
+            <Button
+              variant="secondary"
+              className="w-full py-3 text-sm shadow-sm font-bold"
+            >
+              Cancelar
+            </Button>
           </Link>
         </div>
       </form>

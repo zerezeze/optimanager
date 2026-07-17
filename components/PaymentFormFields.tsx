@@ -48,9 +48,9 @@ export function PaymentFormFields({
           id="hasPayment"
           checked={hasPayment}
           onChange={(e) => setHasPayment(e.target.checked)}
-          className="w-4 h-4 accent-blue-600 cursor-pointer"
+          className="w-4 h-4 cursor-pointer text-blue-600 focus:ring-blue-500/20 border-slate-350 rounded"
         />
-        <label htmlFor="hasPayment" className="text-sm font-semibold text-gray-700 cursor-pointer">
+        <label htmlFor="hasPayment" className="text-sm font-bold text-slate-650 cursor-pointer">
           Registrar pagamento agora
         </label>
       </div>
@@ -59,7 +59,7 @@ export function PaymentFormFields({
         <div className="flex flex-col gap-4 pl-7">
           {/* Método */}
           <div>
-            <label htmlFor="paymentMethod" className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1">
+            <label htmlFor="paymentMethod" className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-1">
               Método de Pagamento *
             </label>
             <select
@@ -68,7 +68,7 @@ export function PaymentFormFields({
               required
               value={method}
               onChange={(e) => setMethod(e.target.value)}
-              className="w-full sm:max-w-xs border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full sm:max-w-xs input-standard"
             >
               <option value="" disabled>Selecione...</option>
               {Object.entries(PAYMENT_METHOD_LABELS).map(([value, label]) => (
@@ -79,8 +79,8 @@ export function PaymentFormFields({
 
           {/* À vista: campo de confirmação */}
           {isAVista && (
-            <p className="text-xs text-green-700 bg-green-50 border border-green-200 rounded-md px-3 py-2">
-              ✅ Pagamento à vista — a venda será marcada como <strong>Paga</strong> automaticamente.
+            <p className="text-xs text-green-700 bg-green-50 border border-green-200 rounded-lg px-3.5 py-3 font-semibold leading-relaxed">
+              Pagamento à vista — a venda será marcada como Paga automaticamente.
             </p>
           )}
 
@@ -88,7 +88,7 @@ export function PaymentFormFields({
           {isCrediario && (
             <div className="flex flex-col gap-4">
               <div>
-                <label htmlFor="paymentEntrada" className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1">
+                <label htmlFor="paymentEntrada" className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-1">
                   Valor de Entrada (R$)
                 </label>
                 <input
@@ -97,25 +97,25 @@ export function PaymentFormFields({
                   name="paymentEntrada"
                   placeholder="0,00"
                   defaultValue={defaultTotalPago}
-                  className="w-full sm:max-w-xs border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full sm:max-w-xs input-standard"
                 />
-                <p className="text-xs text-gray-400 mt-1">Deixe em branco ou 0,00 para sem entrada.</p>
+                <p className="text-[11px] text-slate-400 font-medium mt-1">Deixe em branco ou 0,00 para sem entrada.</p>
               </div>
               <div>
-                <label htmlFor="paymentNumeroParcelas" className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1">
+                <label htmlFor="paymentNumeroParcelas" className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-1">
                   Número de Parcelas *
                 </label>
                 <select
                   id="paymentNumeroParcelas"
                   name="paymentNumeroParcelas"
                   defaultValue={defaultNumeroParcelas}
-                  className="w-full sm:max-w-xs border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full sm:max-w-xs input-standard"
                 >
                   {[2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((n) => (
                     <option key={n} value={n}>{n}x mensais</option>
                   ))}
                 </select>
-                <p className="text-xs text-gray-400 mt-1">As parcelas vencem todo mês a partir de 30 dias.</p>
+                <p className="text-[11px] text-slate-400 font-medium mt-1">As parcelas vencem todo mês a partir de 30 dias.</p>
               </div>
             </div>
           )}

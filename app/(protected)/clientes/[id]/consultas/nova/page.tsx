@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import NovaForm from "./Form";
 import { requireAuthenticated } from "@/lib/authz";
 
+import { PageHeader } from "@/components/ui/PageHeader";
+
 interface PageProps {
   params: Promise<{ id: string }>;
 }
@@ -32,11 +34,13 @@ export default async function NovaConsultaPage({ params }: PageProps) {
   }
 
   return (
-    <div className="p-4 sm:p-8 max-w-lg mx-auto font-sans w-full">
-      <h1 className="text-2xl font-bold text-gray-900 mb-1">Nova Consulta</h1>
-      <p className="text-sm text-gray-500 mb-6">
-        Cliente: <strong className="text-gray-700">{client.nome}</strong>
-      </p>
+    <div className="p-4 sm:p-8 max-w-lg mx-auto font-sans w-full flex flex-col gap-6">
+      <PageHeader
+        title="Nova Consulta"
+        description={`Registrar consulta para o cliente: ${client.nome}`}
+        backHref={`/clientes/${client.id}`}
+        backLabel="Voltar ao Perfil"
+      />
       <NovaForm clientId={client.id} />
     </div>
   );

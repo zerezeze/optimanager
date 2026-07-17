@@ -4,6 +4,8 @@ import { updateClient } from "@/app/actions/clients";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
+import { SectionCard } from "@/components/ui/SectionCard";
+import { Button } from "@/components/ui/Button";
 
 interface ClientData {
   id: string;
@@ -39,68 +41,77 @@ export default function EditarForm({ client }: EditarFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full">
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="nome" className="text-sm font-semibold text-gray-600">
-          Nome Completo *
-        </label>
-        <input
-          id="nome"
-          name="nome"
-          type="text"
-          defaultValue={client.nome}
-          required
-          maxLength={255}
-        />
-      </div>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-6 w-full">
+      <SectionCard title="Informações do Perfil">
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="nome" className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Nome Completo *
+            </label>
+            <input
+              id="nome"
+              name="nome"
+              type="text"
+              defaultValue={client.nome}
+              required
+              maxLength={255}
+              className="input-standard"
+            />
+          </div>
 
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="telefone" className="text-sm font-semibold text-gray-600">
-          Telefone
-        </label>
-        <input
-          id="telefone"
-          name="telefone"
-          type="text"
-          defaultValue={client.telefone || ""}
-          maxLength={20}
-          placeholder="(00) 00000-0000"
-        />
-      </div>
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="telefone" className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Telefone
+            </label>
+            <input
+              id="telefone"
+              name="telefone"
+              type="text"
+              defaultValue={client.telefone || ""}
+              maxLength={20}
+              placeholder="(00) 00000-0000"
+              className="input-standard"
+            />
+          </div>
 
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="endereco" className="text-sm font-semibold text-gray-600">
-          Endereço
-        </label>
-        <input
-          id="endereco"
-          name="endereco"
-          type="text"
-          defaultValue={client.endereco || ""}
-          maxLength={500}
-          placeholder="Rua, Número, Bairro, Cidade"
-        />
-      </div>
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="endereco" className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Endereço
+            </label>
+            <input
+              id="endereco"
+              name="endereco"
+              type="text"
+              defaultValue={client.endereco || ""}
+              maxLength={500}
+              placeholder="Rua, Número, Bairro, Cidade"
+              className="input-standard"
+            />
+          </div>
+        </div>
+      </SectionCard>
 
       {error && (
-        <div className="text-red-600 text-sm">
+        <div className="text-red-600 text-sm px-1 font-semibold">
           {error}
         </div>
       )}
 
       <div className="flex flex-col sm:flex-row gap-3 pt-2">
-        <button
+        <Button
           type="submit"
-          disabled={loading}
-          className="btn btn-primary w-full sm:flex-1 py-3"
+          isLoading={loading}
+          className="w-full sm:flex-1 py-3 text-sm font-bold shadow-sm"
         >
-          {loading ? "Salvando..." : "Salvar Alterações"}
-        </button>
-        <Link
-          href={`/clientes/${client.id}`}
-          className="btn btn-secondary w-full sm:flex-1 py-3 text-center"
-        >
-          Cancelar
+          Salvar Alterações
+        </Button>
+        <Link href={`/clientes/${client.id}`} className="w-full sm:flex-1">
+          <Button
+            variant="secondary"
+            className="w-full py-3 text-sm font-bold shadow-sm"
+          >
+            Cancelar
+          </Button>
         </Link>
       </div>
     </form>

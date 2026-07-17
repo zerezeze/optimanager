@@ -1,5 +1,7 @@
 "use client";
 
+import { SectionCard } from "@/components/ui/SectionCard";
+
 interface PrescriptionData {
   odEsferico?: string | null;
   odCilindrico?: string | null;
@@ -83,34 +85,29 @@ export default function PrescriptionFormFields({ defaultValue }: PrescriptionFor
   return (
     <div className="flex flex-col gap-6 w-full">
       {/* ORDEM DE SERVIÇO */}
-      <div className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm w-full">
-        <label htmlFor="ordemServico" className="text-sm font-semibold text-gray-700 block mb-1">
-          Ordem de Serviço (O.S.)
-        </label>
-        <input
-          id="ordemServico"
-          name="ordemServico"
-          type="text"
-          placeholder="Ex: OS-12345"
-          defaultValue={defaultValue?.ordemServico || ""}
-          className="w-full sm:max-w-xs border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <p className="text-xs text-gray-400 mt-1">
-          Número de controle do laboratório ou da ótica.
-        </p>
-      </div>
+      <SectionCard title="Ordem de Serviço (O.S.)">
+        <div className="flex flex-col gap-1.5">
+          <input
+            id="ordemServico"
+            name="ordemServico"
+            type="text"
+            placeholder="Ex: OS-12345"
+            defaultValue={defaultValue?.ordemServico || ""}
+            className="w-full sm:max-w-xs input-standard"
+          />
+          <p className="text-[11px] text-slate-400 font-medium">
+            Número de controle do laboratório ou da ótica.
+          </p>
+        </div>
+      </SectionCard>
 
       {/* CARD 1: DADOS REFRATIVOS */}
-      <div className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm w-full">
-        <h2 className="text-lg font-bold text-blue-600 border-b border-gray-100 pb-2 mb-4">
-          Dados Refrativos
-        </h2>
-        
+      <SectionCard title="Dados Refrativos">
         {/* Tabela de Graus Responsiva */}
         <div className="flex flex-col gap-4">
           {/* Cabeçalho da tabela - Visível apenas em Desktop/Tablet */}
-          <div className="hidden md:grid grid-cols-6 gap-4 items-center mb-1 text-center font-semibold text-xs text-gray-500 uppercase tracking-wider">
-            <div className="text-left text-gray-400">GRAU</div>
+          <div className="hidden md:grid grid-cols-6 gap-4 items-center mb-1 text-center font-bold text-[10px] text-slate-400 uppercase tracking-wider">
+            <div className="text-left">Olho</div>
             <div>Esférico</div>
             <div>Cilíndrico</div>
             <div>Eixo</div>
@@ -119,125 +116,135 @@ export default function PrescriptionFormFields({ defaultValue }: PrescriptionFor
           </div>
 
           {/* Linha OD (Olho Direito) */}
-          <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-center p-3 md:p-0 bg-gray-50/50 md:bg-transparent rounded-lg border border-gray-100 md:border-none">
-            <div className="font-bold text-sm text-gray-800 border-b border-gray-150 md:border-none pb-1 md:pb-0">
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-center p-3.5 md:p-0 bg-slate-50/50 md:bg-transparent rounded-xl border border-slate-100 md:border-none">
+            <div className="font-bold text-xs text-slate-700 uppercase tracking-wider border-b border-slate-100 md:border-none pb-1.5 md:pb-0">
               OD (Direito)
             </div>
             
             <div className="flex flex-col gap-1">
-              <label className="block md:hidden text-xs font-semibold text-gray-500">Esférico</label>
+              <label className="block md:hidden text-[10px] font-bold text-slate-400 uppercase tracking-wider">Esférico</label>
               <input
                 name="odEsferico"
                 type="text"
                 placeholder="Ex: -1,50 ou PLANO"
                 defaultValue={defaultValue?.odEsferico || ""}
                 onBlur={handleDegreeBlur}
+                className="input-standard"
               />
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="block md:hidden text-xs font-semibold text-gray-500">Cilíndrico</label>
+              <label className="block md:hidden text-[10px] font-bold text-slate-400 uppercase tracking-wider">Cilíndrico</label>
               <input
                 name="odCilindrico"
                 type="text"
                 placeholder="Ex: -0,75"
                 defaultValue={defaultValue?.odCilindrico || ""}
                 onBlur={handleDegreeBlur}
+                className="input-standard"
               />
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="block md:hidden text-xs font-semibold text-gray-500">Eixo</label>
+              <label className="block md:hidden text-[10px] font-bold text-slate-400 uppercase tracking-wider">Eixo</label>
               <input
                 name="odEixo"
                 type="text"
                 placeholder="0 a 180"
                 defaultValue={defaultValue?.odEixo || ""}
                 onChange={handleEixoChange}
+                className="input-standard"
               />
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="block md:hidden text-xs font-semibold text-gray-500">DNP</label>
+              <label className="block md:hidden text-[10px] font-bold text-slate-400 uppercase tracking-wider">DNP</label>
               <input
                 name="odDnp"
                 type="text"
                 placeholder="Ex: 32,5"
                 defaultValue={defaultValue?.odDnp || ""}
                 onBlur={handleDecimalBlur}
+                className="input-standard"
               />
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="block md:hidden text-xs font-semibold text-gray-500">Altura</label>
+              <label className="block md:hidden text-[10px] font-bold text-slate-400 uppercase tracking-wider">Altura</label>
               <input
                 name="odAltura"
                 type="text"
                 placeholder="Ex: 18,0"
                 defaultValue={defaultValue?.odAltura || ""}
                 onBlur={handleDecimalBlur}
+                className="input-standard"
               />
             </div>
           </div>
 
           {/* Linha OE (Olho Esquerdo) */}
-          <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-center p-3 md:p-0 bg-gray-50/50 md:bg-transparent rounded-lg border border-gray-100 md:border-none">
-            <div className="font-bold text-sm text-gray-800 border-b border-gray-150 md:border-none pb-1 md:pb-0">
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-center p-3.5 md:p-0 bg-slate-50/50 md:bg-transparent rounded-xl border border-slate-100 md:border-none">
+            <div className="font-bold text-xs text-slate-700 uppercase tracking-wider border-b border-slate-100 md:border-none pb-1.5 md:pb-0">
               OE (Esquerdo)
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="block md:hidden text-xs font-semibold text-gray-500">Esférico</label>
+              <label className="block md:hidden text-[10px] font-bold text-slate-400 uppercase tracking-wider">Esférico</label>
               <input
                 name="oeEsferico"
                 type="text"
                 placeholder="Ex: -1,25 ou PLANO"
                 defaultValue={defaultValue?.oeEsferico || ""}
                 onBlur={handleDegreeBlur}
+                className="input-standard"
               />
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="block md:hidden text-xs font-semibold text-gray-500">Cilíndrico</label>
+              <label className="block md:hidden text-[10px] font-bold text-slate-400 uppercase tracking-wider">Cilíndrico</label>
               <input
                 name="oeCilindrico"
                 type="text"
                 placeholder="Ex: -0,50"
                 defaultValue={defaultValue?.oeCilindrico || ""}
                 onBlur={handleDegreeBlur}
+                className="input-standard"
               />
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="block md:hidden text-xs font-semibold text-gray-500">Eixo</label>
+              <label className="block md:hidden text-[10px] font-bold text-slate-400 uppercase tracking-wider">Eixo</label>
               <input
                 name="oeEixo"
                 type="text"
                 placeholder="0 a 180"
                 defaultValue={defaultValue?.oeEixo || ""}
                 onChange={handleEixoChange}
+                className="input-standard"
               />
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="block md:hidden text-xs font-semibold text-gray-500">DNP</label>
+              <label className="block md:hidden text-[10px] font-bold text-slate-400 uppercase tracking-wider">DNP</label>
               <input
                 name="oeDnp"
                 type="text"
                 placeholder="Ex: 31,5"
                 defaultValue={defaultValue?.oeDnp || ""}
                 onBlur={handleDecimalBlur}
+                className="input-standard"
               />
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="block md:hidden text-xs font-semibold text-gray-500">Altura</label>
+              <label className="block md:hidden text-[10px] font-bold text-slate-400 uppercase tracking-wider">Altura</label>
               <input
                 name="oeAltura"
                 type="text"
                 placeholder="Ex: 18,0"
                 defaultValue={defaultValue?.oeAltura || ""}
                 onBlur={handleDecimalBlur}
+                className="input-standard"
               />
             </div>
           </div>
@@ -245,7 +252,7 @@ export default function PrescriptionFormFields({ defaultValue }: PrescriptionFor
 
         {/* Adição input (bottom of refractive section) */}
         <div className="flex flex-col gap-1.5 mt-5">
-          <label htmlFor="adicao" className="text-sm font-semibold text-gray-600">
+          <label htmlFor="adicao" className="text-xs font-bold text-slate-500 uppercase tracking-wider">
             Adição
           </label>
           <input
@@ -255,20 +262,17 @@ export default function PrescriptionFormFields({ defaultValue }: PrescriptionFor
             placeholder="Ex: +2,00"
             defaultValue={defaultValue?.adicao || ""}
             onBlur={handleDegreeBlur}
-            className="max-w-[200px]"
+            className="max-w-[200px] input-standard"
           />
         </div>
-      </div>
+      </SectionCard>
 
       {/* CARD 2: DADOS COMERCIAIS */}
-      <div className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm w-full">
-        <h2 className="text-lg font-bold text-blue-600 border-b border-gray-100 pb-2 mb-4">
-          Dados Comerciais
-        </h2>
+      <SectionCard title="Dados Comerciais">
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="medico" className="text-sm font-semibold text-gray-600 flex items-center gap-1.5">
-              <span>👨‍⚕️</span> Médico
+            <label htmlFor="medico" className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Médico
             </label>
             <input
               id="medico"
@@ -276,24 +280,26 @@ export default function PrescriptionFormFields({ defaultValue }: PrescriptionFor
               type="text"
               placeholder="Ex: Dr. Carlos Eduardo"
               defaultValue={defaultValue?.medico || ""}
+              className="input-standard"
             />
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="data" className="text-sm font-semibold text-gray-600 flex items-center gap-1.5">
-              <span>📅</span> Data da Consulta
+            <label htmlFor="data" className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Data da Consulta
             </label>
             <input
               id="data"
               name="data"
               type="date"
               defaultValue={defaultDate}
+              className="input-standard"
             />
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="laboratorio" className="text-sm font-semibold text-gray-600 flex items-center gap-1.5">
-              <span>🏭</span> Laboratório
+            <label htmlFor="laboratorio" className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Laboratório
             </label>
             <input
               id="laboratorio"
@@ -301,12 +307,13 @@ export default function PrescriptionFormFields({ defaultValue }: PrescriptionFor
               type="text"
               placeholder="Ex: Essilor"
               defaultValue={defaultValue?.laboratorio || ""}
+              className="input-standard"
             />
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="lentes" className="text-sm font-semibold text-gray-600 flex items-center gap-1.5">
-              <span>👓</span> Lentes
+            <label htmlFor="lentes" className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Lentes
             </label>
             <input
               id="lentes"
@@ -314,12 +321,13 @@ export default function PrescriptionFormFields({ defaultValue }: PrescriptionFor
               type="text"
               placeholder="Ex: Antirreflexo Crizal"
               defaultValue={defaultValue?.lentes || ""}
+              className="input-standard"
             />
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="valor" className="text-sm font-semibold text-gray-600 flex items-center gap-1.5">
-              <span>💰</span> Valor (R$) *
+            <label htmlFor="valor" className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Valor (R$) *
             </label>
             <input
               id="valor"
@@ -328,12 +336,13 @@ export default function PrescriptionFormFields({ defaultValue }: PrescriptionFor
               required
               placeholder="Ex: 150,00"
               defaultValue={defaultValorStr}
+              className="input-standard"
             />
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="observacao" className="text-sm font-semibold text-gray-600 flex items-center gap-1.5">
-              <span>📝</span> Observação
+            <label htmlFor="observacao" className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Observação
             </label>
             <textarea
               id="observacao"
@@ -341,10 +350,11 @@ export default function PrescriptionFormFields({ defaultValue }: PrescriptionFor
               rows={3}
               placeholder="Observações clínicas ou adicionais"
               defaultValue={defaultValue?.observacao || ""}
+              className="input-standard"
             />
           </div>
         </div>
-      </div>
+      </SectionCard>
     </div>
   );
 }

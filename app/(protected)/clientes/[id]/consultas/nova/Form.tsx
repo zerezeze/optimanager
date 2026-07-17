@@ -6,6 +6,8 @@ import { useState } from "react";
 import PrescriptionFormFields from "@/components/PrescriptionFormFields";
 import { PaymentFormFields } from "@/components/PaymentFormFields";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/Button";
+import { SectionCard } from "@/components/ui/SectionCard";
 
 interface NovaFormProps {
   clientId: string;
@@ -38,30 +40,31 @@ export default function NovaForm({ clientId }: NovaFormProps) {
       <PrescriptionFormFields />
 
       {/* Payment Section */}
-      <div className="border border-gray-200 rounded-lg p-4 flex flex-col gap-3">
-        <h3 className="text-sm font-bold text-gray-700">Pagamento</h3>
+      <SectionCard title="Pagamento">
         <PaymentFormFields />
-      </div>
+      </SectionCard>
 
       {error && (
-        <div className="text-red-600 text-sm">
+        <div className="text-red-600 text-sm px-1 font-semibold">
           {error}
         </div>
       )}
 
       <div className="flex flex-col sm:flex-row gap-3 pt-2">
-        <button
+        <Button
           type="submit"
-          disabled={loading}
-          className="btn btn-primary w-full sm:flex-1 py-3"
+          isLoading={loading}
+          className="w-full sm:flex-1 py-3 text-sm font-bold shadow-sm"
         >
-          {loading ? "Salvando..." : "Salvar Consulta"}
-        </button>
-        <Link
-          href={`/clientes/${clientId}`}
-          className="btn btn-secondary w-full sm:flex-1 py-3 text-center"
-        >
-          Cancelar
+          Salvar Consulta
+        </Button>
+        <Link href={`/clientes/${clientId}`} className="w-full sm:flex-1">
+          <Button
+            variant="secondary"
+            className="w-full py-3 text-sm font-bold shadow-sm"
+          >
+            Cancelar
+          </Button>
         </Link>
       </div>
     </form>

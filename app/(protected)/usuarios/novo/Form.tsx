@@ -4,6 +4,8 @@ import { createUser } from "@/app/actions/users";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/Button";
+import { SectionCard } from "@/components/ui/SectionCard";
 
 export default function NovoUsuarioForm() {
   const [error, setError] = useState<string | null>(null);
@@ -28,77 +30,86 @@ export default function NovoUsuarioForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full">
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="name" className="text-sm font-semibold text-gray-600">
-          Nome Completo *
-        </label>
-        <input
-          id="name"
-          name="name"
-          type="text"
-          required
-          maxLength={255}
-          placeholder="Ex: Pedro de Souza"
-        />
-      </div>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-6 w-full">
+      <SectionCard title="Dados de Acesso">
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="name" className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Nome Completo *
+            </label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              required
+              maxLength={255}
+              placeholder="Ex: Pedro de Souza"
+              className="input-standard"
+            />
+          </div>
 
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="email" className="text-sm font-semibold text-gray-600">
-          E-mail *
-        </label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          required
-          maxLength={255}
-          placeholder="Ex: pedro@optimanager.com"
-        />
-      </div>
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="email" className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              E-mail *
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              maxLength={255}
+              placeholder="Ex: pedro@optimanager.com"
+              className="input-standard"
+            />
+          </div>
 
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="password" className="text-sm font-semibold text-gray-600">
-          Senha *
-        </label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          required
-          placeholder="Mínimo 6 caracteres"
-        />
-      </div>
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="password" className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Senha *
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              required
+              placeholder="Mínimo 6 caracteres"
+              className="input-standard"
+            />
+          </div>
 
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="role" className="text-sm font-semibold text-gray-600">
-          Perfil *
-        </label>
-        <select id="role" name="role" required className="w-full">
-          <option value="OPERATOR">Operador</option>
-          <option value="ADMIN">Administrador</option>
-        </select>
-      </div>
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="role" className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Perfil *
+            </label>
+            <select id="role" name="role" required className="w-full input-standard">
+              <option value="OPERATOR">Operador</option>
+              <option value="ADMIN">Administrador</option>
+            </select>
+          </div>
+        </div>
+      </SectionCard>
 
       {error && (
-        <div className="text-red-600 text-sm">
+        <div className="text-red-600 text-sm px-1 font-semibold">
           {error}
         </div>
       )}
 
       <div className="flex flex-col sm:flex-row gap-3 pt-2">
-        <button
+        <Button
           type="submit"
-          disabled={loading}
-          className="btn btn-primary w-full sm:flex-1 py-3"
+          isLoading={loading}
+          className="w-full sm:flex-1 py-3 text-sm font-bold shadow-sm"
         >
-          {loading ? "Salvando..." : "Salvar Usuário"}
-        </button>
-        <Link
-          href="/usuarios"
-          className="btn btn-secondary w-full sm:w-auto py-3 text-center px-6"
-        >
-          Cancelar
+          Salvar Usuário
+        </Button>
+        <Link href="/usuarios" className="w-full sm:flex-1">
+          <Button
+            variant="secondary"
+            className="w-full py-3 text-sm font-bold shadow-sm"
+          >
+            Cancelar
+          </Button>
         </Link>
       </div>
     </form>
