@@ -22,7 +22,11 @@ export default async function EditarConsultaPage({ params }: PageProps) {
     where: { id },
     include: {
       client: true,
-      payment: true,
+      payment: {
+        include: {
+          installments: true,
+        },
+      },
     },
   });
 

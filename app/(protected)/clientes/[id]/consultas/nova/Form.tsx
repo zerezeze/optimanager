@@ -13,9 +13,20 @@ interface NovaFormProps {
   clientId: string;
 }
 
+function parseBRLToCents(valStr: string): number {
+  let clean = valStr.trim();
+  clean = clean.replace(/\s/g, "");
+  if (clean.includes(",")) {
+    clean = clean.replace(/\./g, "").replace(",", ".");
+  }
+  const parsed = parseFloat(clean);
+  return isNaN(parsed) || parsed < 0 ? 0 : Math.round(parsed * 100);
+}
+
 export default function NovaForm({ clientId }: NovaFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [valorTotalStr, setValorTotalStr] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -35,13 +46,15 @@ export default function NovaForm({ clientId }: NovaFormProps) {
     }
   };
 
+  const valorTotalCentavos = parseBRLToCents(valorTotalStr);
+
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6 w-full">
-      <PrescriptionFormFields />
+      <PrescriptionFormFields onValorChange={setValorTotalStr} />
 
       {/* Payment Section */}
       <SectionCard title="Pagamento">
-        <PaymentFormFields />
+        <PaymentFormFields valorTotal={valorTotalCentavos} />
       </SectionCard>
 
       {error && (

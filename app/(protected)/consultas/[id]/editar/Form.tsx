@@ -33,6 +33,13 @@ interface ConsultationData {
   oeEixo: string | null;
   oeDnp: string | null;
   oeAltura: string | null;
+  // Payment relations loaded in page
+  payment?: {
+    id: string;
+    method: string;
+    totalPago: number;
+    installments?: Array<{ id: string }>;
+  } | null;
 }
 
 interface EditarFormProps {
@@ -40,9 +47,22 @@ interface EditarFormProps {
   existingPaymentMethod?: string;
 }
 
+function parseBRLToCents(valStr: string): number {
+  let clean = valStr.trim();
+  clean = clean.replace(/\s/g, "");
+  if (clean.includes(",")) {
+    clean = clean.replace(/\./g, "").replace(",", ".");
+  }
+  const parsed = parseFloat(clean);
+  return isNaN(parsed) || parsed < 0 ? 0 : Math.round(parsed * 100);
+}
+
 export default function EditarForm({ consultation, existingPaymentMethod }: EditarFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [valorTotalStr, setValorTotalStr] = useState(
+    (consultation.valor / 100).toFixed(2).replace(".", ",")
+  );
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -62,9 +82,19 @@ export default function EditarForm({ consultation, existingPaymentMethod }: Edit
     }
   };
 
+  const valorTotalCentavos = parseBRLToCents(valorTotalStr);
+
+  const defaultTotalPago = consultation.payment 
+    ? (consultation.payment.totalPago / 100).toFixed(2).replace(".", ",")
+    : "";
+
+  const defaultNumeroParcelas = consultation.payment?.installments?.length 
+    ? String(consultation.payment.installments.length)
+    : undefined;
+
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6 w-full">
-      <PrescriptionFormFields defaultValue={consultation} />
+      <PrescriptionFormFields defaultValue={consultation} onValorChange={setValorTotalStr} />
 
       {/* Payment Section */}
       <SectionCard title="Pagamento">
@@ -74,7 +104,12 @@ export default function EditarForm({ consultation, existingPaymentMethod }: Edit
               Importante: Alterar o pagamento aqui substituirá o registro financeiro existente e apagará as parcelas antigas.
             </p>
           )}
-          <PaymentFormFields defaultMethod={existingPaymentMethod} />
+          <PaymentFormFields 
+            defaultMethod={existingPaymentMethod}
+            defaultTotalPago={defaultTotalPago}
+            defaultNumeroParcelas={defaultNumeroParcelas}
+            valorTotal={valorTotalCentavos}
+          />
         </div>
       </SectionCard>
 

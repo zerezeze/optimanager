@@ -5,6 +5,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { requireAuthenticated, canAccessClient } from "@/lib/authz";
+import { buildPaymentData } from "./consultations";
+import { PaymentMethod, PaymentStatus } from "@prisma/client";
 
 const clientSchema = z.object({
   nome: z.string().trim().min(1, "O nome é obrigatório").max(255, "O nome deve ter no máximo 255 caracteres"),
@@ -83,6 +85,12 @@ export async function createClient(formData: FormData) {
 
   // Check if first consultation is filled
   const cadastrarConsulta = formData.get("cadastrarConsulta") === "true";
+  const registerPayment = formData.get("registerPayment") === "true";
+
+  if (registerPayment && !cadastrarConsulta) {
+    throw new Error("Não é possível registrar informações financeiras sem cadastrar uma consulta.");
+  }
+
   let consultationDataObj: any = null;
 
   if (cadastrarConsulta) {
@@ -172,6 +180,16 @@ export async function createClient(formData: FormData) {
     };
   }
 
+  // Parse payment data (optional)
+  let paymentDataObj: any = null;
+  if (consultationDataObj && registerPayment) {
+    try {
+      paymentDataObj = await buildPaymentData(formData, consultationDataObj.valor);
+    } catch (err: any) {
+      throw new Error("Erro no pagamento: " + err.message);
+    }
+  }
+
   try {
     await prisma.$transaction(async (tx) => {
       // 1. Create client, owned by the logged-in user
@@ -186,17 +204,32 @@ export async function createClient(formData: FormData) {
 
       // 2. Create first consultation if present
       if (consultationDataObj) {
-        await tx.consultation.create({
+        const consultation = await tx.consultation.create({
           data: {
             clientId: newClient.id,
             ...consultationDataObj,
           },
         });
+
+        // 3. Create payment if present
+        if (paymentDataObj) {
+          await tx.payment.create({
+            data: {
+              consultationId: consultation.id,
+              method: paymentDataObj.method,
+              status: paymentDataObj.status,
+              totalPago: paymentDataObj.totalPago,
+              installments: paymentDataObj.installments.length > 0
+                ? { create: paymentDataObj.installments }
+                : undefined,
+            },
+          });
+        }
       }
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Prisma transaction error in createClient:", error);
-    throw new Error("Ocorreu um erro ao salvar o cliente e a primeira consulta no banco de dados.");
+    throw new Error(error.message || "Ocorreu um erro ao salvar o cliente, consulta e financeiro no banco de dados.");
   }
 
   revalidatePath("/clientes");

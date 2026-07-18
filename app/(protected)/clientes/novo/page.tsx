@@ -2,17 +2,38 @@
 
 import { createClient } from "@/app/actions/clients";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PrescriptionFormFields from "@/components/PrescriptionFormFields";
+import { PaymentFormFields } from "@/components/PaymentFormFields";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { Button } from "@/components/ui/Button";
 
+function parseBRLToCents(valStr: string): number {
+  let clean = valStr.trim();
+  clean = clean.replace(/\s/g, "");
+  if (clean.includes(",")) {
+    clean = clean.replace(/\./g, "").replace(",", ".");
+  }
+  const parsed = parseFloat(clean);
+  return isNaN(parsed) || parsed < 0 ? 0 : Math.round(parsed * 100);
+}
+
 export default function NovoClientePage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [showConsultation, setShowConsultation] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
+  const [valorTotalStr, setValorTotalStr] = useState("");
+
+  // Turn off payment registration if consultation registration is toggled off
+  useEffect(() => {
+    if (!showConsultation) {
+      setShowPayment(false);
+      setValorTotalStr("");
+    }
+  }, [showConsultation]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,6 +52,8 @@ export default function NovoClientePage() {
       setLoading(false);
     }
   };
+
+  const valorTotalCentavos = parseBRLToCents(valorTotalStr);
 
   return (
     <div className="p-4 sm:p-8 max-w-2xl mx-auto font-sans w-full flex flex-col gap-6">
@@ -91,7 +114,7 @@ export default function NovoClientePage() {
           </div>
         </SectionCard>
 
-        {/* CHECKBOX CONTROL */}
+        {/* CHECKBOX CONTROL FOR CONSULTATION */}
         <div className="flex items-center gap-3 px-1">
           <input
             id="cadastrarConsultaCheckbox"
@@ -108,7 +131,30 @@ export default function NovoClientePage() {
 
         {/* SECTION 2: PRIMEIRA CONSULTA */}
         {showConsultation && (
-          <PrescriptionFormFields />
+          <div className="flex flex-col gap-6 w-full">
+            <PrescriptionFormFields onValorChange={setValorTotalStr} />
+
+            {/* CHECKBOX CONTROL FOR PAYMENT */}
+            <div className="flex items-center gap-3 px-1">
+              <input
+                id="registerPaymentCheckbox"
+                type="checkbox"
+                checked={showPayment}
+                onChange={(e) => setShowPayment(e.target.checked)}
+                className="w-4 h-4 cursor-pointer shrink-0 border-slate-300 text-blue-600 focus:ring-blue-500/20 rounded"
+              />
+              <label htmlFor="registerPaymentCheckbox" className="text-sm font-bold text-slate-650 cursor-pointer select-none">
+                Adicionar Financeiro
+              </label>
+            </div>
+
+            {/* SECTION 3: FINANCEIRO */}
+            {showPayment && (
+              <SectionCard title="Pagamento">
+                <PaymentFormFields valorTotal={valorTotalCentavos} />
+              </SectionCard>
+            )}
+          </div>
         )}
 
         {error && (

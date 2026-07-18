@@ -25,9 +25,10 @@ interface PrescriptionData {
 
 interface PrescriptionFormFieldsProps {
   defaultValue?: PrescriptionData | null;
+  onValorChange?: (val: string) => void;
 }
 
-export default function PrescriptionFormFields({ defaultValue }: PrescriptionFormFieldsProps) {
+export default function PrescriptionFormFields({ defaultValue, onValorChange }: PrescriptionFormFieldsProps) {
   const defaultDate = defaultValue?.data
     ? new Date(defaultValue.data).toISOString().substring(0, 10)
     : new Date().toISOString().substring(0, 10);
@@ -336,6 +337,7 @@ export default function PrescriptionFormFields({ defaultValue }: PrescriptionFor
               required
               placeholder="Ex: 150,00"
               defaultValue={defaultValorStr}
+              onChange={(e) => onValorChange?.(e.target.value)}
               className="input-standard"
             />
           </div>

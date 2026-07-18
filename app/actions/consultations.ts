@@ -71,15 +71,15 @@ function parseBRLValueToCents(valStr: string): number {
  * Builds Payment + Installment data objects from formData.
  * Returns null if operator chose not to register payment.
  */
-function buildPaymentData(
+export async function buildPaymentData(
   formData: FormData,
   valorTotalCentavos: number
-): null | {
+): Promise<null | {
   method: PaymentMethod;
   status: PaymentStatus;
   totalPago: number;
   installments: Array<{ numero: number; valor: number; vencimento: Date }>;
-} {
+}> {
   const registerPayment = formData.get("registerPayment");
   if (registerPayment !== "true") return null;
 
@@ -89,32 +89,44 @@ function buildPaymentData(
   }
   const method = rawMethod as PaymentMethod;
 
+  const rawTotalPago = (formData.get("paymentTotalPago") as string) || "0";
+  let totalPagoCentavos = 0;
+  try {
+    totalPagoCentavos = rawTotalPago.trim() === "" || rawTotalPago === "0" || rawTotalPago === "0,00"
+      ? 0
+      : parseBRLValueToCents(rawTotalPago);
+  } catch {
+    throw new Error("Valor pago inválido.");
+  }
+
+  if (totalPagoCentavos > valorTotalCentavos) {
+    throw new Error("O valor pago não pode ser maior que o valor total.");
+  }
+
+  // Calculate status automatically
+  let status: PaymentStatus = "PENDENTE";
+  if (totalPagoCentavos === valorTotalCentavos) {
+    status = "PAGO";
+  } else if (totalPagoCentavos > 0) {
+    status = "PARCIAL";
+  }
+
   if (method !== "CREDIARIO") {
-    // À vista: fully paid
-    return { method, status: "PAGO", totalPago: valorTotalCentavos, installments: [] };
+    // Non-crediário: no installments
+    return { method, status, totalPago: totalPagoCentavos, installments: [] };
   }
 
   // Crediário
-  const rawEntrada = (formData.get("paymentEntrada") as string) || "0";
-  let entradaCentavos = 0;
-  try {
-    entradaCentavos = rawEntrada.trim() === "" || rawEntrada === "0" || rawEntrada === "0,00"
-      ? 0
-      : parseBRLValueToCents(rawEntrada);
-  } catch {
-    throw new Error("Valor de entrada inválido.");
+  const numeroParcelas = parseInt(formData.get("paymentNumeroParcelas") as string, 10) || 1;
+  if (numeroParcelas < 1 || numeroParcelas > 12) {
+    throw new Error("O parcelamento no crediário deve ser entre 1x e 12x.");
   }
 
-  if (entradaCentavos > valorTotalCentavos) {
-    throw new Error("Valor de entrada não pode ser maior que o valor total da venda.");
+  const restante = valorTotalCentavos - totalPagoCentavos;
+  if (restante <= 0) {
+    return { method, status: "PAGO", totalPago: totalPagoCentavos, installments: [] };
   }
 
-  const numeroParcelas = parseInt(formData.get("paymentNumeroParcelas") as string, 10) || 2;
-  if (numeroParcelas < 1 || numeroParcelas > 24) {
-    throw new Error("Número de parcelas deve ser entre 1 e 24.");
-  }
-
-  const restante = valorTotalCentavos - entradaCentavos;
   const valorParcela = Math.floor(restante / numeroParcelas);
   const diferenca = restante - valorParcela * numeroParcelas; // distribuir centavos residuais
 
@@ -123,7 +135,7 @@ function buildPaymentData(
 
   for (let i = 1; i <= numeroParcelas; i++) {
     const vencimento = new Date(hoje);
-    vencimento.setMonth(vencimento.getMonth() + i);
+    vencimento.setDate(vencimento.getDate() + 30 * i);
     vencimento.setHours(0, 0, 0, 0);
 
     // Add any residual cents to the last installment
@@ -131,9 +143,7 @@ function buildPaymentData(
     installments.push({ numero: i, valor, vencimento });
   }
 
-  const status: PaymentStatus = entradaCentavos > 0 ? "PARCIAL" : "PENDENTE";
-
-  return { method, status, totalPago: entradaCentavos, installments };
+  return { method, status, totalPago: totalPagoCentavos, installments };
 }
 
 export async function createConsultation(clientId: string, formData: FormData) {
@@ -216,9 +226,9 @@ export async function createConsultation(clientId: string, formData: FormData) {
   }
 
   // Parse payment data (optional)
-  let paymentData: ReturnType<typeof buildPaymentData> = null;
+  let paymentData: any = null;
   try {
-    paymentData = buildPaymentData(formData, valorEmCentavos);
+    paymentData = await buildPaymentData(formData, valorEmCentavos);
   } catch (err: any) {
     throw new Error(err.message);
   }
@@ -351,9 +361,9 @@ export async function updateConsultation(id: string, formData: FormData) {
   }
 
   // Parse payment data (optional – upsert if provided)
-  let paymentData: ReturnType<typeof buildPaymentData> = null;
+  let paymentData: any = null;
   try {
-    paymentData = buildPaymentData(formData, valorEmCentavos);
+    paymentData = await buildPaymentData(formData, valorEmCentavos);
   } catch (err: any) {
     throw new Error(err.message);
   }
