@@ -1,173 +1,163 @@
-import prisma from "@/lib/db";
-import Link from "next/link";
 import { requireAuthenticated } from "@/lib/authz";
+import { fetchDashboardData } from "@/lib/dashboard";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { StatCard } from "@/components/ui/StatCard";
+import { MetricCard } from "@/components/dashboard/MetricCard";
+import { RevenueChart } from "@/components/dashboard/RevenueChart";
+import { ClientsChart } from "@/components/dashboard/ClientsChart";
+import { ConsultationsChart } from "@/components/dashboard/ConsultationsChart";
+import { LaboratoriesChart } from "@/components/dashboard/LaboratoriesChart";
+import { QuickActions } from "@/components/dashboard/QuickActions";
+import { LatestClients } from "@/components/dashboard/LatestClients";
+import { LatestConsultations } from "@/components/dashboard/LatestConsultations";
+import { DateRangeFilter } from "@/components/dashboard/DateRangeFilter";
 import { Card } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
-import { Users, Eye, DollarSign, Plus, ArrowRight } from "lucide-react";
+import { Users, Eye, DollarSign, BarChart3, Calendar, CheckSquare, Sparkles } from "lucide-react";
 
-export default async function DashboardPage() {
+interface PageProps {
+  searchParams: Promise<{ range?: string }>;
+}
+
+export default async function DashboardPage({ searchParams }: PageProps) {
   const sessionUser = await requireAuthenticated();
-  
-  const isAdmin = sessionUser.role === "ADMIN";
-  const whereClient = isAdmin ? {} : { userId: sessionUser.id };
-  const whereConsultation = isAdmin ? {} : { client: { userId: sessionUser.id } };
+  const { range = "30d" } = await searchParams;
 
-  const whereInstallment = isAdmin
-    ? { pago: false }
-    : { pago: false, payment: { consultation: { client: { userId: sessionUser.id } } } };
+  // Fetch all aggregated metrics directly on the server
+  const metrics = await fetchDashboardData(sessionUser, { range });
 
-  // Query all statistics and lists in parallel via Promise.all
-  const [totalClients, totalConsultations, recentClients, recentConsultations, installmentsAbertos] = await Promise.all([
-    prisma.client.count({ where: whereClient }),
-    prisma.consultation.count({ where: whereConsultation }),
-    prisma.client.findMany({
-      where: whereClient,
-      take: 5,
-      orderBy: {
-        createdAt: "desc",
-      },
-    }),
-    prisma.consultation.findMany({
-      where: whereConsultation,
-      take: 5,
-      orderBy: {
-        data: "desc",
-      },
-      include: {
-        client: true,
-      },
-    }),
-    prisma.installment.aggregate({
-      where: whereInstallment,
-      _sum: { valor: true },
-    }),
-  ]);
-
-  const totalEmAberto = installmentsAbertos._sum.valor ?? 0;
+  const formattedReceita = (metrics.receitaTotal / 100).toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
+  const formattedTicket = (metrics.ticketMedio / 100).toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
 
   return (
-    <div className="p-4 sm:p-8 max-w-5xl mx-auto font-sans w-full flex flex-col gap-6">
-      {/* Page Header */}
+    <div className="p-4 sm:p-8 max-w-6xl mx-auto font-sans w-full flex flex-col gap-6">
+      
+      {/* Top Header & Filter */}
       <PageHeader
-        title="Dashboard"
-        description="Acompanhe os principais indicadores operacionais e financeiros da sua ótica."
+        title="Painel Executivo"
+        description="Acompanhe os principais indicadores de crescimento, consultas e faturamento da ótica."
       >
-        <Link href="/clientes/novo" className="w-full sm:w-auto">
-          <Button className="w-full sm:w-auto text-xs py-2 px-3.5 shadow-sm">
-            <Plus className="w-4 h-4" />
-            <span>Novo Cliente</span>
-          </Button>
-        </Link>
-        <Link href="/clientes" className="w-full sm:w-auto">
-          <Button variant="secondary" className="w-full sm:w-auto text-xs py-2 px-3.5 shadow-sm">
-            <span>Ver Clientes</span>
-          </Button>
-        </Link>
+        <DateRangeFilter />
       </PageHeader>
 
-      {/* Metrics Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-        <StatCard
+      {/* Row 1: Primary Metrics */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <MetricCard
           title="Total de Clientes"
-          value={totalClients}
-          icon={<Users className="w-4 h-4" />}
-          description="clientes cadastrados"
+          value={metrics.totalClients}
+          icon={<Users className="w-4 h-4 text-slate-500" />}
+          description="novos cadastros no período"
         />
-        <StatCard
+        <MetricCard
           title="Total de Consultas"
-          value={totalConsultations}
-          icon={<Eye className="w-4 h-4" />}
-          description="consultas registradas"
+          value={metrics.totalConsultations}
+          icon={<Eye className="w-4 h-4 text-slate-500" />}
+          description="exames realizados no período"
         />
-        <StatCard
-          title="Valores em Aberto"
-          value={(totalEmAberto / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
-          icon={<DollarSign className="w-4 h-4" />}
-          description="parcelas não pagas"
-          variant={totalEmAberto > 0 ? "danger" : "default"}
+        <MetricCard
+          title="Receita Total"
+          value={formattedReceita}
+          icon={<DollarSign className="w-4 h-4 text-slate-500" />}
+          description="valor bruto no período"
+          variant={metrics.receitaTotal > 0 ? "success" : "default"}
+        />
+        <MetricCard
+          title="Ticket Médio"
+          value={formattedTicket}
+          icon={<BarChart3 className="w-4 h-4 text-slate-500" />}
+          description="média por consulta no período"
         />
       </div>
 
-      {/* Lists of Recent Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4">
-        {/* Recent Clients */}
-        <div className="flex flex-col gap-4">
-          <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider">
-            Últimos Clientes Cadastrados
-          </h3>
-          <Card className="p-5">
-            {recentClients.length === 0 ? (
-              <p className="text-sm text-slate-400 italic py-6 text-center">Nenhum cliente cadastrado ainda.</p>
-            ) : (
-              <ul className="divide-y divide-slate-100">
-                {recentClients.map((client) => (
-                  <li key={client.id} className="flex justify-between items-center py-3.5 first:pt-0 last:pb-0 min-w-0">
-                    <div className="min-w-0 pr-3 flex-1">
-                      <strong className="text-sm font-bold text-slate-800 block truncate" title={client.nome}>
-                        {client.nome}
-                      </strong>
-                      <span className="text-xs text-slate-400 block truncate mt-0.5 font-medium">
-                        {client.telefone || "Sem telefone"}
-                      </span>
-                    </div>
-                    <Link href={`/clientes/${client.id}`}>
-                      <Button variant="ghost" className="text-xs py-1.5 px-3">
-                        <span>Ver Perfil</span>
-                        <ArrowRight className="w-3 h-3" />
-                      </Button>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </Card>
-        </div>
-
-        {/* Recent Consultations */}
-        <div className="flex flex-col gap-4">
-          <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider">
-            Consultas Recentes
-          </h3>
-          <Card className="p-5">
-            {recentConsultations.length === 0 ? (
-              <p className="text-sm text-slate-400 italic py-6 text-center">Nenhuma consulta realizada ainda.</p>
-            ) : (
-              <ul className="divide-y divide-slate-100">
-                {recentConsultations.map((consultation) => {
-                  const formattedDate = new Date(consultation.data).toLocaleDateString("pt-BR", {
-                    timeZone: "UTC",
-                  });
-                  const formattedValue = (consultation.valor / 100).toLocaleString("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  });
-
-                  return (
-                    <li key={consultation.id} className="flex justify-between items-center py-3.5 first:pt-0 last:pb-0 min-w-0">
-                      <div className="min-w-0 pr-3 flex-1">
-                        <strong className="text-sm font-bold text-slate-800 block truncate" title={consultation.client.nome}>
-                          {consultation.client.nome}
-                        </strong>
-                        <span className="text-xs text-slate-400 block truncate mt-0.5 font-medium">
-                          {formattedDate} - {formattedValue}
-                        </span>
-                      </div>
-                      <Link href={`/consultas/${consultation.id}`}>
-                        <Button variant="ghost" className="text-xs py-1.5 px-3">
-                          <span>Ver Ficha</span>
-                          <ArrowRight className="w-3 h-3" />
-                        </Button>
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
-          </Card>
+      {/* Row 2: Secondary/Operational Indicators */}
+      <div className="flex flex-col gap-3.5">
+        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider pl-1">
+          Indicadores Operacionais
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white border border-slate-100 rounded-xl p-4 shadow-sm flex items-center justify-between">
+            <div>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Consultas Hoje</span>
+              <strong className="text-xl font-bold text-slate-800 mt-1 block">{metrics.consultasHoje}</strong>
+            </div>
+            <Calendar className="w-5 h-5 text-blue-500 bg-blue-50/50 p-1 rounded" />
+          </div>
+          <div className="bg-white border border-slate-100 rounded-xl p-4 shadow-sm flex items-center justify-between">
+            <div>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Consultas esta Semana</span>
+              <strong className="text-xl font-bold text-slate-800 mt-1 block">{metrics.consultasSemana}</strong>
+            </div>
+            <Calendar className="w-5 h-5 text-indigo-500 bg-indigo-50/50 p-1 rounded" />
+          </div>
+          <div className="bg-white border border-slate-100 rounded-xl p-4 shadow-sm flex items-center justify-between">
+            <div>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Consultas este Mês</span>
+              <strong className="text-xl font-bold text-slate-800 mt-1 block">{metrics.consultasMes}</strong>
+            </div>
+            <CheckSquare className="w-5 h-5 text-emerald-500 bg-emerald-50/50 p-1 rounded" />
+          </div>
+          <div className="bg-white border border-slate-100 rounded-xl p-4 shadow-sm flex items-center justify-between">
+            <div>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Clientes no Mês</span>
+              <strong className="text-xl font-bold text-slate-800 mt-1 block">{metrics.clientesMes}</strong>
+            </div>
+            <Sparkles className="w-5 h-5 text-amber-500 bg-amber-50/50 p-1 rounded" />
+          </div>
         </div>
       </div>
+
+      {/* Row 3: Financial Summary & Quick Actions side-by-side */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-2">
+        {/* Resumo Financeiro */}
+        <Card className="p-5 flex flex-col gap-4">
+          <div>
+            <h4 className="text-sm font-bold text-slate-700">Resumo Financeiro</h4>
+            <p className="text-xs text-slate-400 font-medium">Valores brutos faturados por período</p>
+          </div>
+          <div className="grid grid-cols-3 gap-4 mt-2">
+            <div>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Hoje</span>
+              <span className="text-sm font-bold text-slate-800 block mt-1">
+                {(metrics.receitaHoje / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+              </span>
+            </div>
+            <div>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Este Mês</span>
+              <span className="text-sm font-bold text-slate-800 block mt-1">
+                {(metrics.receitaMes / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+              </span>
+            </div>
+            <div>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Este Ano</span>
+              <span className="text-sm font-bold text-slate-800 block mt-1">
+                {(metrics.receitaAno / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+              </span>
+            </div>
+          </div>
+        </Card>
+
+        {/* Quick Actions */}
+        <QuickActions />
+      </div>
+
+      {/* Row 4: Charts Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <RevenueChart data={metrics.revenueChartData} />
+        <ClientsChart data={metrics.clientsChartData} />
+        <ConsultationsChart data={metrics.consultationsChartData} />
+        <LaboratoriesChart data={metrics.laboratoriesChartData} />
+      </div>
+
+      {/* Row 5: Latest Entries lists */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-2">
+        <LatestClients clients={metrics.latestClients} />
+        <LatestConsultations consultations={metrics.latestConsultations} />
+      </div>
+
     </div>
   );
 }
